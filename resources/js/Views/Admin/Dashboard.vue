@@ -40,24 +40,68 @@
                 </v-hover>
             </v-col>
             <v-col lg=2 md=2 cols=6>
-                <v-card dark color="pink lighten-2" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'admin-invs'}">
-                    <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-table-eye</v-icon></span>{{invs}}</v-card-title>
-                </v-card>
+                <v-hover v-slot="{hover}">
+                    <v-card dark color="pink lighten-2" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'admin-invs'}">
+                        <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-table-eye</v-icon></span>{{invs}}</v-card-title>
+                        <v-expand-transition>
+                            <div
+                                v-if="hover"
+                                class="d-flex transition-fast-in-fast-out pink darken-4 v-card--reveal text-h5 font-weight-light white--text"
+                                style="height: 100%;"
+                            >
+                            <v-icon large left>mdi-table-eye</v-icon> Invs
+                            </div>
+                        </v-expand-transition>
+                    </v-card>
+                </v-hover>
             </v-col>
             <v-col lg=2 md=2 cols=6>
-                <v-card color="blue lighten-3" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'departments'}">
-                    <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-folder</v-icon></span>{{departments}}</v-card-title>
-                </v-card>
+                <v-hover v-slot="{hover}">
+                    <v-card color="blue lighten-3" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'departments'}">
+                        <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-folder</v-icon></span>{{departments}}</v-card-title>
+                        <v-expand-transition>
+                            <div
+                                v-if="hover"
+                                class="d-flex transition-fast-in-fast-out dark blue darken-4 v-card--reveal text-h5 font-weight-light white--text"
+                                style="height: 100%;"
+                            >
+                            <v-icon dark large left>mdi-folder</v-icon> Dptms
+                            </div>
+                        </v-expand-transition>
+                    </v-card>
+                </v-hover>
             </v-col>
             <v-col lg=2 md=2 cols=6>
-                <v-card color="cyan lighten-2" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'rooms'}">
-                    <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-door</v-icon></span>{{rooms}}</v-card-title>
-                </v-card>
+                <v-hover v-slot="{hover}">
+                    <v-card color="cyan lighten-2" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'rooms'}">
+                        <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-door</v-icon></span>{{rooms}}</v-card-title>
+                        <v-expand-transition>
+                            <div
+                                v-if="hover"
+                                class="d-flex transition-fast-in-fast-out cyan accent-4 v-card--reveal text-h5 font-weight-light white--text"
+                                style="height: 100%;"
+                            >
+                            <v-icon dark large left>mdi-door</v-icon> Rooms
+                            </div>
+                        </v-expand-transition>
+                    </v-card>
+                </v-hover>
             </v-col>
             <v-col lg=2 md=2 cols=6>
-                <v-card color="blue-grey lighten-2" dark :ripple="ripple" hover style="text-decoration: none" :to="{name: 'courses'}">
-                    <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-book-open-page-variant-outline</v-icon></span>{{courses}}</v-card-title>
-                </v-card>
+                <v-hover v-slot="{hover}">
+                    <v-card color="blue-grey lighten-2" dark :ripple="ripple" hover style="text-decoration: none" :to="{name: 'courses'}">
+                        <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-book-open-page-variant-outline</v-icon></span>{{courses}}</v-card-title>
+                        <v-expand-transition>
+                            <div
+                                v-if="hover"
+                                class="d-flex transition-fast-in-fast-out blue-grey darken-4 v-card--reveal text-h5 font-weight-light white--text"
+                                style="height: 100%;"
+                            >
+                            <v-icon dark large left>mdi-book-open-page-variant-outline</v-icon> Courses
+                            </div>
+                        </v-expand-transition>
+                    </v-card>
+                </v-hover>
             </v-col>
         </v-row>
         <v-row v-if="!loading && department_courses">
