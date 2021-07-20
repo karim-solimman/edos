@@ -1,0 +1,161 @@
+<template>
+        <v-container>
+        <v-row v-if="!loading && alertType">
+           <v-col>
+               <v-alert :type="alertType" v-model="alert" dismissible>{{ alertMessage }}</v-alert>
+           </v-col>
+        </v-row>
+        <Loading :loading="loading" />
+        <v-row v-if="!loading">
+            <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
+                <v-card rounded="xl" elevation="3">
+                    <v-card-title>
+                        <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
+                        </v-card-title>
+                    <v-card-subtitle>Time: {{inv.date_time | TimeFormat}}</v-card-subtitle>
+                    <v-card-text>
+                        <v-chip small color="success">
+                            <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.users_limit}}
+                        </v-chip>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                        <v-btn rounded @click="addInv(inv.id)" block color="info" text v-if="!isExists(inv.id)"><v-icon left>mdi-plus</v-icon>Add</v-btn>
+                        <v-btn rounded @click="removeInv(inv.id)" block color="red" text v-if="isExists(inv.id)"><v-icon left>mdi-close</v-icon>Remove</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-container>
+</template>
+
+<script>
+import Loading from '../components/Loading.vue'
+    export default {
+        name: 'invs',
+        components: {
+            Loading
+        },
+        data()
+        {
+            return {
+                alertType: null,
+                alertMessage: null,
+                invs: [],
+                user_invs: [],
+                alert: false,
+                loading: true,
+            }
+        },
+        methods:{
+          isExists(invId){
+              let status = false
+              this.user_invs.forEach((item) => {
+                  if (item.id === invId)
+                      status = true
+              })
+              return status
+          },
+            updateInvs(){
+                axios.get('/api/invs')
+                    .then((response) => {
+                        this.invs = response.data
+                    })
+                    .catch((error) => {
+                        console.log(error.response.message)
+                    })
+            },
+          addInv(invId){
+              let formData = new FormData()
+              formData.append('user_id', JSON.parse(localStorage.getItem('user')).id)
+              formData.append('inv_id', invId)
+              console.log(formData.get('user_id'), formData.get('inv_id'))
+              axios.get('/sanctum/csrf-cookie')
+              .then(response => {
+                  axios({
+                      method: 'post',
+                      url: '/api/invs/add',
+                      data: formData,
+                      headers: {
+                          Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                      }
+                  })
+                  .then((response) => {
+                      this.alertType = "success"
+                      this.alertMessage = response.data.message
+                      this.$store.dispatch('updateInvs', response.data.invs)
+                      this.user_invs = this.$store.getters.getInvs
+                      this.alert = true
+                      this.updateInvs()
+                  })
+                  .catch((error) => {
+                      this.alertType = "error"
+                      this.alert = true
+                      this.alertMessage = error.response.data.message
+                  })
+              })
+          },
+            removeInv(invId) {
+                this.btnLoading = true
+                let formData = new FormData()
+                formData.append('user_id', JSON.parse(localStorage.getItem('user')).id)
+                formData.append('inv_id', invId)
+                axios.get('/sanctum/csrf-cookie')
+                .then(response => {
+                    axios({
+                        method: 'post',
+                        url: '/api/invs/remove',
+                        data: formData,
+                        headers: {
+                            Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                        }
+                    })
+                    .then((response) => {
+                        this.alertType = "success"
+                        this.alertMessage = response.data.message
+                        this.$store.dispatch('updateInvs', response.data.invs)
+                        this.user_invs = this.$store.getters.getInvs
+                        this.alert = true
+                        this.updateInvs()
+                        this.btnLoading = false
+                    })
+                    .catch((error) => {
+                        this.alertType = "error"
+                        this.alert = true
+                        this.alertMessage = error.response.data.message
+                    })
+                })
+
+            }
+        },
+        mounted() {
+            this.user_invs = this.$store.getters.getInvs
+            axios.get('/api/invs')
+            .then((response) => {
+                this.invs = response.data
+                this.loading = false
+            })
+            .catch((error) => {
+                console.log(error.response.message)
+                this.loading = false
+                window.localStorage.clear()
+                this.$emit('logged-out', false)
+                this.$router.push('/')
+            })
+        },
+        filters:{
+            DateFormat(value)
+            {
+                return moment(value).format("ddd, MMM DD, YYYY") 
+            },
+            TimeFormat(value)
+            {
+                return moment(value).format("hh : mm A")
+            },
+            ago(value)
+            {
+                return moment(value).fromNow()
+            }
+        }
+    }
+</script>

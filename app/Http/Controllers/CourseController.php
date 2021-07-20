@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Course;
+use Illuminate\Http\Request;
+
+class CourseController extends Controller
+{
+    public function index()
+    {
+        $courses = Course::with('department')->withCount('invs')->get();
+        return response(['courses' => $courses], 201);
+    }
+
+    public function create(Request $request)
+    {
+        $request->validate([
+            'course_code' => ['required', 'string', 'min:4', 'unique:courses,code'],
+            'course_name' => ['required', 'string', 'min:10'],
+            'course_credit_hours' => ['required', 'integer'],
+            'department_id' => ['required', 'integer', 'exists:departments,id']
+        ]);
+        $course = new Course();
+        $course->code = $request->input('course_code');
+        $course->name = $request->input('course_name');
+        $course->credit_hours = $request->input('course_credit_hours');
+        $course->department_id = $request->input('department_id');
+        $course->save();
+        return response(['message' => $course->code.' - '.$course->name.' Added successfully']);
+    }
+
+    public function delete($id)
+    {
+        $course = Course::where('id', $id)->first();
+        Course::destroy($id);
+        return response(['message' => $course->code.' - '.$course->name.' Removed successfully']);
+    }
+}
