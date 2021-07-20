@@ -9,12 +9,12 @@
         <v-row v-if="!loading && roles">
             <v-col lg=2 md=2 cols=6>
                 <v-hover v-slot="{hover}">
-                    <v-card color="info" dark :ripple="ripple" :hover="12" style="text-decoration: none" :to="{name: 'users'}">
+                    <v-card color="light-blue darken-1" dark :ripple="ripple" :hover="12" style="text-decoration: none" :to="{name: 'users'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon large>mdi-account-tie</v-icon></span>{{roles[0].users_count}}</v-card-title>
                         <v-expand-transition>
                             <div
                                 v-if="hover"
-                                class="d-flex transition-fast-in-fast-out light-blue v-card--reveal text-h5 font-weight-light white--text"
+                                class="d-flex transition-fast-in-fast-out light-blue darken-4 v-card--reveal text-h5 font-weight-light white--text"
                                 style="height: 100%;"
                             >
                             <v-icon large left>mdi-account-tie</v-icon>Admins
@@ -25,12 +25,12 @@
             </v-col>
             <v-col lg=2 md=2 cols=6>
                 <v-hover v-slot="{hover}">
-                    <v-card color="blue darken-4" dark :ripple="ripple" hover style="text-decoration: none" :to="{name: 'users'}">
+                    <v-card color="purple darken-1" dark :ripple="ripple" hover style="text-decoration: none" :to="{name: 'users'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon large>mdi-account-group</v-icon></span>{{roles[1].users_count}}</v-card-title>
                         <v-expand-transition>
                             <div
                                 v-if="hover"
-                                class="d-flex transition-fast-in-fast-out blue darken-4 v-card--reveal text-h5 font-weight-light white--text"
+                                class="d-flex transition-fast-in-fast-out purple darken-4 v-card--reveal text-h5 font-weight-light white--text"
                                 style="height: 100%;"
                             >
                             <v-icon large left>mdi-account-group</v-icon> Users
@@ -41,7 +41,7 @@
             </v-col>
             <v-col lg=2 md=2 cols=6>
                 <v-hover v-slot="{hover}">
-                    <v-card dark color="pink lighten-2" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'admin-invs'}">
+                    <v-card dark color="pink darken-2" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'admin-invs'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-table-eye</v-icon></span>{{invs}}</v-card-title>
                         <v-expand-transition>
                             <div
@@ -57,7 +57,7 @@
             </v-col>
             <v-col lg=2 md=2 cols=6>
                 <v-hover v-slot="{hover}">
-                    <v-card color="blue lighten-3" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'departments'}">
+                    <v-card dark color="blue lighten-1" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'departments'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-folder</v-icon></span>{{departments}}</v-card-title>
                         <v-expand-transition>
                             <div
@@ -73,12 +73,12 @@
             </v-col>
             <v-col lg=2 md=2 cols=6>
                 <v-hover v-slot="{hover}">
-                    <v-card color="cyan lighten-2" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'rooms'}">
+                    <v-card dark color="cyan darken-1" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'rooms'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-door</v-icon></span>{{rooms}}</v-card-title>
                         <v-expand-transition>
                             <div
                                 v-if="hover"
-                                class="d-flex transition-fast-in-fast-out cyan accent-4 v-card--reveal text-h5 font-weight-light white--text"
+                                class="d-flex transition-fast-in-fast-out cyan darken-4 v-card--reveal text-h5 font-weight-light white--text"
                                 style="height: 100%;"
                             >
                             <v-icon dark large left>mdi-door</v-icon> Rooms
@@ -89,7 +89,7 @@
             </v-col>
             <v-col lg=2 md=2 cols=6>
                 <v-hover v-slot="{hover}">
-                    <v-card color="blue-grey lighten-2" dark :ripple="ripple" hover style="text-decoration: none" :to="{name: 'courses'}">
+                    <v-card color="blue-grey darken-1" dark :ripple="ripple" hover style="text-decoration: none" :to="{name: 'courses'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-book-open-page-variant-outline</v-icon></span>{{courses}}</v-card-title>
                         <v-expand-transition>
                             <div
