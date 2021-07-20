@@ -6,8 +6,8 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col>
-                <v-card>
+            <v-col cols="12" lg="4" md="4">
+                <v-card color="grey lighten-4"> 
                     <v-card-title><h1 class="text-h5 font-weight-light">Update name</h1></v-card-title>
                     <v-card-text>
                         <v-text-field
@@ -18,11 +18,18 @@
                     <v-card-actions><v-btn block text color="info"><v-icon left>mdi-pencil</v-icon>update name</v-btn></v-card-actions>
                 </v-card>
             </v-col>
-            <v-col>
-                <v-card>
+            <v-col cols="12" lg="4" md="4">
+                <v-card color="grey lighten-4">
                    <v-card-title><h1 class="text-h5 font-weight-light">Flush all invs</h1></v-card-title>
                    <v-card-text><strong>Warning</strong>, By flushing all the invs you are going to remove all the data related to {{department.name}} department and this action can't be undo.</v-card-text>
                    <v-card-actions><v-btn color="error" block text><v-icon left>mdi-close</v-icon>Flsuh all invs</v-btn></v-card-actions>
+                </v-card>
+            </v-col>
+            <v-col>
+                <v-card color="grey lighten-4">
+                    <v-card-title class="text-h5 font-weight-light">Delete department</v-card-title>
+                    <v-card-text><strong>Warning</strong>, deleting / removing {{department.name}} department will remove all the invs of this department also will unlink all courses attached to the department and this can't be undo.</v-card-text>
+                    <v-card-actions><v-btn block color="error"><v-icon left>mdi-close</v-icon>Delete department</v-btn></v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
