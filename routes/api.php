@@ -46,5 +46,6 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/rooms/create',[\App\Http\Controllers\RoomController::class,'create']);
     Route::get('/courses',[\App\Http\Controllers\CourseController::class,'index']);
     Route::post('/courses/create',[\App\Http\Controllers\CourseController::class, 'create']);
+    Route::get('/courses/{id}',[\App\Http\Controllers\CourseController::class, 'profile']);
     Route::get('/courses/{id}/remove',[\App\Http\Controllers\CourseController::class,'delete']);
 });

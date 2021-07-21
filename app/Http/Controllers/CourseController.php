@@ -13,6 +13,12 @@ class CourseController extends Controller
         return response(['courses' => $courses], 201);
     }
 
+    public function profile($id)
+    {
+        $course = Course::where('id', $id)->with('department')->with('invs')->with('invs.room')->with('invs.users')->first();
+        return response(['course' => $course], 201);
+    }
+
     public function create(Request $request)
     {
         $request->validate([

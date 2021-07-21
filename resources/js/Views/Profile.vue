@@ -3,10 +3,13 @@
        <Loading :loading="loading" />
        <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
        <v-row v-if="!loading">
-           <v-col>
+           <v-col cols="12" lg="6" md="6">
                 <h1 class="text-h2">{{ user.name }}</h1>
                 <v-chip x-small color="primary" class="mr-2" v-for="role in roles" :key="role.id">{{role.name}}</v-chip>
                 <h2 class="text-overline">{{ user.email }}</h2>
+            </v-col>
+            <v-col>
+                <h1 class="text-h1 font-weight-light">{{ invs.length }}<span class="text-overline">invs</span></h1>
             </v-col>
        </v-row>
        <v-divider></v-divider>
@@ -31,7 +34,7 @@
        </v-row>
        <v-row v-if="!loading && invs.length > 0">
            <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id" >
-               <v-card rounded="xl" elevation="3">
+               <v-card color="light-green lighten-4" rounded="xl" elevation="3">
                    <v-card-title>
                         <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
                         </v-card-title>

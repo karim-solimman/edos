@@ -7,9 +7,9 @@
                 <h1 class="text-h4 font-weight-light">{{ room.number }} <v-chip x-small>edit</v-chip></h1>
             </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="!loading && room">
             <v-col>
-                <v-card>
+                <v-card color="grey lighten-4">
                     <v-card-title><h1 class="text-h5 font-weight-light">Change room number</h1></v-card-title>
                     <v-card-text>
                          <v-text-field
@@ -24,16 +24,15 @@
                 </v-card>
             </v-col>
             <v-col>
-                <v-card>
+                <v-card color="grey lighten-4">
                     <v-card-title><h1 class="text-h5 font-weight-light">Undetach all invs</h1></v-card-title>
                     <v-card-text><strong>Warning</strong>, by Undetach invs from {{room.number}}, all invs will be available but not linked to a room. This action can't be undo.</v-card-text>
                     <v-card-actions><v-btn block color="error" dark><v-icon left>mdi-close</v-icon>undetach all invs</v-btn></v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="!loading && room.invs && room.invs.length > 0">
             <v-col>
-                {{room}}
                 <v-data-table :headers="headers" :items="room.invs">
                     <template v-slot:[`item.index`]="{index}">
                         {{index+1}}
@@ -49,6 +48,11 @@
                         <v-btn style="text-decoration: none" icon x-small color="error"><v-icon>mdi-close</v-icon></v-btn>
                     </template>
                 </v-data-table>
+            </v-col>
+        </v-row>
+        <v-row v-if="!loading && room.invs && room.invs.length === 0">
+            <v-col>
+                <v-alert outlined color="warning">Sorry no invs to be displayed</v-alert>
             </v-col>
         </v-row>
     </v-container>
