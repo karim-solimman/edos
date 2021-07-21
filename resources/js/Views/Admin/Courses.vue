@@ -20,7 +20,7 @@
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn style="text-decoration: none" icon small :to="{name: 'courseProfile', params:{id: item.id}}"><v-icon small>mdi-book-account</v-icon></v-btn>
                         <v-btn style="text-decoration: none" icon small><v-icon small>mdi-pencil</v-icon></v-btn>
-                        <v-btn style="text-decoration: none" icon small @click="deleteCourse(item.id)"><v-icon small>mdi-close</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" color="error" icon small @click="deleteCourse(item.id)"><v-icon small>mdi-close</v-icon></v-btn>
                     </template>   
                 </v-data-table>
             </v-col>

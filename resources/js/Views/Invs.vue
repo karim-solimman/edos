@@ -1,10 +1,6 @@
 <template>
         <v-container>
-        <v-row v-if="!loading && alertType">
-           <v-col>
-               <v-alert :type="alertType" v-model="alert" dismissible>{{ alertMessage }}</v-alert>
-           </v-col>
-        </v-row>
+        <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <Loading :loading="loading" />
         <v-row v-if="!loading">
             <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
@@ -31,19 +27,20 @@
 
 <script>
 import Loading from '../components/Loading.vue'
+import Alert from '../components/Alert.vue'
     export default {
         name: 'invs',
         components: {
-            Loading
+            Loading, Alert
         },
         data()
         {
             return {
-                alertType: null,
-                alertMessage: null,
                 invs: [],
                 user_invs: [],
                 alert: false,
+                alertType: null,
+                alertMessage: null,
                 loading: true,
             }
         },
