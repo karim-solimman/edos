@@ -17,7 +17,7 @@ class DepartmentController extends Controller
 
     public function profile($id)
     {
-        $department = Department::with('courses')->with('courses.invs')->with('courses.invs.room')->where('id', $id)->first();
+        $department = Department::with(['courses', 'courses.invs', 'courses.invs.room'])->where('id', $id)->first();
 //        $courses_invs = $department->courses()->with('invs')->with('invs.room')->groupBy('invs')->get();
         return response(['department' => $department], 201);
     }

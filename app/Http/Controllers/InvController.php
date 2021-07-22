@@ -10,12 +10,12 @@ class InvController extends Controller
 {
     public function index()
     {
-        return Inv::with('users')->with('course.department')->with('room')->withCount('users')->get();
+        return Inv::with(['users', 'course.department', 'room'])->withCount('users')->get();
     }
 
     public function profile($id)
     {
-        $inv = Inv::with('users')->with('course.department')->with('room')->where('id', $id)->first();
+        $inv = Inv::with(['users', 'course.department', 'room'])->where('id', $id)->first();
         return response($inv);
     }
 

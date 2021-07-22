@@ -39,7 +39,7 @@ class UserController extends Controller
     }
     public function userProfile($id)
     {
-        $user = User::with('roles')->with('invs.room')->with('invs.course.department')->where('id', $id)->first();
+        $user = User::with(['roles', 'invs.room', 'invs.course.department'])->where('id', $id)->first();
         return response(['user' => $user]);
     }
     public function checkEmail($email)

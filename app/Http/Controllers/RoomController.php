@@ -17,7 +17,7 @@ class RoomController extends Controller
 
     public function profile($id)
     {
-        $room = Room::with('invs.users')->with('invs.course.department')->withCount('invs')->where('id', $id)->first();
+        $room = Room::with(['invs.users', 'invs.course.department'])->withCount('invs')->where('id', $id)->first();
         return response(['room' => $room], 201);
     }
 
