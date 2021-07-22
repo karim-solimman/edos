@@ -1,5 +1,13 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegistrationController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\InvController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RoomController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,34 +26,42 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
-Route::post('/registration', [\App\Http\Controllers\Auth\RegistrationController::class, 'registration']);
-Route::post('/login', [\App\Http\Controllers\Auth\LoginController::class, 'login']);
-Route::get('/check_email/{email}', [\App\Http\Controllers\UserController::class, 'checkEmail']);
-Route::get('/invs',[\App\Http\Controllers\InvController::class,'index']);
+Route::get('/users', [UserController::class, 'index']);
+Route::post('/registration', [RegistrationController::class, 'registration']);
+Route::post('/login', [LoginController::class, 'login']);
+Route::get('/check_email/{email}', [UserController::class, 'checkEmail']);
+Route::get('/invs',[InvController::class,'index']);
 
 
 Route::middleware('auth:sanctum')->group(function() {
-    Route::get('/dashboard',[\App\Http\Controllers\UserController::class, 'dashboard']);
-    Route::post('/profile', [\App\Http\Controllers\UserController::class, 'profile']);
-    Route::get('/users', [\App\Http\Controllers\UserController::class, 'index']);
-    Route::post('/logout', [\App\Http\Controllers\Auth\LoginController::class, 'logout']);
-    Route::get('/users/{id}', [\App\Http\Controllers\UserController::class, 'userProfile']);
-    Route::post('/invs/removeuser', [\App\Http\Controllers\InvController::class, 'removeUser']);
-    Route::get('/invs/{id}',[\App\Http\Controllers\InvController::class, 'profile']);
-    Route::post('/invs/add', [\App\Http\Controllers\UserController::class, 'addInv']);
-    Route::post('/invs/remove', [\App\Http\Controllers\UserController::class, 'removeInv']);
-    Route::post('/roles/add',[\App\Http\Controllers\UserController::class, 'attachRole']);
-    Route::post('/roles/remove',[\App\Http\Controllers\UserController::class, 'detachRole']);
-    Route::get('/roles',[\App\Http\Controllers\RoleController::class, 'index']);
-    Route::get('/departments',[\App\Http\Controllers\DepartmentController::class, 'index']);
-    Route::get('/departments/{id}', [\App\Http\Controllers\DepartmentController::class, 'profile']);
-    Route::post('/departments/create', [\App\Http\Controllers\DepartmentController::class, 'create']);
-    Route::get('/rooms',[\App\Http\Controllers\RoomController::class, 'index']);
-    Route::get('/rooms/{id}',[\App\Http\Controllers\RoomController::class, 'profile']);
-    Route::post('/rooms/create',[\App\Http\Controllers\RoomController::class,'create']);
-    Route::get('/courses',[\App\Http\Controllers\CourseController::class,'index']);
-    Route::post('/courses/create',[\App\Http\Controllers\CourseController::class, 'create']);
-    Route::get('/courses/{id}',[\App\Http\Controllers\CourseController::class, 'profile']);
-    Route::get('/courses/{id}/remove',[\App\Http\Controllers\CourseController::class,'delete']);
+    Route::get('/dashboard',[UserController::class, 'dashboard']);
+
+    Route::post('/profile', [UserController::class, 'profile']);
+    Route::post('/logout', [LoginController::class, 'logout']);
+
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/{id}', [UserController::class, 'userProfile']);
+    Route::post('/users/addinv', [UserController::class, 'addInv']);
+    Route::post('/users/removeinv', [UserController::class, 'removeInv']);
+
+    Route::post('/invs/removeuser', [InvController::class, 'removeUser']);
+    Route::get('/invs/{id}',[InvController::class, 'profile']);
+    Route::post('/invs/create',[InvController::class, 'create']);
+
+    Route::get('/roles',[RoleController::class, 'index']);
+    Route::post('/roles/add',[UserController::class, 'attachRole']);
+    Route::post('/roles/remove',[UserController::class, 'detachRole']);
+
+    Route::get('/departments',[DepartmentController::class, 'index']);
+    Route::get('/departments/{id}', [DepartmentController::class, 'profile']);
+    Route::post('/departments/create', [DepartmentController::class, 'create']);
+
+    Route::get('/rooms',[RoomController::class, 'index']);
+    Route::get('/rooms/{id}',[RoomController::class, 'profile']);
+    Route::post('/rooms/create',[RoomController::class,'create']);
+
+    Route::get('/courses',[CourseController::class,'index']);
+    Route::post('/courses/create',[CourseController::class, 'create']);
+    Route::get('/courses/{id}',[CourseController::class, 'profile']);
+    Route::get('/courses/{id}/remove',[CourseController::class,'delete']);
 });

@@ -117,7 +117,7 @@ import Alert from '../components/Alert.vue'
               formData.append('user_id', this.user.id)
                 axios({
                     method: 'post',
-                    url: '/api/invs/remove',
+                    url: '/api/users/removeinv',
                     data: formData,
                     headers:{
                         Authorization: `Bearer ${window.localStorage.getItem('token')}`

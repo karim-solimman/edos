@@ -71,7 +71,7 @@ import Alert from '../components/Alert.vue'
               .then(response => {
                   axios({
                       method: 'post',
-                      url: '/api/invs/add',
+                      url: '/api/users/addinv',
                       data: formData,
                       headers: {
                           Authorization: `Bearer ${window.localStorage.getItem('token')}`
@@ -101,7 +101,7 @@ import Alert from '../components/Alert.vue'
                 .then(response => {
                     axios({
                         method: 'post',
-                        url: '/api/invs/remove',
+                        url: '/api/users/removeinv',
                         data: formData,
                         headers: {
                             Authorization: `Bearer ${window.localStorage.getItem('token')}`

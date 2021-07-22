@@ -105,7 +105,7 @@ import Loading from '../../components/Loading.vue'
                 formData.append('inv_id', invId)
                 axios({
                     method: 'post',
-                    url: '/api/invs/remove',
+                    url: '/api/users/removeinv',
                     data: formData,
                     headers:{
                         Authorization: `Bearer ${window.localStorage.getItem('token')}`

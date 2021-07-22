@@ -62,6 +62,7 @@ export default {
     data(){
         return{
             loading: true,
+            btnLoading: false,
             alert: false,
             alertType: null,
             alertMessage: null,
@@ -112,10 +113,34 @@ export default {
     },
     methods:{
         test() {
-            console.log(this.courseId)
-            console.log(this.date)
+            this.btnLoading = true
+            let formData = new FormData()
+            formData.append('course_id', this.courseId)
+            formData.append('rooms', Array(this.selectedRooms))
+            formData.append('date', this.date)
+            formData.append('time', this.time)
             console.log(this.time)
-            console.log(this.selectedRooms)
+            axios({
+                method: 'post',
+                url: '/api/invs/create',
+                data: formData,
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+                console.log(response.data)
+                this.btnLoading = false
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+                this.btnLoading = false
+            })
         }
     }
     
