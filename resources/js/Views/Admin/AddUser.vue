@@ -1,39 +1,42 @@
 <template>
     <v-container>
         <Loading :loading="loading" />
-        <v-row v-if="!loading">
-            <v-col>
-                <h4 class="text-h4 font-weight-light">Add new user</h4>
-            </v-col> 
-        </v-row>
-        <v-row v-if="!loading">
+        <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
+        <v-row justify="space-around" v-if="!loading">
             <v-col cols=12 lg=5 md=5>
-                <v-form>
-                    <v-text-field
-                    label="Name"
-                    :rules="nameRules"
-                    required
-                    v-model="name"
-                    >
-                    </v-text-field>
-                    <v-text-field
-                    label="Email"
-                    :rules="emailRules"
-                    required
-                    v-model="email"
-                    >
-                    </v-text-field>
-                    <v-select
-                    v-model="department"
-                    :items="departments"
-                    item-text="name"
-                    item-value="id"
-                    :rules="[v => !!v || 'Department is required']"
-                    label="Department"
-                    >
-                    </v-select>
-                    <v-btn block color="success"><v-icon left>mdi-plus</v-icon> Add new user</v-btn>
-                </v-form>
+                <v-card color="grey lighten-5">
+                    <v-card-title>
+                        <h4 class="text-h4 font-weight-light">Add new user</h4>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-form>
+                            <v-text-field
+                            label="Name"
+                            :rules="nameRules"
+                            required
+                            v-model="name"
+                            >
+                            </v-text-field>
+                            <v-text-field
+                            label="Email"
+                            :rules="emailRules"
+                            required
+                            v-model="email"
+                            >
+                            </v-text-field>
+                            <v-select
+                            v-model="department"
+                            :items="departments"
+                            item-text="name"
+                            item-value="id"
+                            :rules="[v => !!v || 'Department is required']"
+                            label="Department"
+                            >
+                            </v-select>
+                            <v-btn block color="success"><v-icon left>mdi-plus</v-icon> Add new user</v-btn>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </v-col>
         </v-row>
     </v-container>
@@ -41,13 +44,17 @@
 
 <script>
 import Loading from '../../components/Loading.vue'
+import Alert from '../../components/Alert.vue'
 export default {
     components: {
-        Loading
+        Loading, Alert
     },
     data(){
         return{
             loading: true,
+            alert: false,
+            alertType: null,
+            alertMessage: null,
             name: '',
             nameRules: [
                 v => !!v || 'Name is required',
@@ -75,7 +82,9 @@ export default {
             this.loading = false
         })
         .catch((error) => {
-            console.log(error.response.data.message)
+            this.alert = true
+            this.alertType = 'error'
+            this.alertMessage = error.response.data.message
         })
     }
     

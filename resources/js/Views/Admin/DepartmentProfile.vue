@@ -23,7 +23,7 @@
                     </template>
                     <template v-slot:[`item.invs`]="{item}">
                         <v-chip-group v-if="item.invs.length">
-                            <v-chip small v-for="inv in item.invs" :key="inv.id">{{inv.room.number}}</v-chip>   
+                            <v-chip style="text-decoration: none" :to="{name: 'roomProfile', params:{id: inv.room.id}}" small v-for="inv in item.invs" :key="inv.id">{{inv.room.number}}</v-chip>   
                         </v-chip-group>
                         <v-chip v-else small color="error">No invs</v-chip>
                     </template>

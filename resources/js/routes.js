@@ -17,6 +17,11 @@ const routes = [
         name: 'admin-invs'
     },
     {
+        path: '/admin/addinv',
+        component: require('./Views/Admin/AddInv').default,
+        name: 'add-inv'
+    },
+    {
         path: '/profile',
         component: require('./Views/Profile').default,
         name: 'profile'
@@ -110,6 +115,11 @@ const routes = [
         path: '/admin/addcourse',
         component: require('./Views/Admin/AddCourse').default,
         name: 'addCourse'
+    },
+    {
+        path: '/admin/course/:id/edit',
+        component: require('./Views/Admin/EditCourse').default,
+        name: 'editCourse'
     },
     {
         path: '/admin/courses/:id',

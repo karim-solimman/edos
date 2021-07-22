@@ -2,23 +2,25 @@
     <v-container>
         <Loading :loading="loading"/>
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
-        <v-row>
+        <v-row justify="space-around">
             <v-col cols="12" lg="5" md="5">
-                <h4 class="text-h4 font-weight-light">Add new department</h4>
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col cols="12" lg="5" md="5">
-                <v-form  @submit.prevent="addDepartment" ref="form" v-model="formValid"> 
-                    <v-text-field
-                    label="Name"
-                    v-model="department_name"
-                    :rules="nameRules"
-                    required
-                    >
-                    </v-text-field>
-                    <v-btn block :disabled="!formValid" :loading="btnLoading" color="success" type="submit"><v-icon left>mdi-plus</v-icon> Add new department</v-btn>
-                </v-form>
+                <v-card color="grey lighten-5">
+                    <v-card-title>
+                        <h4 class="text-h4 font-weight-light">Add new department</h4>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-form  @submit.prevent="addDepartment" ref="form" v-model="formValid"> 
+                            <v-text-field
+                            label="Name"
+                            v-model="department_name"
+                            :rules="nameRules"
+                            required
+                            >
+                            </v-text-field>
+                            <v-btn block :disabled="!formValid" :loading="btnLoading" color="success" type="submit"><v-icon left>mdi-plus</v-icon> Add new department</v-btn>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
             </v-col>
         </v-row>
     </v-container>

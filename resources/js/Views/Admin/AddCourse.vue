@@ -2,39 +2,45 @@
     <v-container>
         <Loading :loading="loading" />
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
-        <v-row v-if="!loading && departments">
+        <v-row justify="space-around" v-if="!loading && departments">
             <v-col cols=12 md=5 lg=5>
-                <h1 class="text-h4 font-weight-light">Add new course</h1>
-                <v-form @submit.prevent="addCourse" ref="form" v-model="formValid">
-                    <v-text-field
-                    v-model="courseCode"
-                    :error-messages="errorMessages['course_code']"
-                    :rules="courseCodeRules"
-                    @keydown="errorMessages = []"
-                    label="Code"
-                    ></v-text-field>
-                    <v-text-field
-                    v-model="courseName"
-                    :rules="courseNameRules"
-                    label="Name"
-                    ></v-text-field>
-                    <v-text-field
-                    v-model="courseCreditHours"
-                    :rules="courseCreditHoursRules"
-                    label="Credit Hours"
-                    type="number"
-                    ></v-text-field>
-                    <v-select
-                    label="Department"
-                    :items="departments"
-                    :rules="departmentIdRules"
-                    item-text="name"
-                    item-value="id"
-                    v-model="departmentId"
-                    ></v-select>
-                    <v-btn :loading="btnLoading" :disabled="!formValid" block type="submit" color="success"><v-icon left>mdi-plus</v-icon>Add new</v-btn>
-                    <a v-if="alertType == 'error'" class="text-center" @click="reset()">Add another course?</a>
-                </v-form>
+                <v-card color="grey lighten-5">
+                    <v-card-title>
+                        <h1 class="text-h4 font-weight-light">Add new course</h1>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-form @submit.prevent="addCourse" ref="form" v-model="formValid">
+                            <v-text-field
+                            v-model="courseCode"
+                            :error-messages="errorMessages['course_code']"
+                            :rules="courseCodeRules"
+                            @keydown="errorMessages = []"
+                            label="Code"
+                            ></v-text-field>
+                            <v-text-field
+                            v-model="courseName"
+                            :rules="courseNameRules"
+                            label="Name"
+                            ></v-text-field>
+                            <v-text-field
+                            v-model="courseCreditHours"
+                            :rules="courseCreditHoursRules"
+                            label="Credit Hours"
+                            type="number"
+                            ></v-text-field>
+                            <v-select
+                            label="Department"
+                            :items="departments"
+                            :rules="departmentIdRules"
+                            item-text="name"
+                            item-value="id"
+                            v-model="departmentId"
+                            ></v-select>
+                            <v-btn :loading="btnLoading" :disabled="!formValid" block type="submit" color="success"><v-icon left>mdi-plus</v-icon>Add new</v-btn>
+                            <a v-if="alertType == 'error'" class="text-center" @click="reset()">Add another course?</a>
+                        </v-form>
+                    </v-card-text>
+                 </v-card>
             </v-col>
         </v-row>
     </v-container>
