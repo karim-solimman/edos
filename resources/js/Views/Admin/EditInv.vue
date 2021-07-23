@@ -19,23 +19,32 @@
                             v-model="courseId" 
                             :items="courses"
                             :item-text="item => item.code + ' - ' + item.name"
+                            prepend-inner-icon="mdi-book"
                             label="Course">
                             </v-autocomplete>
                             <v-autocomplete
                             chips
                             clearable
                             item-value="id" 
+                            prepend-inner-icon="mdi-door"
                             v-model="room" 
                             :items="rooms"
                             item-text="number"
-                            label="Rooms">
+                            label="Room">
                             </v-autocomplete>
+                            <v-text-field
+                            label="users limit"
+                            prepend-inner-icon="mdi-account-off"
+                            v-model="users_limit"
+                            type="number"
+                            >
+                            </v-text-field>
                     </v-card-text>
                     <v-card-actions>
                         <v-btn block color="primary"><v-icon left>mdi-pencil</v-icon>edit information</v-btn>
                     </v-card-actions>
                 </v-card>
-                 <v-card class="mt-12" color="grey lighten-5">
+                 <v-card class="mt-6" color="grey lighten-5">
                     <v-card-title>
                         <h1 class="text-h5 font-weight-light">Delete inv</h1>
                     </v-card-title>
@@ -66,9 +75,36 @@
                 </v-card>
             </v-col>
             <v-col cols="12" lg="6" md="6">
-               
+              <v-card color="grey lighten-5">
+                  <v-card-title><h1 class="text-h5 font-weight-light">Users</h1></v-card-title>
+                  <v-card-text>
+                      <v-simple-table>
+                        <template v-slot:default>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Dept</th>
+                                    <th>Profile</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(user, i) in inv.users" :key="i">
+                                    <td>{{i+1}}</td>
+                                    <td>{{user.name}}</td>
+                                    <td>TBD</td>
+                                    <td>
+                                        <v-btn color="success" style="text-decoration: none" small icon :to="{name: 'userProfile', params:{id: user.id}}"><v-icon small>mdi-account</v-icon></v-btn>
+                                        <v-btn color="error" style="text-decoration: none" small icon @click="removeUser(user.id)"><v-icon>mdi-close</v-icon></v-btn>
+                                    </td>  
+                                </tr>
+                            </tbody>
+                        </template>
+                    </v-simple-table>
+                  </v-card-text>
+              </v-card>
             </v-col>
-            <v-col cols="12" lg="6" md="6">
+            <v-col style="margin-top: -4%;" cols="12" lg="6" md="6">
                 <v-card color="grey lighten-5">
                     <v-card-title>
                         <h1 class="text-h5 font-weight-light">Change time</h1>
@@ -110,9 +146,11 @@ export default {
             alertType: null,
             alertMessage: null,
             inv: Object,
+            courseId: null,
             date: null,
             time: null,
             room: null,
+            users_limit: null,
             allowedMinutes: [0],
             courses: [],
             rooms: [],
@@ -173,6 +211,32 @@ export default {
         })
 
     },
+    methods:{
+            removeUser(userId){
+                let formData = new FormData()
+                formData.append('user_id', userId)
+                formData.append('inv_id', this.invId)
+                axios({
+                    method: 'post',
+                    url: '/api/users/removeinv',
+                    data: formData,
+                    headers: {
+                        Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                    }
+                })
+                .then((response) => {
+                    this.alert = true
+                    this.alertType = "success"
+                    this.alertMessage = response.data.message
+                    this.inv.users = response.data.users
+                })
+                .catch((error) => {
+                    this.alert = true
+                    this.alertType = "error"
+                    this.alertMessage = error.response.data.message
+                })
+            }
+        },
     filters:{
             DateFormat(value)
             {

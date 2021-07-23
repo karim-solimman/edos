@@ -10,6 +10,9 @@
         <v-row v-if="!loading && room && room.invs">
             <v-col>
                 <v-data-table :headers="headers" :items="room.invs">
+                    <template v-slot:[`item.index`]="{index}">
+                        {{index+1}}
+                    </template>
                     <template v-slot:[`item.date`]="{item}">
                         {{item.date_time | DateFormat}}
                     </template>
@@ -40,7 +43,7 @@ export default {
             alertType: null,
             alertMessage: null,
             headers: [
-                {text: '#', value: 'id'},
+                {text: '#', value: 'index'},
                 {text: 'date', value: 'date'},
                 {text: 'time', value: 'time'},
                 {text: 'users count', value: 'users_count'},
