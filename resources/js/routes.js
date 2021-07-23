@@ -22,6 +22,16 @@ const routes = [
         name: 'add-inv'
     },
     {
+        path: '/admin/invs/:id',
+        component: require('./Views/Admin/InvProfile').default,
+        name: 'invProfile'
+    },
+    {
+        path: '/admin/invs/:id/edit',
+        component: require('./Views/Admin/EditInv.vue').default,
+        name: 'edit-inv'
+    },
+    {
         path: '/profile',
         component: require('./Views/Profile').default,
         name: 'profile'
@@ -45,11 +55,6 @@ const routes = [
         path: '/admin/users/edit/:id',
         component: require('./Views/Admin/EditUser').default,
         name: 'editUser'
-    },
-    {
-        path: '/admin/invs/:id',
-        component: require('./Views/Admin/InvProfile').default,
-        name: 'invProfile'
     },
     {
         path: '/admin/roles',

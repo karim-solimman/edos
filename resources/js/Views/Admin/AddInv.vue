@@ -3,48 +3,54 @@
         <Loading :loading="loading" />
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <v-row justify="space-around" v-if="!loading">
-            <v-col cols="12" lg="6" md="6">
+            <v-col cols="12" lg="12" md="12">
                 <v-card color="grey lighten-5">
                     <v-card-title>
-                        <h1 class="text-h4 font-weight-light">Add new inv</h1>
+                        <h1 class="text-h4 font-weight-light">Add new inv/s</h1>
                     </v-card-title>
                     <v-card-text>
-                        <v-form>
-                            <v-autocomplete 
-                            item-value="id" 
-                            v-model="courseId" 
-                            :items="courses"
-                            :item-text="item => item.code + ' - ' + item.name"
-                            label="Course">
-                            </v-autocomplete>
-                            <v-autocomplete
-                            chips
-                            clearable
-                            deletable-chips
-                            multiple 
-                            item-value="id" 
-                            v-model="selectedRooms" 
-                            :items="rooms"
-                            item-text="number"
-                            label="Rooms">
-                            </v-autocomplete>
-                            <v-date-picker
-                            class="my-3"
-                            v-model="date"
-                            full-width
-                            ></v-date-picker>
-                            <v-time-picker
-                            class="my-3"
-                            v-model="time"
-                            ampm-in-title
-                            format="ampm"
-                            full-width
-                            landscape
-                            :allowed-minutes="allowedMinutes"
-                            scrollable
-                            ></v-time-picker>
-                            <v-btn @click="test" block color="success"><v-icon left>mdi-plus</v-icon>Add new invs</v-btn>
-                        </v-form>
+                        <v-form @submit.prevent="addInvs">
+                            <v-row>
+                                <v-col>
+                                    <v-autocomplete 
+                                    item-value="id" 
+                                    v-model="courseId" 
+                                    :items="courses"
+                                    :item-text="item => item.code + ' - ' + item.name"
+                                    label="Course">
+                                    </v-autocomplete>
+                                    <v-autocomplete
+                                    chips
+                                    clearable
+                                    deletable-chips
+                                    multiple 
+                                    item-value="id" 
+                                    v-model="selectedRooms" 
+                                    :items="rooms"
+                                    item-text="number"
+                                    label="Rooms">
+                                    </v-autocomplete>
+                                    <v-time-picker
+                                    class="my-3"
+                                    v-model="time"
+                                    ampm-in-title
+                                    format="ampm"
+                                    full-width
+                                    landscape
+                                    :allowed-minutes="allowedMinutes"
+                                    scrollable
+                                    ></v-time-picker>
+                                </v-col>
+                                <v-col>
+                                    <v-date-picker
+                                    class="my-3"
+                                    v-model="date"
+                                    full-width
+                                    ></v-date-picker>
+                                </v-col>
+                            </v-row>
+                            <v-btn type="submit" block color="success"><v-icon left>mdi-plus</v-icon>Add new invs</v-btn>
+                            </v-form>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -112,14 +118,13 @@ export default {
         })
     },
     methods:{
-        test() {
+        addInvs() {
             this.btnLoading = true
             let formData = new FormData()
             formData.append('course_id', this.courseId)
             formData.append('rooms', Array(this.selectedRooms))
             formData.append('date', this.date)
             formData.append('time', this.time)
-            console.log(this.time)
             axios({
                 method: 'post',
                 url: '/api/invs/create',
@@ -132,7 +137,6 @@ export default {
                 this.alert = true
                 this.alertType = 'success'
                 this.alertMessage = response.data.message
-                console.log(response.data)
                 this.btnLoading = false
             })
             .catch((error) => {
