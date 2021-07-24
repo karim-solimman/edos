@@ -1,12 +1,6 @@
 <template>
  <v-container>
-     <v-row v-if="alertMessage && !loading">
-         <v-col>
-             <v-alert :alert="alert" :type = "alertType" border="top" elevation="6">
-                <strong>{{alertMessage}}</strong>
-            </v-alert>
-         </v-col>
-     </v-row>
+     <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
      <Loading :loading="loading" />
     <v-row v-if="!loading && user">
         <v-col cols="3">
@@ -63,16 +57,17 @@
 
 <script>
 import Loading from '../../components/Loading.vue'
+import Alert from '../../components/Alert.vue'
     export default {
         name: 'user-profile',
         components: {
-            Loading
+            Loading, Alert
         },
         data(){
             return{
                 loading: true,
                 user: Object,
-                invs: Array,
+                invs: [],
                 alert: false,
                 alertMessage: null,
                 alertType: null

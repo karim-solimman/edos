@@ -1,6 +1,7 @@
 <template>
     <v-container>
        <Loading :loading="loading" />
+       <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <v-row v-if="!loading">
             <v-col>
                 <h5 class="text-h4 font-weight-light">
@@ -69,9 +70,10 @@
 
 <script>
 import Loading from '../../components/Loading.vue'
+import Alert from '../../components/Alert.vue'
 export default {
     components: {
-        Loading
+        Loading, Alert
     },
     data(){
         return{
@@ -83,7 +85,10 @@ export default {
                 {text: 'time', value: 'time'},
                 {text: 'room', value: 'room.number'},
                 {text: 'actions', value: 'actions'}
-            ]
+            ],
+            alert: flase,
+            alertMessage: null,
+            alertType: null
         }
     },
     mounted(){

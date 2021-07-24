@@ -64,7 +64,7 @@ class UserController extends Controller
         $inv_id = $request->input('inv_id');
         $user = User::where('id', $user_id)->first();
         $user->invs()->detach($inv_id);
-        $invs = $user->invs()->get();
+        $invs = $user->invs()->with(['room', 'course', 'course.department'])->get();
         return response(['message' => 'Inv removed successfully from '.$user->name , 'invs' => $invs], 201);
     }
     public function attachRole(Request $request)
