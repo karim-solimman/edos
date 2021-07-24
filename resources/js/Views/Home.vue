@@ -1,123 +1,139 @@
 <template>
-        <v-container>
-            <v-row v-if="error">
-                <v-col>
-                    <v-alert
-                        type="error"
-                        dismissible
-                        elevation="6"
-                        border="top"
-                    >
-                        {{errorMsg}} - <strong>{{error}}</strong>
-                    </v-alert>
-                </v-col>
-            </v-row>
-            <v-row align="center" justify="space-around">
-                <v-col lg=5>
-                    <h1 class="text-h5 font-weight-light">Registration</h1>
-                    <v-stepper v-model="e1">
-                        <v-stepper-items>
-                            <v-stepper-content step="1" >
+    <v-container>
+        <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" /> 
+        <v-row align="center" justify="space-around">
+            <v-col lg=5>
+                <v-stepper v-model="e1">
+                    <v-stepper-items>
+                        <v-stepper-content step="1" >
+                        <h1 class="text-h5 font-weight-light">Registration</h1>
+                        <v-form v-model="form1Valid" @submit.prevent="verifyEmail">
                             <v-text-field
-                                    label="Email"
-                                    type="email"
-                                    prepend-inner-icon="mdi-email"
-                                    validate-on-blur
-                                    required
-                                >
-                                </v-text-field>
-                                 <v-btn
-                                color="primary"
-                                @click="nextStep(1)"
+                                label="Email"
+                                type="email"
+                                :rules="emailRules"
+                                v-model="email"
+                                prepend-inner-icon="mdi-email"
+                                required
                             >
-                                Continue
+                            </v-text-field>
+                            <v-btn
+                                color="primary"
+                                type="submit"
+                                :disabled="!form1Valid"
+                                :loading="btn1Loading"
+                            >
+                            Continue
                             </v-btn>
-                            </v-stepper-content>
-                            <v-stepper-content step="2">
+                        </v-form>
+                        </v-stepper-content>
+                        <v-stepper-content step="2">
+                            <h1 class="text-h5 font-weight-light">Set password</h1>
+                            <v-form v-model="form2Valid" @submit.prevent="setPasswordLogin">
                                 <v-text-field
                                     label="Password"
                                     type="password"
+                                    v-model="password"
+                                    :rules="passwordRules"
+                                    required
                                     prepend-inner-icon="mdi-lock"
                                 ></v-text-field>
                                 <v-text-field
                                     label="Confirm Password"
                                     type="password"
-                                    required
-                                ></v-text-field>
-
-                            <v-btn
-                                color="primary"
-                            >
-                                Continue
-                            </v-btn>
-
-                            <v-btn @click="nextStep(0)" text>
-                                Cancel
-                            </v-btn>
-                            </v-stepper-content>
-                        </v-stepper-items>
-                    </v-stepper>
-                </v-col>
-            </v-row>
-            <v-row align="center" justify="space-around">
-                <v-col lg="5">
-                    <v-alert type="error" dense dismissible v-if="data">{{ data }}</v-alert>
-                    <v-card>
-                        <v-card-title>Registration</v-card-title>
-                        <v-card-text>
-                            <v-form ref="form" @submit.prevent="register" v-model="valid">
-                                <v-text-field
-                                    label="Name"
-                                    placeholder="Please insert your first and last name only"
-                                    v-model="name"
-                                    :rules="nameRules"
-                                    name="name"
-                                    type="text"
-                                    required
-                                ></v-text-field>
-                                <v-text-field
-                                    label="Email"
-                                    type="email"
-                                    name="email"
-                                    ref="email"
-                                    prepend-inner-icon="mdi-email"
-                                    validate-on-blur
-                                    v-model="email"
-                                    :rules="emailRules"
-                                    required
-                                >
-                                </v-text-field>
-                                <v-text-field
-                                    label="Password"
-                                    type="password"
-                                    name="password"
-                                    v-model="password"
-                                    :rules="passwordRules"
-                                    required
-                                ></v-text-field>
-                                <v-text-field
-                                    label="Confirm Password"
-                                    type="password"
-                                    name="password_confirmation"
                                     v-model="password_confirm"
                                     :rules="password_confirmRules"
+                                    prepend-inner-icon="mdi-lock-check"
                                     required
                                 ></v-text-field>
-                                <v-btn :disabled="!valid" block color="success" type="submit"><v-icon left>mdi-account-plus</v-icon>Registration</v-btn>
+                                <v-btn
+                                    color="primary"
+                                    type="submit"
+                                    :disabled="!form2Valid"
+                                    :loading="btn2Loading"
+                                >
+                                    Continue
+                                </v-btn>
+                                <v-btn @click="nextStep(0)" text>
+                            Cancel
+                        </v-btn>
                             </v-form>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+                        </v-stepper-content>
+                    </v-stepper-items>
+                </v-stepper>
+            </v-col>
+        </v-row>
+        <v-row align="center" justify="space-around">
+            <v-col lg="5">
+                <v-card>
+                    <v-card-title>
+                        <h1 class="text-h5 font-weight-light">Registration</h1>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-form ref="form" @submit.prevent="register" v-model="valid">
+                            <v-text-field
+                                label="Name"
+                                placeholder="Please insert your first and last name only"
+                                v-model="name"
+                                :rules="nameRules"
+                                name="name"
+                                type="text"
+                                required
+                            ></v-text-field>
+                            <v-text-field
+                                label="Email"
+                                type="email"
+                                name="email"
+                                ref="email"
+                                prepend-inner-icon="mdi-email"
+                                validate-on-blur
+                                v-model="email"
+                                :rules="emailRules"
+                                required
+                            >
+                            </v-text-field>
+                            <v-text-field
+                                label="Password"
+                                type="password"
+                                name="password"
+                                v-model="password"
+                                :rules="passwordRules"
+                                required
+                            ></v-text-field>
+                            <v-text-field
+                                label="Confirm Password"
+                                type="password"
+                                name="password_confirmation"
+                                v-model="password_confirm"
+                                :rules="password_confirmRules"
+                                required
+                            ></v-text-field>
+                            <v-btn :disabled="!valid" block color="success" type="submit"><v-icon left>mdi-account-plus</v-icon>Registration</v-btn>
+                        </v-form>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
+import Alert from '../components/Alert.vue'
     export default {
+        components:{
+            Alert
+        },
         data(){
             return {
                 valid: false,
-                data: null,
+                form1Valid: false,
+                form2Valid: false,
+                alert: false,
+                alertType: null,
+                alertMessage: null,
+                btn1Loading:false,
+                btn2Loading:false,
+
                 name: '',
                 nameRules: [v => !!v || 'Name is required'],
                 email: '',
@@ -128,8 +144,7 @@
                 password_confirm: '',
                 password_confirmRules: [v => !!v || 'Confirmation password is required',
                  value => this.password === this.password_confirm || 'Password confirmation not match' ],
-                error: '',
-                errorMsg: '',
+                user: Object,
                 e1: 1
             }
         },
@@ -161,9 +176,97 @@
                     this.$router.push("/profile")
                 })
                 .catch((error) => {
-                        this.errorMsg = error.response.data.message
-                        this.error = error.response.data.errors.email[0]
+                    this.alert = true
+                    this.alertType = 'error'
+                    this.alertMessage = error.response.data.message + " " + error.response.data.errors['email']
                 })
+            },
+            verifyEmail() {
+                this.btn1Loading = true
+                let formData = new FormData()
+                formData.append('email', this.email)
+                axios({
+                    method: 'post',
+                    url: '/api/users/checkemail',
+                    data: formData,
+                })
+                .then((response) => {
+                    this.user = response.data.user
+                    this.nextStep(1)
+                    this.btn1Loading = false
+                })
+                .catch((error) => {
+                    this.alert = true
+                    this.alertType = 'error'
+                    this.alertMessage = error.response.data.message + " " + error.response.data.errors['email']
+                    this.btn1Loading = false
+                })
+            },
+            setPasswordLogin(){
+                this.btn2Loading = true
+                let formData = new FormData()
+                formData.append('id', this.user.id)
+                formData.append('password', this.password)
+                formData.append('password_confirmation', this.password_confirm)
+                axios({
+                    method: 'post',
+                    url: '/api/users/passwordset',
+                    data: formData
+                })
+                .then((response) => {
+                    this.alert = true
+                    this.alertType = 'success'
+                    this.alertMessage = response.data.message
+                })
+                .catch((error) => {
+                    this.alert = true
+                    this.alertType = 'error'
+                    this.alertMessage = error.response.data.message
+                    this.btn2Loading = false
+                })
+                formData.append('email', this.email)
+                axios.get('/sanctum/csrf-cookie')
+                   .then(response => {
+                       axios.post('/api/login', formData)
+                       .then((response => {
+                           localStorage.setItem('token', response.data.token)
+                           localStorage.setItem('user', JSON.stringify(response.data.user))
+                           this.$emit('logged-in',true)
+                           this.$store.dispatch('updateUser', response.data.user)
+                           this.$store.dispatch('updateInvs', response?.data?.invs)
+                           this.$store.dispatch('updateRoles', response?.data?.roles)
+                           this.checkRoles(this.$store.getters.getRoles)
+                       }))
+                       .catch((error) => {
+                            this.alert = true
+                            this.alertType = 'error'
+                            this.alertMessage = error.response.data.message
+                            this.btn2Loading = false
+                       })
+                   })
+            },
+            checkRoles(roles)
+            {
+                $.each(roles, (index, value)=>{
+                    if (roles[index]['name'] === 'admin')
+                    {
+                        this.$emit('role', 'admin')
+                        this.$router.push({name: 'dashboard'})
+                        return false
+                    }
+                    else if (roles[index]['name'] === 'user')
+                    {
+                        this.$emit('role', 'user')
+                        this.$router.push({name: 'profile'})
+                        return false
+                    }
+                    else 
+                    {
+                        this.$emit('role', 'other')
+                        this.$router.push({name: 'profile'})
+                    }
+                })
+                this.$router.push({name: 'profile'})
             },
             nextStep (n) {
                 if (n === this.steps) {

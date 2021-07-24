@@ -31,4 +31,44 @@ class RegistrationController extends Controller
             'token' => $token
         ]);
     }
+
+    public function create(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'min:10', 'string'],
+            'email' => ['required', 'email', 'unique:users'],
+            'department_id' => ['nullable', 'integer', 'exists:departments,id']
+        ]);
+        $user = new User();
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        if ($request->input('department_id'))
+        {
+            $user->department_id = $request->input('department_id');
+        }
+        $user->save();
+        return response(['message' => $user->name.', Added successfully'], 201);
+    }
+
+    public function check_email(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email', 'exists:users,email'],
+        ]);
+        $user = User::where('email', $request->input('email'))->first();
+        return response(['message' => 'found', 'user' => $user], 201);
+    }
+
+    public function set_password(Request $request)
+    {
+        $request->validate([
+            'id' => ['required', 'integer', 'exists:users,id'],
+            'password' => ['required','string', 'min:3', 'confirmed']
+        ]);
+        $user = User::where('id', $request->input('id'))->first();
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
+
+        return response(['message' => 'Password set successfully'], 201);
+    }
 }

@@ -29,6 +29,10 @@
                     <template v-slot:[`item.index`]="{index}">
                         {{index+1}}
                     </template>
+                    <template v-slot:[`item.department`]="{item}">
+                        <span v-if="item.department != null">{{item.department.name}}</span>
+                        <span v-else style="color: red"> not assigned </span>   
+                    </template>
                     <template v-slot:[`item.roles.admin`]="{item}">
                         <v-switch color="red darken-3" @click="changeRole(item.id, 'admin')" v-model="switchButtons" :value="item.id+':admin'"></v-switch>
                     </template>
@@ -63,6 +67,7 @@ export default {
                 {text: '#', value: 'id', filterable: true},
                 {text: 'name', value: 'name', filterable: true},
                 {text: 'email', value: 'email', filterable: true},
+                {text: 'department', value: 'department'},
                 {text: 'invs count', value: 'invs_count'},
                 {text: 'admin', value: 'roles.admin', sortable: false},
                 {text: 'user', value: 'roles.user', sortable: false},

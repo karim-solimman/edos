@@ -9,7 +9,7 @@
                         <h4 class="text-h4 font-weight-light">Add new user</h4>
                     </v-card-title>
                     <v-card-text>
-                        <v-form>
+                        <v-form ref="form" v-model="formValid">
                             <v-text-field
                             label="Name"
                             :rules="nameRules"
@@ -25,15 +25,16 @@
                             >
                             </v-text-field>
                             <v-select
-                            v-model="department"
+                            v-model="departmentId"
                             :items="departments"
                             item-text="name"
                             item-value="id"
-                            :rules="[v => !!v || 'Department is required']"
+                            hint="Optional"
+                            persistent-hint
                             label="Department"
                             >
                             </v-select>
-                            <v-btn block color="success"><v-icon left>mdi-plus</v-icon> Add new user</v-btn>
+                            <v-btn @click="register" :loading="btnLoading" :disabled="!formValid" block color="success"><v-icon left>mdi-plus</v-icon> Add new user</v-btn>
                         </v-form>
                     </v-card-text>
                 </v-card>
@@ -52,9 +53,11 @@ export default {
     data(){
         return{
             loading: true,
+            btnLoading: false,
             alert: false,
             alertType: null,
             alertMessage: null,
+            formValid: false,
             name: '',
             nameRules: [
                 v => !!v || 'Name is required',
@@ -65,15 +68,15 @@ export default {
                 v => !!v || 'E-mail is required',
                 v => /.+@.+\..+/.test(v) || 'E-mail must be valid', 
             ],
-            department: null,
+            departmentId: null,
             departments: []
         }
     },
-    mounted(){
+     mounted(){
         axios({
             method: 'get',
             url: '/api/departments',
-            headers: {
+            headers:{
                 Authorization: `Bearer ${window.localStorage.getItem('token')}`
             }
         })
@@ -86,6 +89,36 @@ export default {
             this.alertType = 'error'
             this.alertMessage = error.response.data.message
         })
+    },
+    methods:{
+        register(){
+            this.btnLoading = true
+            let formData = new FormData()
+            formData.append('name', this.name)
+            formData.append('email', this.email)
+            if(this.departmentId)
+                formData.append('department_id', this.departmentId)
+            axios({
+                method: 'post',
+                url: '/api/users/create',
+                data: formData,
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+                this.btnLoading = false
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+                this.btnLoading = false
+            })
+        }
     }
     
 }

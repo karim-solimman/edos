@@ -50,4 +50,9 @@ class User extends Authenticatable
     public function roles(){
         return $this->belongsToMany(Role::class,'role_user')->withPivot('created_at');
     }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
 }

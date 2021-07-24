@@ -9,12 +9,15 @@
                         <h1 class="text-h4 font-weight-light">Add new inv/s</h1>
                     </v-card-title>
                     <v-card-text>
-                        <v-form @submit.prevent="addInvs">
+                        <v-form @submit.prevent="addInvs" ref="form">
                             <v-row>
                                 <v-col>
                                     <v-autocomplete 
                                     item-value="id" 
-                                    v-model="courseId" 
+                                    v-model="courseId"
+                                    ref="course"
+                                    :rules="courseIdRules"
+                                    :error-messages="errorMessages['course']" 
                                     :items="courses"
                                     :item-text="item => item.code + ' - ' + item.name"
                                     label="Course">
@@ -23,10 +26,16 @@
                                     chips
                                     clearable
                                     deletable-chips
+                                    ref="rooms"
                                     multiple 
                                     item-value="id" 
-                                    v-model="selectedRooms" 
+                                    v-model="selectedRooms"
+                                    :rules="selectedRoomsRules"
+                                    @mousedown="$refs.form.resetValidation()" 
                                     :items="rooms"
+                                    hide-selected
+                                    no-data-text="No other rooms to be displayed"
+                                    :error-messages="errorMessages['rooms']"
                                     item-text="number"
                                     label="Rooms">
                                     </v-autocomplete>
@@ -39,6 +48,7 @@
                                     landscape
                                     :allowed-minutes="allowedMinutes"
                                     scrollable
+                                    required
                                     ></v-time-picker>
                                 </v-col>
                                 <v-col>
@@ -46,6 +56,7 @@
                                     class="my-3"
                                     v-model="date"
                                     full-width
+                                    required
                                     ></v-date-picker>
                                 </v-col>
                             </v-row>
@@ -75,10 +86,20 @@ export default {
             courses: [],
             rooms: [],
             courseId: null,
+            courseIdRules: [
+                v => !!v || 'Course is required',
+            ],
             selectedRooms: [],
+            selectedRoomsRules: [
+                v => this.selectedRooms.length > 0 || 'At lease one room is required',
+            ],
             date: null,
             time: null,
-            allowedMinutes: [0],
+            allowedMinutes: [0, 30],
+            errorMessages: [
+                {course: ''},
+                {rooms: ''},
+            ],
         }
     },
     mounted(){
@@ -143,6 +164,8 @@ export default {
                 this.alert = true
                 this.alertType = 'error'
                 this.alertMessage = error.response.data.message
+                this.errorMessages['course'] = error.response.data.errors['course_id']
+                this.errorMessages['rooms'] = error.response.data.errors['rooms']
                 this.btnLoading = false
             })
         }

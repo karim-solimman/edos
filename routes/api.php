@@ -28,6 +28,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/users', [UserController::class, 'index']);
 Route::post('/registration', [RegistrationController::class, 'registration']);
+Route::post('/users/checkemail', [RegistrationController::class, 'check_email']);
+Route::post('/users/passwordset', [RegistrationController::class, 'set_password']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::get('/check_email/{email}', [UserController::class, 'checkEmail']);
 Route::get('/invs',[InvController::class,'index']);
@@ -41,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'userProfile']);
+    Route::post('/users/create', [RegistrationController::class, 'create']);
     Route::post('/users/addinv', [UserController::class, 'addInv']);
     Route::post('/users/removeinv', [UserController::class, 'removeInv']);
 

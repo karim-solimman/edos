@@ -11,7 +11,7 @@ class DepartmentController extends Controller
 
     public function index()
     {
-        $departments = Department::withCount('courses')->get();
+        $departments = Department::withCount(['courses', 'users'])->get();
         return response(['departments'=>$departments]);
     }
 

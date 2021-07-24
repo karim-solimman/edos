@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        return User::with('roles')->withCount('invs')->get();
+        return User::with(['roles', 'department'])->withCount('invs')->get();
     }
 
     public function dashboard()

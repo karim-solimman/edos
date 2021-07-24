@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Inv;
 use App\Models\User;
 use Carbon\Carbon;
@@ -43,6 +44,7 @@ class InvController extends Controller
         $date = $request->input('date');
         $time = $request->input('time');
         $date_time = Carbon::createFromFormat('Y-m-d H:i',$date.' '.$time)->toDateTimeString();
+        $course = Course::where('id', $course_id)->first();
         foreach ($rooms as $room)
         {
             $inv = new Inv();
@@ -52,6 +54,6 @@ class InvController extends Controller
             $inv->course_id = $course_id;
             $inv->save();
         }
-        return response(['message' => 'Invs created successfully'],201);
+        return response(['message' => $course->code.' - '.$course->name.', invs created successfully.'],201);
     }
 }
