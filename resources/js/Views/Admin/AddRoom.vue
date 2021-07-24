@@ -13,6 +13,13 @@
                             v-model="room_number"
                             :rules="room_numberRules"
                             ></v-text-field>
+                            <v-text-field
+                            label="Users limit"
+                            v-model="users_limit"
+                            :rules="users_limitRules"
+                            type="number"
+                            >
+                            </v-text-field>
                             <v-btn :disabled="!formValid" :loading="btnLoading" type="submit" block color="success"><v-icon left>mdi-plus</v-icon>Add new</v-btn>
                         </v-form>
                     </v-card-text>
@@ -40,6 +47,11 @@ export default {
                 v => /[a-zA-Z][0-9][0-9][0-9]/.test(v) || 'Room number should contains E followed by 3 digits',
                 v => (v && v.length === 4) || 'Room number should contains E followed by 3 digits',
             ],
+            users_limit: null,
+            users_limitRules: [
+                v => !!v || 'Users limit is required',
+                v => /^\d+$/.test(v) || 'Users limit must be digits ',
+            ],
             alert: false,
             alertType: null,
             alertMessage: null
@@ -50,6 +62,7 @@ export default {
             this.btnLoading = true
             let formData = new FormData()
             formData.append('room_number', this.room_number.toUpperCase())
+            formData.append('users_limit', this.users_limit)
             axios({
                 method: 'post',
                 url: '/api/rooms/create',

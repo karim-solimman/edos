@@ -43,6 +43,7 @@ export default {
                 {text: '#', value: 'index'},
                 {text: 'name', value: 'name'},
                 {text: 'courses', value: 'courses_count'},
+                {text: 'invs', value: 'invs_count'},
                 {text: 'users', value: 'users_count'},
                 {text: 'actions', value: 'actions'}
             ],

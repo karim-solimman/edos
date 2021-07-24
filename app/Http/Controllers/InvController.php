@@ -36,10 +36,12 @@ class InvController extends Controller
         $request->validate([
             'course_id' => ['required', 'integer', 'exists:courses,id' ],
             'rooms' => ['required'],
+            'duration' => ['nullable', 'integer'],
             'date' => ['required', 'date_format:Y-m-d'],
             'time' => ['required', 'date_format:H:i']
         ]);
         $course_id = $request->input('course_id');
+        $duration = $request->input('duration');
         $rooms = array_map('intVal', explode(',', $request->input('rooms')));
         $date = $request->input('date');
         $time = $request->input('time');
@@ -49,8 +51,8 @@ class InvController extends Controller
         {
             $inv = new Inv();
             $inv->date_time = $date_time;
-            $inv->users_limit = 0;
             $inv->room_id = $room;
+            $inv->duration = $duration;
             $inv->course_id = $course_id;
             $inv->save();
         }

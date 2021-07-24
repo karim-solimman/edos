@@ -31,7 +31,6 @@
                                     item-value="id" 
                                     v-model="selectedRooms"
                                     :rules="selectedRoomsRules"
-                                    @mousedown="$refs.form.resetValidation()" 
                                     :items="rooms"
                                     hide-selected
                                     no-data-text="No other rooms to be displayed"
@@ -39,6 +38,13 @@
                                     item-text="number"
                                     label="Rooms">
                                     </v-autocomplete>
+                                    <v-text-field
+                                    label="Duration"
+                                    v-model="duration"
+                                    :rules="durationRules"
+                                    type="number"
+                                    >
+                                    </v-text-field>
                                     <v-time-picker
                                     class="my-3"
                                     v-model="time"
@@ -93,6 +99,11 @@ export default {
             selectedRoomsRules: [
                 v => this.selectedRooms.length > 0 || 'At lease one room is required',
             ],
+            duration:null,
+            durationRules: [
+                v => !!v || 'Duration is required',
+                v => /^\d+$/.test(v) || 'Duration must be digits ',
+            ],
             date: null,
             time: null,
             allowedMinutes: [0, 30],
@@ -146,6 +157,7 @@ export default {
             formData.append('rooms', Array(this.selectedRooms))
             formData.append('date', this.date)
             formData.append('time', this.time)
+            formData.append('duration', this.duration)
             axios({
                 method: 'post',
                 url: '/api/invs/create',

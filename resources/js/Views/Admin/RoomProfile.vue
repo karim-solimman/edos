@@ -22,6 +22,9 @@
                     <template v-slot:[`item.users_count`]="{item}">
                         {{item.users.length}}
                     </template>
+                    <template v-slot:[`item.users_limit`]>
+                        {{room.users_limit}}
+                    </template>
                 </v-data-table>
             </v-col>
         </v-row>

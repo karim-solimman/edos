@@ -24,10 +24,12 @@ class RoomController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-           'room_number' => ['required', 'max:4', 'regex:/[a-zA-Z][0-9][0-9][0-9]/', 'unique:rooms,number']
+           'room_number' => ['required', 'max:4', 'regex:/[a-zA-Z][0-9][0-9][0-9]/', 'unique:rooms,number'],
+            'users_limit' => ['nullable', 'integer']
         ]);
         $room = new Room();
         $room->number = $request->input('room_number');
+        $room->users_limit = $request->input('users_limit');
         $room->save();
         return response(['message' => 'Room '.$room->number.' created successfully'],201);
     }

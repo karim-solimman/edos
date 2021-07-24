@@ -19,4 +19,9 @@ class Department extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function invs()
+    {
+        return $this->hasManyThrough(Inv::class, Course::class);
+    }
 }

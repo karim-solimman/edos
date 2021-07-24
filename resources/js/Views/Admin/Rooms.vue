@@ -45,6 +45,7 @@ export default {
                 {text: '#', value: 'index'},
                 {text: 'number', value:'number'},
                 {text: 'invs count', value: 'invs_count'},
+                {text: 'users limit', value: 'users_limit'},
                 {text: 'actions', value: 'actions'}
             ],
             search: ''

@@ -52,11 +52,12 @@ export default {
                 {text: '#', value: 'index'},
                 {text: 'date', value: 'date', sortable: true},
                 {text: 'time', value: 'time'},
+                {text: 'dur', value: 'duration'},
                 {text: 'course', value: 'course.code'},
                 {text: 'room', value: 'room.number'},
                 {text: 'department', value:'course.department.name'},
                 {text: 'users count', value: 'users_count'},
-                {text: 'users limit', value: 'users_limit'},
+                {text: 'users limit', value: 'room.users_limit'},
                 {text: 'actions', value:'actions', sortable: false}
             ],
             search: '',

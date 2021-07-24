@@ -16,7 +16,7 @@ class CreateInvsTable extends Migration
         Schema::create('invs', function (Blueprint $table) {
             $table->id();
             $table->dateTime('date_time');
-            $table->integer('duration');
+            $table->integer('duration')->nullable();
             $table->unsignedBigInteger('room_id');
             $table->unsignedBigInteger('course_id');
             $table->foreign('room_id')->references('id')->on('rooms');

@@ -5,7 +5,7 @@
         <v-row v-if="!loading">
             <v-col>
                 <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat }}</h1>
-                <h2 class="text-h5 font-weight-light">{{inv.date_time | TimeFormat}}</h2>
+                <h2 class="text-h5 font-weight-light">{{inv.date_time | TimeFormat}} <v-chip small>{{inv.duration}} Hours</v-chip> </h2>
                 <h3 class="text-caption">{{inv.room.number}} / {{inv.course.code}} / {{inv.course.name}} / {{inv.course.department.name}}</h3>
             </v-col>
         </v-row>

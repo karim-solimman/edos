@@ -104,7 +104,7 @@
                 </v-hover>
             </v-col>
         </v-row>
-        <v-row v-if="!loading && department_courses">
+        <v-row v-if="!loading && department_courses && departments > 0">
             <v-col cols="12" lg="6" md="6">
                 <v-card
                 color="teal darken-3"
@@ -134,6 +134,9 @@
                 </v-card-text>
             </v-card>
             </v-col>
+            <v-col>
+                <dashboard-card />
+            </v-col>
         </v-row>
     </v-container>
 </template>
@@ -151,9 +154,10 @@
 
 <script>
 import Loading from '../../components/Loading.vue'
+import DashboardCard from  '../../components/DashboardCard.vue'
 export default {
     components:{
-        Loading
+        Loading, DashboardCard
     },
     data: () => ({
         loading: true,

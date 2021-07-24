@@ -35,7 +35,7 @@ class RegistrationController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'name' => ['required', 'min:10', 'string'],
+            'name' => ['required', 'min:5', 'string'],
             'email' => ['required', 'email', 'unique:users'],
             'department_id' => ['nullable', 'integer', 'exists:departments,id']
         ]);

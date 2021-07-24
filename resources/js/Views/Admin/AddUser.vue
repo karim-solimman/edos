@@ -61,7 +61,8 @@ export default {
             name: '',
             nameRules: [
                 v => !!v || 'Name is required',
-                v => (v && v.length >= 10) || 'Name must be at least 10 characters',
+                v => (v && v.length >= 7) || 'Name must be at least 7 characters',
+                v => /^[aA-zZ]+\s[aA-zZ]+$/.test(v) || 'First and Last name are required',
             ],
             email: '',
             emailRules: [
@@ -93,6 +94,10 @@ export default {
     methods:{
         register(){
             this.btnLoading = true
+            this.name = this.name.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+                return letter.toUpperCase()
+            })
+            this.email = this.email.toLowerCase()
             let formData = new FormData()
             formData.append('name', this.name)
             formData.append('email', this.email)
