@@ -106,36 +106,10 @@
         </v-row>
         <v-row v-if="!loading && department_courses && departments > 0">
             <v-col cols="12" lg="6" md="6">
-                <v-card
-                color="teal darken-3"
-                dark
-                >
-                <v-card-text>
-                <v-sheet color="rgba(0, 0, 0, .12)">
-                    <v-sparkline
-                    :value="values"
-                    :labels="labels"
-                    color="rgba(255, 255, 255, .7)"
-                    height="100"
-                    padding="24"
-                    stroke-linecap="round"
-                    smooth
-                    auto-draw
-                    >
-                   
-                    </v-sparkline>
-                </v-sheet>
-                </v-card-text>
-
-                <v-card-text>
-                <div class="text-h4 text-center font-weight-thin">
-                    Departments Courses
-                </div>
-                </v-card-text>
-            </v-card>
+                <DashboardDepCourseCard :department_courses="department_courses" v-if="!loading && department_courses.length > 0"/>
             </v-col>
-            <v-col>
-                <dashboard-card />
+            <v-col cols="12" lg="6" md="6">
+                <DashboardDepInvCard :department_invs="department_invs" :last_inv="last_inv" />
             </v-col>
         </v-row>
     </v-container>
@@ -154,10 +128,11 @@
 
 <script>
 import Loading from '../../components/Loading.vue'
-import DashboardCard from  '../../components/DashboardCard.vue'
+import DashboardDepInvCard from  '../../components/DashboardDepInvCard.vue'
+import DashboardDepCourseCard from '../../components/DashboardDepCourseCard.vue'
 export default {
     components:{
-        Loading, DashboardCard
+        Loading, DashboardDepInvCard, DashboardDepCourseCard
     },
     data: () => ({
         loading: true,
@@ -169,8 +144,8 @@ export default {
         courses: null,
         roles: [],
         department_courses: [],
-        values: [],
-        labels: []
+        department_invs: [],
+        last_inv: Object
     }),
     mounted(){
         axios({
@@ -186,7 +161,8 @@ export default {
             this.rooms = response.data.rooms
             this.courses = response.data.courses
             this.department_courses = response.data.department_courses
-            this.draw()
+            this.department_invs = response.data.department_invs
+            this.last_inv = response.data.last_inv
             this.loading = false
         }).catch((error)=>{
             this.loading = false
@@ -196,13 +172,6 @@ export default {
             this.$router.push('/')
         })
     },
-    methods:{
-        draw(){
-            $.each(this.department_courses,(index, value) => {
-                this.labels.push(value['name'].split(" ").map((n)=>n[0]).join(""))
-                this.values.push(value['courses_count'])
-            })
-        }
-    }
+   
 }
 </script>

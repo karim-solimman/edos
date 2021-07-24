@@ -18,6 +18,7 @@ class CreateCoursesTable extends Migration
             $table->string('code');
             $table->string('name');
             $table->float('credit_hours')->nullable();
+            $table->integer('users_limit')->nullable()->default(0);
             $table->unsignedBigInteger('department_id')->nullable();
             $table->foreign('department_id')->references('id')->on('departments');
             $table->timestamps();

@@ -10,7 +10,7 @@
             </v-col>
         </v-row>
         <v-row v-if="!loading">
-            <v-col cols="12" md=5 lg=5>
+            <v-col cols="12" md=6 lg=6>
                 <v-card color="grey lighten-5">
                     <v-card-title class="text-h5 font-weight-light">Update Information</v-card-title>
                     <v-card-text>
@@ -41,6 +41,21 @@
                 </v-card>
             </v-col>
             <v-col>
+                <v-card class="mb-5" color="grey lighten-5"> 
+                    <v-card-title><h1 class="text-h5 font-weight-light">Change department</h1></v-card-title>
+                    <v-card-text>
+                        <v-select
+                        label="Department"
+                        :items="departments"
+                        item-text="name"
+                        item-value="id"
+                        >
+                        </v-select>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn color="primary" block><v-icon left>mdi-pencil</v-icon>change</v-btn>
+                    </v-card-actions>
+                </v-card>
                 <v-card color="grey lighten-5">
                     <v-card-title>
                         <h1 class="text-h5 font-weight-light">User Invs</h1>
@@ -79,6 +94,7 @@ export default {
         return{
             loading: true,
             user: Object,
+            departments: [],
             headers:[
                 {text: '#', value: 'index'},
                 {text: 'date', value: 'date'},
@@ -86,7 +102,7 @@ export default {
                 {text: 'room', value: 'room.number'},
                 {text: 'actions', value: 'actions'}
             ],
-            alert: flase,
+            alert: false,
             alertMessage: null,
             alertType: null
         }
@@ -102,6 +118,7 @@ export default {
         })
         .then((response)=>{
             this.user = response.data.user
+            this.departments = response.data.departments
             this.loading = false
         })
     },

@@ -24,10 +24,18 @@ class UserController extends Controller
         $invs = Inv::all()->count();
         $departments = Department::all()->count();
         $department_courses = Department::withCount('courses')->get();
+        $department_invs = Department::withCount('invs')->get();
+        $last_inv = Inv::orderByDesc('created_at')->first();
         $rooms = Room::all()->count();
         $courses = Course::all()->count();
 
-        return response(['roles' => $roles, 'invs' => $invs, 'departments' => $departments, 'rooms' => $rooms, 'courses' => $courses, 'department_courses' => $department_courses], 201);
+        return response(['roles' => $roles, 'invs' => $invs,
+            'departments' => $departments,
+            'rooms' => $rooms,
+            'courses' => $courses,
+            'department_courses' => $department_courses,
+            'department_invs' => $department_invs,
+            'last_inv' => $last_inv], 201);
     }
 
     public function profile(Request $request)
@@ -40,7 +48,8 @@ class UserController extends Controller
     public function userProfile($id)
     {
         $user = User::with(['roles', 'invs.room', 'invs.course.department'])->where('id', $id)->first();
-        return response(['user' => $user]);
+        $departments = Department::all();
+        return response(['user' => $user, 'departments' => $departments]);
     }
     public function checkEmail($email)
     {
