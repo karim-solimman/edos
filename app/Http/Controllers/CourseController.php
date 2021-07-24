@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Department;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -16,7 +17,8 @@ class CourseController extends Controller
     public function profile($id)
     {
         $course = Course::where('id', $id)->with(['department', 'invs', 'invs.room', 'invs.users'])->first();
-        return response(['course' => $course], 201);
+        $departments = Department::all();
+        return response(['course' => $course, 'departments' => $departments], 201);
     }
 
     public function create(Request $request)

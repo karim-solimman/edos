@@ -17,6 +17,11 @@
                             v-model="room.number"
                             :rules="room_numberRules"
                             ></v-text-field>
+                            <v-text-field
+                            label="Users limit"
+                            v-model="room.users_limit"
+                            :rules="users_limitRules"
+                            ></v-text-field>
                     </v-card-text>
                     <v-card-actions>
                         <v-btn block text color="info"><v-icon left>mdi-pencil</v-icon>Update room number</v-btn>
@@ -74,7 +79,6 @@ export default {
                 {text: 'date', value: 'date'},
                 {text: 'time', value: 'time'},
                 {text: 'users count', value: 'users.length'},
-                {text: 'users limit', value: 'users_limit'},
                 {text: 'course', value: 'course.code'},
                 {text: 'department', value: 'course.department.name'},
                 {text: 'actions', value: 'actions'}
@@ -83,6 +87,10 @@ export default {
                 v => !!v || 'Room number is required',
                 v => /[a-zA-Z][0-9][0-9][0-9]/.test(v) || 'Room number should contains E followed by 3 digits',
                 v => (v && v.length === 4) || 'Room number should contains E followed by 3 digits',
+            ],
+            users_limitRules: [
+                v => !!v || 'Users limit is required',
+                v => /^\d+$/.test(v) || 'Users limit must be digits ',
             ],
             alert: false,
             alertType: null,

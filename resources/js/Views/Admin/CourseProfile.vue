@@ -52,7 +52,7 @@ export default {
                 {text: 'time', value: 'time'},
                 {text: 'room', value: 'room.number'},
                 {text: 'users count', value: 'users_count'},
-                {text: 'users limit', value: 'users_limit'},
+                {text: 'users limit', value: 'room.users_limit'},
                 {text: 'actions', value: 'actions'}
             ]
         }
