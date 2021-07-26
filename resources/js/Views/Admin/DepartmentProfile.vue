@@ -14,18 +14,18 @@
                         {{index+1}}
                     </template>
                     <template v-slot:[`item.date`]="{item}">
-                        <v-chip v-if="item.invs.length ===0" small color="error">No invs</v-chip>
+                        <v-chip v-if="item.invs.length ===0" small color="red darken-4" dark><v-icon left>mdi-close</v-icon>No invs</v-chip>
                         <span v-else>{{item.invs[0].date_time | DateFormat}}</span>
                     </template>
                     <template v-slot:[`item.time`]="{item}">
-                        <v-chip v-if="item.invs.length ===0" small color="error">No invs</v-chip>
+                        <v-chip v-if="item.invs.length ===0" small color="red darken-4" dark><v-icon left>mdi-close</v-icon>No invs</v-chip>
                         <span v-else>{{item.invs[0].date_time | TimeFormat}}</span>
                     </template>
                     <template v-slot:[`item.invs`]="{item}">
-                        <v-chip-group v-if="item.invs.length">
+                        <v-chip-group column v-if="item.invs.length">
                             <v-chip style="text-decoration: none" :to="{name: 'roomProfile', params:{id: inv.room.id}}" small v-for="inv in item.invs" :key="inv.id">{{inv.room.number}}</v-chip>   
                         </v-chip-group>
-                        <v-chip v-else small color="error">No invs</v-chip>
+                        <v-chip v-else small color="red darken-4" dark><v-icon left>mdi-close</v-icon>No invs</v-chip>
                     </template>
                 </v-data-table>
                 {{courses}}

@@ -34,20 +34,19 @@
        </v-row>
        <v-row v-if="!loading && invs.length > 0">
            <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id" >
-               <v-card color="light-green lighten-4" rounded="xl" elevation="3">
+               <v-card color="grey lighten-5" hover rounded="xl">
                    <v-card-title>
                         <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
                         </v-card-title>
                     <v-card-subtitle>Time: {{inv.date_time | TimeFormat}}</v-card-subtitle>
                     <v-card-text>
                         <v-chip small color="success">
-                            <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.users_limit}}
+                            <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
                         </v-chip>
                         <v-chip small color="info" outlined>
                             <v-icon small left>mdi-clock-outline</v-icon>{{inv.pivot.created_at | ago}}
                         </v-chip>
                     </v-card-text>
-                   <v-divider></v-divider>
                    <v-card-actions>
                        <v-btn rounded @click="deleteInv(inv.id)" block text color="error"><v-icon left>mdi-close</v-icon>Remove</v-btn>
                    </v-card-actions>

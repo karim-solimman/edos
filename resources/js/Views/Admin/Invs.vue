@@ -146,13 +146,19 @@ export default {
         }
     },
     mounted() {
-        this.user_invs = this.$store.getters.getInvs
-        axios.get('/api/invs')
+        axios({
+            method: 'get',
+            url: '/api/invs',
+            headers:{
+                Authorization: `Bearer ${window.localStorage.getItem('token')}`
+            }
+        })
         .then((response) => {
             this.invs = response.data
             this.loading = false
         })
         .catch((error) => {
+            this.alert = true
             this.alertType = "error"
             this.alertMessage = error.response.data.message
             this.loading = false

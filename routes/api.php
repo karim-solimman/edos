@@ -32,7 +32,6 @@ Route::post('/users/checkemail', [RegistrationController::class, 'check_email'])
 Route::post('/users/passwordset', [RegistrationController::class, 'set_password']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::get('/check_email/{email}', [UserController::class, 'checkEmail']);
-Route::get('/invs',[InvController::class,'index']);
 
 
 Route::middleware('auth:sanctum')->group(function() {
@@ -47,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/users/addinv', [UserController::class, 'addInv']);
     Route::post('/users/removeinv', [UserController::class, 'removeInv']);
 
+    Route::get('/invs',[InvController::class,'index']);
     Route::post('/invs/removeuser', [InvController::class, 'removeUser']);
     Route::get('/invs/{id}',[InvController::class, 'profile']);
     Route::post('/invs/create',[InvController::class, 'create']);

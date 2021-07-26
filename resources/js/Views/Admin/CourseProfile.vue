@@ -5,7 +5,10 @@
         <v-row v-if="!loading && course">
             <v-col>
                 <h1 class="text-h4 font-weight-light">{{course.code}} - {{course.name}}</h1>
-                <h5 class="text-overline">{{course.department.name}} / {{course.credit_hours}} credit hours</h5>
+                <v-chip class="text-overline" outlined v-if="course && course.invs.length > 0 "><v-icon left>mdi-calendar</v-icon>{{course.invs[0].date_time | DateFormat}}</v-chip>
+                <v-chip class="text-overline" outlined v-if="course && course.invs.length > 0 "><v-icon left>mdi-alarm</v-icon>{{course.invs[0].date_time | TimeFormat}}</v-chip>
+                <v-chip class="text-overline" outlined v-else>No invs</v-chip>
+                <v-chip class="text-overline my-1" outlined><v-icon left>mdi-folder</v-icon>{{course.department.name}} / {{course.credit_hours}} credit hours</v-chip>
             </v-col>
         </v-row>
         <v-row>
@@ -13,12 +16,6 @@
                 <v-data-table :headers="headers" :items="course.invs">
                     <template v-slot:[`item.index`]="{index}">
                         {{index+1}}
-                    </template>
-                    <template v-slot:[`item.date`]="{item}">
-                        {{item.date_time | DateFormat }}
-                    </template>
-                    <template v-slot:[`item.time`]="{item}">
-                        {{item.date_time | TimeFormat}}
                     </template>
                     <template v-slot:[`item.users_count`]="{item}" >
                         {{item.users.length}}
@@ -48,8 +45,6 @@ export default {
             alertMessage: null,
             headers:[
                 {text: '#', value: 'index'},
-                {text: 'date', value: 'date'},
-                {text: 'time', value: 'time'},
                 {text: 'room', value: 'room.number'},
                 {text: 'users count', value: 'users_count'},
                 {text: 'users limit', value: 'room.users_limit'},

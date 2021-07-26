@@ -4,17 +4,16 @@
         <Loading :loading="loading" />
         <v-row v-if="!loading">
             <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
-                <v-card rounded="xl" elevation="3">
+                <v-card rounded="xl" hover>
                     <v-card-title>
                         <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
                         </v-card-title>
                     <v-card-subtitle>Time: {{inv.date_time | TimeFormat}}</v-card-subtitle>
                     <v-card-text>
                         <v-chip small color="success">
-                            <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.users_limit}}
+                            <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
                         </v-chip>
                     </v-card-text>
-                    <v-divider></v-divider>
                     <v-card-actions>
                         <v-btn rounded @click="addInv(inv.id)" block color="info" text v-if="!isExists(inv.id)"><v-icon left>mdi-plus</v-icon>Add</v-btn>
                         <v-btn rounded @click="removeInv(inv.id)" block color="red" text v-if="isExists(inv.id)"><v-icon left>mdi-close</v-icon>Remove</v-btn>
@@ -54,7 +53,13 @@ import Alert from '../components/Alert.vue'
               return status
           },
             updateInvs(){
-                axios.get('/api/invs')
+                axios({
+                    method: 'get',
+                    url: '/api/invs',
+                    headers: {
+                        Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                    }
+                })
                     .then((response) => {
                         this.invs = response.data
                     })
@@ -66,7 +71,6 @@ import Alert from '../components/Alert.vue'
               let formData = new FormData()
               formData.append('user_id', JSON.parse(localStorage.getItem('user')).id)
               formData.append('inv_id', invId)
-              console.log(formData.get('user_id'), formData.get('inv_id'))
               axios.get('/sanctum/csrf-cookie')
               .then(response => {
                   axios({
@@ -127,7 +131,13 @@ import Alert from '../components/Alert.vue'
         },
         mounted() {
             this.user_invs = this.$store.getters.getInvs
-            axios.get('/api/invs')
+            axios({
+                method: 'get',
+                url: '/api/invs',
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
             .then((response) => {
                 this.invs = response.data
                 this.loading = false

@@ -41,7 +41,7 @@ class UserController extends Controller
     public function profile(Request $request)
     {
         $user = User::where('id', $request->input('user_id'))->first();
-        $invs = $user->invs()->withCount('users')->get();
+        $invs = $user->invs()->with('room')->withCount('users')->get();
         $roles = $user->roles()->get();
         return response(['user' => $user ,'invs' => $invs, 'roles' => $roles]);
     }

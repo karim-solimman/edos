@@ -10,7 +10,7 @@
         <v-row v-if="!loading && room">
             <v-col>
                 <v-card color="grey lighten-4">
-                    <v-card-title><h1 class="text-h5 font-weight-light">Change room number</h1></v-card-title>
+                    <v-card-title><h1 class="text-h5 font-weight-light">Change room information</h1></v-card-title>
                     <v-card-text>
                          <v-text-field
                             label="Room number"

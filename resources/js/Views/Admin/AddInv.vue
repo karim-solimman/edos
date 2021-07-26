@@ -11,7 +11,7 @@
                     <v-card-text>
                         <v-form @submit.prevent="addInvs" ref="form">
                             <v-row>
-                                <v-col>
+                                <v-col cols="12" lg="6" md="6">
                                     <v-autocomplete 
                                     item-value="id" 
                                     v-model="courseId"
@@ -51,22 +51,22 @@
                                     ampm-in-title
                                     format="ampm"
                                     full-width
-                                    landscape
+                                    :landscape="!$vuetify.breakpoint.mobile"
                                     :allowed-minutes="allowedMinutes"
                                     scrollable
                                     required
                                     ></v-time-picker>
                                 </v-col>
-                                <v-col>
+                                <v-col cols="12" lg="6" md="6">
                                     <v-date-picker
                                     class="my-3"
                                     v-model="date"
                                     full-width
                                     required
                                     ></v-date-picker>
+                                    <v-btn type="submit" block color="success"><v-icon left>mdi-plus</v-icon>Add new invs</v-btn>
                                 </v-col>
                             </v-row>
-                            <v-btn type="submit" block color="success"><v-icon left>mdi-plus</v-icon>Add new invs</v-btn>
                             </v-form>
                     </v-card-text>
                 </v-card>
