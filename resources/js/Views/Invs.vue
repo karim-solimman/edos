@@ -4,7 +4,7 @@
         <Loading :loading="loading" />
         <v-row v-if="!loading">
             <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
-                <v-card rounded="xl" hover>
+                <v-card @click="cardAction(inv.id)" rounded="xl" :color="isExists(inv.id)? 'pink lighten-5' : 'teal lighten-5'" hover>
                     <v-card-title>
                         <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
                         </v-card-title>
@@ -51,6 +51,14 @@ import Alert from '../components/Alert.vue'
                       status = true
               })
               return status
+          },
+          cardAction(invId){
+              if(this.isExists(invId)){
+                  this.removeInv(invId);
+              }
+              else{
+                  this.addInv(invId);
+              }
           },
             updateInvs(){
                 axios({

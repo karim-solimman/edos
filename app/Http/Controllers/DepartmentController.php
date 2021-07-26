@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
-    protected $fillable = ['name'];
-
     public function index()
     {
         $departments = Department::withCount(['courses', 'users', 'invs'])->get();
