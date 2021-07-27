@@ -4,7 +4,7 @@
         <nav-bar @drawer-toggle="drawerToggle = !drawerToggle" @logged-out="loggedOut" :status="this.status"></nav-bar>
         <v-main>
         <v-container fluid>
-            <router-view @click="drawerToggle = !drawerToggle" @logged-in="loggedIn" @role="role"/>
+            <router-view @logged-out="loggedOut" @click="drawerToggle = !drawerToggle" @logged-in="loggedIn" @role="role"/>
         </v-container>
         </v-main>
     </v-app>
@@ -25,7 +25,7 @@
         mounted() {
             if (this.token)
             {
-                this.$router.push({name: 'profile'})
+                this.$router.push({name: 'profile'}).catch((error)=>{})
             }
             else {
                 localStorage.clear()

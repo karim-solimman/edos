@@ -7,12 +7,19 @@ use App\Models\Inv;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules\In;
 
 class InvController extends Controller
 {
     public function index()
     {
         return Inv::with(['users', 'course.department', 'room'])->withCount('users')->get();
+    }
+
+    public function index_groupBy()
+    {
+        $invs = Inv::select('date_time')->orderBy('date_time')->get()->groupBy('date_time');
+        return response(['invs' => $invs]);
     }
 
     public function profile($id)

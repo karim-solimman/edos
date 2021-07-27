@@ -173,7 +173,7 @@ import Alert from '../components/Alert.vue'
                     this.$emit('logged-in',true)
                     this.$store.dispatch('updateUser', JSON.parse(localStorage.getItem('user')))
                     this.$store.dispatch('updateInvs', response.data.invs)
-                    this.$router.push("/profile")
+                    this.$router.push("/profile").catch((error)=>{})
                 })
                 .catch((error) => {
                     this.alert = true
@@ -251,22 +251,22 @@ import Alert from '../components/Alert.vue'
                     if (roles[index]['name'] === 'admin')
                     {
                         this.$emit('role', 'admin')
-                        this.$router.push({name: 'dashboard'})
+                        this.$router.push({name: 'dashboard'}).catch((error)=>{})
                         return false
                     }
                     else if (roles[index]['name'] === 'user')
                     {
                         this.$emit('role', 'user')
-                        this.$router.push({name: 'profile'})
+                        this.$router.push({name: 'profile'}).catch((error)=>{})
                         return false
                     }
                     else 
                     {
                         this.$emit('role', 'other')
-                        this.$router.push({name: 'profile'})
+                        this.$router.push({name: 'profile'}).catch((error)=>{})
                     }
                 })
-                this.$router.push({name: 'profile'})
+                this.$router.push({name: 'profile'}).catch((error)=>{})
             },
             nextStep (n) {
                 if (n === this.steps) {

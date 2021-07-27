@@ -3,7 +3,8 @@
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <Loading :loading="loading" />
         <v-row v-if="!loading">
-            <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
+            <p v-for="(invs, date) in invs" :key="date.id">{{date}} - {{invs}}</p>
+            <!-- <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
                 <v-card @click="cardAction(inv.id)" rounded="xl" :color="isExists(inv.id)? 'pink lighten-5' : 'teal lighten-5'" hover>
                     <v-card-title>
                         <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
@@ -19,7 +20,7 @@
                         <v-btn rounded @click="removeInv(inv.id)" block color="red" text v-if="isExists(inv.id)"><v-icon left>mdi-close</v-icon>Remove</v-btn>
                     </v-card-actions>
                 </v-card>
-            </v-col>
+            </v-col> -->
         </v-row>
     </v-container>
 </template>
@@ -61,18 +62,23 @@ import Alert from '../components/Alert.vue'
               }
           },
             updateInvs(){
+                this.loading = true
                 axios({
                     method: 'get',
-                    url: '/api/invs',
+                    url: '/api/invforusers',
                     headers: {
                         Authorization: `Bearer ${window.localStorage.getItem('token')}`
                     }
                 })
                     .then((response) => {
-                        this.invs = response.data
+                        this.invs = response.data.invs
+                        this.loading = false
                     })
                     .catch((error) => {
-                        console.log(error.response.message)
+                        this.alert = true
+                        this.alertType = 'error'
+                        this.alertMessage = error.response.data.message
+                        this.loading = false
                     })
             },
           addInv(invId){
@@ -141,21 +147,20 @@ import Alert from '../components/Alert.vue'
             this.user_invs = this.$store.getters.getInvs
             axios({
                 method: 'get',
-                url: '/api/invs',
+                url: '/api/invforusers',
                 headers:{
                     Authorization: `Bearer ${window.localStorage.getItem('token')}`
                 }
             })
             .then((response) => {
-                this.invs = response.data
+                this.invs = response.data.invs
                 this.loading = false
             })
             .catch((error) => {
-                console.log(error.response.message)
                 this.loading = false
                 window.localStorage.clear()
                 this.$emit('logged-out', false)
-                this.$router.push('/')
+                this.$router.push('/').catch(()=>{});
             })
         },
         filters:{
