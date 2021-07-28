@@ -55,10 +55,20 @@ class InvController extends Controller
 
     public function addUser(Request $request)
     {
-        $date_time = $request->input('date_time');
+        $inv = Inv::where('date_time', $request->input('date_time'))->first();
         $user = User::where('id', $request->input('user_id'))->first();
+        $user->invs()->attach($inv->id, ['created_at' => now(), 'updated_at' => now()]);
+        $invs = $user->invs()->get();
+        return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', added successfully', 'invs' => $invs], 201);
+    }
 
-        return response(['date_time' => $date_time, 'user' => $user], 201);
+    public function removeUserByDate(Request $request)
+    {
+        $user = User::where('id', $request->input('user_id'))->first();
+        $inv = $user->invs()->where('date_time', $request->input('date_time'))->first();
+        $user->invs()->detach($inv->id);
+        $invs = $user->invs()->get();
+        return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', removed successfully', 'invs' => $invs],201);
     }
 
     public function removeUser(Request $request)

@@ -33,8 +33,8 @@
            </v-col>
        </v-row>
        <v-row v-if="!loading && invs.length > 0">
-           <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id" >
-               <v-card color="grey lighten-5" hover rounded="xl">
+           <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
+               <v-card color="grey lighten-5" hover @click="deleteInv(inv.id)">
                    <v-card-title>
                         <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
                         </v-card-title>
@@ -47,9 +47,6 @@
                             <v-icon small left>mdi-clock-outline</v-icon>{{inv.pivot.created_at | ago}}
                         </v-chip>
                     </v-card-text>
-                   <v-card-actions>
-                       <v-btn rounded @click="deleteInv(inv.id)" block text color="error"><v-icon left>mdi-close</v-icon>Remove</v-btn>
-                   </v-card-actions>
                </v-card>
            </v-col>
        </v-row>

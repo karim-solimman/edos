@@ -8,6 +8,7 @@ use App\Models\Inv;
 use App\Models\Role;
 use App\Models\Room;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -41,7 +42,7 @@ class UserController extends Controller
     public function profile(Request $request)
     {
         $user = User::where('id', $request->input('user_id'))->first();
-        $invs = $user->invs()->with('room')->withCount('users')->get();
+        $invs = $user->invs()->orderBy('date_time')->with('room')->withCount('users')->get();
         $roles = $user->roles()->get();
         return response(['user' => $user ,'invs' => $invs, 'roles' => $roles]);
     }
@@ -71,10 +72,11 @@ class UserController extends Controller
     {
         $user_id = $request->input('user_id');
         $inv_id = $request->input('inv_id');
+        $inv = Inv::where('id', $inv_id)->first();
         $user = User::where('id', $user_id)->first();
         $user->invs()->detach($inv_id);
         $invs = $user->invs()->with(['room', 'course', 'course.department'])->withCount('users')->get();
-        return response(['message' => 'Inv removed successfully from '.$user->name , 'invs' => $invs], 201);
+        return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s',$inv->date_time)->toDateString().', removed successfully from '.$user->name , 'invs' => $invs], 201);
     }
     public function attachRole(Request $request)
     {

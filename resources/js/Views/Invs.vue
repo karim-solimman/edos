@@ -7,15 +7,17 @@
                 <v-col class="text-center my-auto" cols="12" lg="3" md="3">
                    <h1 class="text-h3 font-weight-light">{{date | getDay}} {{date | getMonth}}</h1>
                    <h5 class="text-h5 font-weight-light">{{date | getDayName}}</h5>
+                   <p class="text-overline">{{date | getYear}}</p>
                 </v-col>
                 <v-col cols="12" lg="3" md="3" v-for="(item, time) in inv" :key="item.id" @click="cardAction(time)">
-                    <v-card hover color="grey lighten-5">
-                        <v-card-title>
+                    <v-card hover :color="isExists(time)? 'green lighten-5' : 'grey lighten-5'" >
+                        <v-card-title class="d-flex justify-space-between">
                             <h1 class="text-h4 font-weight-light">{{time | TimeFormat}}</h1>
+                            <v-icon v-if="isExists(time)" color="green">mdi-account</v-icon>
                         </v-card-title>
                         <v-card-text>
                             <v-chip small dark :color="item.users_count < item.users_limit? 'green' : 'red'"><v-icon left>mdi-account-group</v-icon>{{item.users_count}} / {{item.users_limit}}</v-chip>
-                            <v-chip small outlined><v-icon left>mdi-alarm</v-icon>{{item.updated_at | ago}}</v-chip>
+                            <v-chip small outlined><v-icon left>mdi-clock-outline</v-icon>{{item.updated_at | ago}}</v-chip>
                         </v-card-text>
                     </v-card>
                 </v-col>
@@ -55,12 +57,10 @@ import Alert from '../components/Alert.vue'
           },
           cardAction(date_time){
               if(this.isExists(date_time)){
-                  console.log('remove inv');
-                //   this.removeInv(invId);
+                  this.removeInv(date_time)
               }
               else{
-                  console.log('add inv', );
-                //   this.addInv(invId);
+                  this.addInv(date_time)
               }
           },
             updateInvs(){
@@ -83,26 +83,26 @@ import Alert from '../components/Alert.vue'
                         this.loading = false
                     })
             },
-          addInv(invId){
+          addInv(date_time){
               let formData = new FormData()
               formData.append('user_id', JSON.parse(localStorage.getItem('user')).id)
-              formData.append('inv_id', invId)
+              formData.append('date_time', date_time)
               axios.get('/sanctum/csrf-cookie')
               .then(response => {
                   axios({
                       method: 'post',
-                      url: '/api/users/addinv',
+                      url: '/api/invs/adduser',
                       data: formData,
                       headers: {
                           Authorization: `Bearer ${window.localStorage.getItem('token')}`
                       }
                   })
                   .then((response) => {
+                      this.alert = true
                       this.alertType = "success"
                       this.alertMessage = response.data.message
                       this.$store.dispatch('updateInvs', response.data.invs)
                       this.user_invs = this.$store.getters.getInvs
-                      this.alert = true
                       this.updateInvs()
                   })
                   .catch((error) => {
@@ -112,16 +112,16 @@ import Alert from '../components/Alert.vue'
                   })
               })
           },
-            removeInv(invId) {
+            removeInv(date_time) {
                 this.btnLoading = true
                 let formData = new FormData()
                 formData.append('user_id', JSON.parse(localStorage.getItem('user')).id)
-                formData.append('inv_id', invId)
+                formData.append('date_time', date_time)
                 axios.get('/sanctum/csrf-cookie')
                 .then(response => {
                     axios({
                         method: 'post',
-                        url: '/api/users/removeinv',
+                        url: '/api/invs/removeuserbydate',
                         data: formData,
                         headers: {
                             Authorization: `Bearer ${window.localStorage.getItem('token')}`
@@ -134,7 +134,6 @@ import Alert from '../components/Alert.vue'
                         this.user_invs = this.$store.getters.getInvs
                         this.alert = true
                         this.updateInvs()
-                        this.btnLoading = false
                     })
                     .catch((error) => {
                         this.alertType = "error"
