@@ -2,26 +2,16 @@
         <v-container>
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <Loading :loading="loading" />
-        <v-row v-if="!loading">
-            <p v-for="(invs, date) in invs" :key="date.id">{{date}} - {{invs}}</p>
-            <!-- <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
-                <v-card @click="cardAction(inv.id)" rounded="xl" :color="isExists(inv.id)? 'pink lighten-5' : 'teal lighten-5'" hover>
-                    <v-card-title>
-                        <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
-                        </v-card-title>
-                    <v-card-subtitle>Time: {{inv.date_time | TimeFormat}}</v-card-subtitle>
-                    <v-card-text>
-                        <v-chip small color="success">
-                            <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
-                        </v-chip>
-                    </v-card-text>
-                    <v-card-actions>
-                        <v-btn rounded @click="addInv(inv.id)" block color="info" text v-if="!isExists(inv.id)"><v-icon left>mdi-plus</v-icon>Add</v-btn>
-                        <v-btn rounded @click="removeInv(inv.id)" block color="red" text v-if="isExists(inv.id)"><v-icon left>mdi-close</v-icon>Remove</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-col> -->
-        </v-row>
+        <div v-if="!loading">
+            <v-row  v-for="(inv, date) in invs" :key="inv.id">
+                <v-col cols="12" lg="3" md="3">
+                    {{date | DateFormat}}
+                </v-col>
+                <v-col cols="12" lg="3" md="3" v-for="(item, time) in inv" :key="item.id">
+                    {{time | TimeFormat}} <v-chip>{{item.users_count}} / {{item.users_limit}}</v-chip>
+                </v-col>
+            </v-row>
+        </div>
     </v-container>
 </template>
 
@@ -38,6 +28,7 @@ import Alert from '../components/Alert.vue'
             return {
                 invs: [],
                 user_invs: [],
+                tmp_data: [],
                 alert: false,
                 alertType: null,
                 alertMessage: null,
@@ -158,9 +149,12 @@ import Alert from '../components/Alert.vue'
             })
             .catch((error) => {
                 this.loading = false
-                window.localStorage.clear()
-                this.$emit('logged-out', false)
-                this.$router.push('/').catch(()=>{});
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+                // window.localStorage.clear()
+                // this.$emit('logged-out', false)
+                // this.$router.push('/').catch(()=>{})
             })
         },
         filters:{

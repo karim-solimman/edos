@@ -7,19 +7,41 @@ use App\Models\Inv;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\In;
 
 class InvController extends Controller
 {
     public function index()
     {
-        return Inv::with(['users', 'course.department', 'room'])->withCount('users')->get();
+        return Inv::with(['users', 'course.department', 'room'])->withCount('users')->orderBy('date_time')->get();
     }
 
     public function index_groupBy()
     {
-        $invs = Inv::select('date_time')->orderBy('date_time')->get()->groupBy('date_time');
-        return response(['invs' => $invs]);
+        $data = array();
+        $invs = Inv::select('id', 'date_time', 'room_id')->with('room')->withCount('users')->orderBy('date_time')->get()->groupBy(function ($item) {
+            return Carbon::createFromFormat('Y-m-d H:i:s',$item->date_time)->toDateString();
+        });
+        foreach ($invs as $key => $inv)
+        {
+            $data[$key] = array();
+            foreach ($inv as $item)
+            {
+                $data[$key][$item->date_time] = array();
+                $data[$key][$item->date_time]['users_count'] = 0;
+                $data[$key][$item->date_time]["users_limit"] = 0;
+            }
+        }
+        foreach ($invs as $key => $inv)
+        {
+            foreach ($inv as $item)
+            {
+                $data[$key][$item->date_time]['users_count'] += $item->users_count;
+                $data[$key][$item->date_time]['users_limit'] += $item->room->users_limit;
+            }
+        }
+        foreach ($data as $item)
+            ksort($item);
+        return response(['invs' => $data]);
     }
 
     public function profile($id)
