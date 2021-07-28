@@ -7,7 +7,7 @@
             </v-col>
         </v-row>
         <v-row v-if="!loading">
-            <v-col cols="12" lg="6" md="6">
+            <v-col cols="12" lg="4" md="4">
                 <v-card color="grey lighten-5">
                     <v-card-title><h1 class="text-h5 font-weight-light">Edit information</h1></v-card-title>
                     <v-card-text>
@@ -20,17 +20,25 @@
                             :items="departments"
                             item-value="id"
                             item-text="name"
+                            :value="course.department.id"
                             ></v-select>
                             <v-btn color="primary" block><v-icon left>mdi-plus</v-icon>Update</v-btn>
                         </v-form>
                     </v-card-text>
                 </v-card>
             </v-col>
-            <v-col cols="12" lg="6" md="6">
+            <v-col cols="12" lg="5" md="5">
                 <v-card color="grey lighten-5">
                     <v-card-title><h1 class="text-h5 font-weight-light">Course invs</h1></v-card-title>
                     <v-card-text>
                         <v-data-table :headers="headers" :items="course.invs">
+                            <template v-slot:[`item.index`]="{index}">
+                                {{index+1}}
+                            </template>
+                            <template v-slot:[`item.actions`]="{item}">
+                                <v-btn :to="{name: 'roomProfile', params:{id: item.room.id}}" icon small><v-icon small>mdi-door</v-icon></v-btn>
+                                <v-btn color="error" icon small><v-icon small>mdi-close</v-icon></v-btn>
+                            </template>
                         </v-data-table>
                     </v-card-text>
                 </v-card>
@@ -53,7 +61,8 @@ export default {
             departments:[],
             headers:[
                 {text: '#', value: 'index'},
-                {text: 'date', value: 'date'},
+                {text: 'room', value: 'room.number'},
+                {text: 'actions', value: 'actions'}
             ],
             alert: false,
             alertType: null,

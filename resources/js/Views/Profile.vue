@@ -5,8 +5,9 @@
        <v-row v-if="!loading">
            <v-col cols="12" lg="6" md="6">
                 <h1 class="text-h2">{{ user.name }}</h1>
-                <v-chip x-small color="primary" class="mr-2" v-for="role in roles" :key="role.id">{{role.name}}</v-chip>
                 <h2 class="text-overline">{{ user.email }}</h2>
+                <v-chip small color="primary" class="text-overline mr-2" v-for="role in roles" :key="role.id"><v-icon small left>mdi-account</v-icon>{{role.name}}</v-chip>
+                <v-chip small outlined class="text-overline"><v-icon small left>mdi-folder</v-icon>{{user.department.name}}</v-chip>
             </v-col>
             <v-col>
                 <h1 class="text-h1 font-weight-light">{{ invs.length }}<span class="text-overline">invs</span></h1>

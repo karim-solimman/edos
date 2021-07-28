@@ -13,14 +13,14 @@
        </v-row>
        <v-row v-if="!loading">
            <v-col>
-               <v-data-table :headers="headers" :items="invs" :search="search">
+               <v-data-table :headers="headers" :items="invs" :search="search" sort-by="date_time">
                     <template v-slot:[`item.index`]="{index}">
                         {{index+1}}
                     </template> 
-                    <template v-slot:[`item.date`]="{item}">
+                    <template v-slot:[`item.date`]="{ item }">
                         {{item.date_time | DateFormat}}
                     </template>
-                    <template v-slot:[`item.time`]="{item}">
+                    <template v-slot:[`item.time`]="{ item }">
                         {{item.date_time | TimeFormat}}
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
@@ -50,7 +50,7 @@ export default {
             user_invs: [],
             headers:[
                 {text: '#', value: 'index'},
-                {text: 'date', value: 'date', sortable: true},
+                {text: 'date', value: 'date'},
                 {text: 'time', value: 'time'},
                 {text: 'dur', value: 'duration'},
                 {text: 'course', value: 'course.code'},

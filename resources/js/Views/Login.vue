@@ -1,52 +1,42 @@
 <template>
-        <v-container>
-            <v-row>
-                <v-col>
-                    <v-alert
-                        type="error"
-                        dismissible
-                        elevation="6"
-                        border="top"
-                        v-if="isError"
-                    >
-                        Sorry, {{errors}}
-                    </v-alert>
-                </v-col>
-            </v-row>
-            <v-row style="margin-top: 10%" align="center" justify="space-around">
-                <v-col lg="5">
-                    <v-card>
-                        <v-card-title>LOGIN</v-card-title>
-                        <v-card-text>
-                            <v-form @submit.prevent="login" ref="form" v-model="valid">
-                                <v-text-field
-                                    type="email"
-                                    v-model="email"
-                                    :rules="emailRules"
-                                    prepend-inner-icon="mdi-email"
-                                    label="Email"
-                                    validate-on-blur
-                                    required
-                                ></v-text-field>
-                                <v-text-field
-                                    v-model="password"
-                                    label="Password"
-                                    type="password"
-                                    :rules="passwordRules"
-                                    prepend-inner-icon="mdi-lock"
-                                    required
-                                ></v-text-field>
-                                <v-btn :disabled="!valid" color="success" :loading="loading" block success type="submit">
-                                    <v-icon left>mdi-login</v-icon>
-                                    Login
-                                </v-btn>
-                            </v-form>
-                        </v-card-text>
-                    </v-card>
-                    <h5 class="body-1 text-center">Don't have an account? <router-link id='router-link' to="register">Register now</router-link></h5>
-                </v-col>
-            </v-row>
-        </v-container>
+<v-container>
+    <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
+    <v-row style="margin-top: 10%" align="center" justify="space-around">
+        <v-col lg="5">
+            <v-card>
+                <v-card-title>
+                    <h1 class="text-h5 font-weight-light">LOGIN</h1>
+                </v-card-title>
+                <v-card-text>
+                    <v-form @submit.prevent="login" ref="form" v-model="valid">
+                        <v-text-field
+                            type="email"
+                            v-model="email"
+                            :rules="emailRules"
+                            prepend-inner-icon="mdi-email"
+                            label="Email"
+                            validate-on-blur
+                            required
+                        ></v-text-field>
+                        <v-text-field
+                            v-model="password"
+                            label="Password"
+                            type="password"
+                            :rules="passwordRules"
+                            prepend-inner-icon="mdi-lock"
+                            required
+                        ></v-text-field>
+                        <v-btn :disabled="!valid" color="success" :loading="loading" block success type="submit">
+                            <v-icon left>mdi-login</v-icon>
+                            Login
+                        </v-btn>
+                    </v-form>
+                </v-card-text>
+            </v-card>
+            <h5 class="body-1 text-center">Don't have an account? <router-link id='router-link' to="register">Register now</router-link></h5>
+        </v-col>
+    </v-row>
+</v-container>
 </template>
 
 <style scoped>
@@ -61,7 +51,12 @@
 </style>
 
 <script>
+import Alert from '../components/Alert.vue'
+import Loading from '../components/Loading.vue'
    export default {
+       components: {
+           Alert, Loading
+       },
        data(){
            return{
                valid: false,
@@ -72,8 +67,9 @@
                ],
                password: '',
                passwordRules: [v => !!v || 'Password is required'],
-               isError: false,
-               errors: '',
+               alert: false,
+               alertType: null,
+               alertMessage: null,
                loading: false
            }
        },
@@ -98,9 +94,10 @@
                            this.checkRoles(this.$store.getters.getRoles)
                        }))
                        .catch((error) => {
-                           this.isError = true
+                           this.alert = true
+                           this.alertType = 'error'
+                           this.alertMessage = error.response.data.message
                            this.loading = false
-                           this.errors = error.response.data.message
                        })
                    })
            },

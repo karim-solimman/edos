@@ -16,7 +16,7 @@ class LoginController extends Controller
             'password' => 'required|string'
         ]);
 
-        $user = User::where('email', $request->input('email'))->first();
+        $user = User::where('email', $request->input('email'))->with('department')->first();
         if(!$user || !Hash::check($request->input('password'), $user->password ))
         {
             return response(['message' => "Email or password doesn't match our records"], 401);

@@ -16,7 +16,7 @@
                     <v-card-text>
                         <v-autocomplete 
                             item-value="id" 
-                            v-model="courseId" 
+                            v-model="courseId"
                             :items="courses"
                             :item-text="item => item.code + ' - ' + item.name"
                             prepend-inner-icon="mdi-book"
