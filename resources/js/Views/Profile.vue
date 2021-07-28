@@ -41,7 +41,7 @@
                         </v-card-title>
                     <v-card-subtitle>Time: {{inv.date_time | TimeFormat}}</v-card-subtitle>
                     <v-card-text>
-                        <v-chip small color="success">
+                        <v-chip dark small :color="inv.users_count < inv.room.users_limit? 'green darken-2' : 'red darken-2' ">
                             <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
                         </v-chip>
                         <v-chip small color="info" outlined>

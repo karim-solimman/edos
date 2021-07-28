@@ -9,22 +9,45 @@
                    <h5 class="text-h5 font-weight-light">{{date | getDayName}}</h5>
                    <p class="text-overline">{{date | getYear}}</p>
                 </v-col>
-                <v-col cols="12" lg="3" md="3" v-for="(item, time) in inv" :key="item.id" @click="cardAction(time)">
-                    <v-card hover :color="isExists(time)? 'green lighten-5' : 'grey lighten-5'" >
-                        <v-card-title class="d-flex justify-space-between">
-                            <h1 class="text-h4 font-weight-light">{{time | TimeFormat}}</h1>
-                            <v-icon v-if="isExists(time)" color="green">mdi-account</v-icon>
-                        </v-card-title>
-                        <v-card-text>
-                            <v-chip small dark :color="item.users_count < item.users_limit? 'green' : 'red'"><v-icon left>mdi-account-group</v-icon>{{item.users_count}} / {{item.users_limit}}</v-chip>
-                            <v-chip small outlined><v-icon left>mdi-clock-outline</v-icon>{{item.updated_at | ago}}</v-chip>
-                        </v-card-text>
-                    </v-card>
+                <v-col cols="12" lg="3" md="3" v-for="(item, time) in inv" :key="item.id">
+                    <v-hover v-slot="{hover}">
+                        <v-card hover :color="isExists(time)? 'green lighten-5' : 'grey lighten-5'"  @click="cardAction(time)">
+                            <v-card-title class="d-flex justify-space-between">
+                                <h1 class="text-h4 font-weight-light">{{time | TimeFormat}}</h1>
+                                <v-icon v-if="isExists(time)" color="green">mdi-account</v-icon>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-chip small dark :color="item.users_count < item.users_limit? 'green darken-2' : 'red darken-2'"><v-icon left>mdi-account-group</v-icon>{{item.users_count}} / {{item.users_limit}}</v-chip>
+                                <v-chip small outlined><v-icon left>mdi-clock-outline</v-icon>{{item.updated_at | ago}}</v-chip>
+                            </v-card-text>
+                            <v-expand-transition>
+                                <div
+                                    v-if="hover"
+                                    class="d-flex transition-fast-in-fast-out blue-grey darken-4 v-card--reveal text-h5 font-weight-light white--text"
+                                    style="height: 100%;"
+                                >
+                                <span class="text-h4" v-if="isExists(time)"><v-icon dark x-large left color="error">mdi-close</v-icon> REMOVE</span>
+                                <span class="text-h4" v-else><v-icon dark x-large left color="success">mdi-plus</v-icon> ADD</span>
+                                </div>
+                            </v-expand-transition>
+                        </v-card>
+                    </v-hover>
                 </v-col>
             </v-row>
         </div>
     </v-container>
 </template>
+
+<style scoped>
+.v-card--reveal {
+  align-items: center;
+  bottom: 0;
+  justify-content: center;
+  position: absolute;
+  opacity: 0.9;
+  width: 100%;
+}
+</style>
 
 <script>
 import Loading from '../components/Loading.vue'
