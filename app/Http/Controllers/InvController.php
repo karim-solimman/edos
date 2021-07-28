@@ -18,7 +18,7 @@ class InvController extends Controller
     public function index_groupBy()
     {
         $data = array();
-        $invs = Inv::select('id', 'date_time', 'room_id')->with('room')->withCount('users')->orderBy('date_time')->get()->groupBy(function ($item) {
+        $invs = Inv::select('id', 'date_time', 'updated_at', 'room_id')->with('room')->withCount('users')->orderBy('date_time')->get()->groupBy(function ($item) {
             return Carbon::createFromFormat('Y-m-d H:i:s',$item->date_time)->toDateString();
         });
         foreach ($invs as $key => $inv)
@@ -29,6 +29,7 @@ class InvController extends Controller
                 $data[$key][$item->date_time] = array();
                 $data[$key][$item->date_time]['users_count'] = 0;
                 $data[$key][$item->date_time]["users_limit"] = 0;
+                $data[$key][$item->date_time]["updated_at"] = $item->updated_at;
             }
         }
         foreach ($invs as $key => $inv)
@@ -37,6 +38,8 @@ class InvController extends Controller
             {
                 $data[$key][$item->date_time]['users_count'] += $item->users_count;
                 $data[$key][$item->date_time]['users_limit'] += $item->room->users_limit;
+                if($data[$key][$item->date_time]['updated_at'] < $item->updated_at)
+                    $data[$key][$item->date_time]['updated_at'] = $item->updated_at;
             }
         }
         foreach ($data as $item)
@@ -48,6 +51,14 @@ class InvController extends Controller
     {
         $inv = Inv::with(['users', 'course.department', 'room'])->where('id', $id)->first();
         return response($inv);
+    }
+
+    public function addUser(Request $request)
+    {
+        $date_time = $request->input('date_time');
+        $user = User::where('id', $request->input('user_id'))->first();
+
+        return response(['date_time' => $date_time, 'user' => $user], 201);
     }
 
     public function removeUser(Request $request)

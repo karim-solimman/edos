@@ -4,11 +4,20 @@
         <Loading :loading="loading" />
         <div v-if="!loading">
             <v-row  v-for="(inv, date) in invs" :key="inv.id">
-                <v-col cols="12" lg="3" md="3">
-                    {{date | DateFormat}}
+                <v-col class="text-center my-auto" cols="12" lg="3" md="3">
+                   <h1 class="text-h3 font-weight-light">{{date | getDay}} {{date | getMonth}}</h1>
+                   <h5 class="text-h5 font-weight-light">{{date | getDayName}}</h5>
                 </v-col>
-                <v-col cols="12" lg="3" md="3" v-for="(item, time) in inv" :key="item.id">
-                    {{time | TimeFormat}} <v-chip>{{item.users_count}} / {{item.users_limit}}</v-chip>
+                <v-col cols="12" lg="3" md="3" v-for="(item, time) in inv" :key="item.id" @click="cardAction(time)">
+                    <v-card hover color="grey lighten-5">
+                        <v-card-title>
+                            <h1 class="text-h4 font-weight-light">{{time | TimeFormat}}</h1>
+                        </v-card-title>
+                        <v-card-text>
+                            <v-chip small dark :color="item.users_count < item.users_limit? 'green' : 'red'"><v-icon left>mdi-account-group</v-icon>{{item.users_count}} / {{item.users_limit}}</v-chip>
+                            <v-chip small outlined><v-icon left>mdi-alarm</v-icon>{{item.updated_at | ago}}</v-chip>
+                        </v-card-text>
+                    </v-card>
                 </v-col>
             </v-row>
         </div>
@@ -36,20 +45,22 @@ import Alert from '../components/Alert.vue'
             }
         },
         methods:{
-          isExists(invId){
+          isExists(date_time){
               let status = false
               this.user_invs.forEach((item) => {
-                  if (item.id === invId)
+                  if (item.date_time === date_time)
                       status = true
               })
               return status
           },
-          cardAction(invId){
-              if(this.isExists(invId)){
-                  this.removeInv(invId);
+          cardAction(date_time){
+              if(this.isExists(date_time)){
+                  console.log('remove inv');
+                //   this.removeInv(invId);
               }
               else{
-                  this.addInv(invId);
+                  console.log('add inv', );
+                //   this.addInv(invId);
               }
           },
             updateInvs(){
@@ -152,9 +163,6 @@ import Alert from '../components/Alert.vue'
                 this.alert = true
                 this.alertType = 'error'
                 this.alertMessage = error.response.data.message
-                // window.localStorage.clear()
-                // this.$emit('logged-out', false)
-                // this.$router.push('/').catch(()=>{})
             })
         },
         filters:{
@@ -169,6 +177,22 @@ import Alert from '../components/Alert.vue'
             ago(value)
             {
                 return moment(value).fromNow()
+            },
+            getDayName(value)
+            {
+                return moment(value).format("dddd")
+            },
+            getDay(value)
+            {
+                return moment(value).format("DD")
+            },
+            getMonth(value)
+            {
+                return moment(value).format("MMMM")
+            },
+            getYear(value)
+            {
+                return moment(value).format("YYYY")
             }
         }
     }
