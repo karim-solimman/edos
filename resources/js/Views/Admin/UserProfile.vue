@@ -5,7 +5,7 @@
     <v-row v-if="!loading && user">
         <v-col cols="3">
             <h1 class="text-h4 font-weight-light"> {{user.name}}</h1>
-            <v-chip class="mr-2" x-small color="primary" v-for="role in user.roles" :key="role.id">{{role.name}}</v-chip>
+            <v-chip class="mr-2" x-small color="primary" v-for="role in user.roles" :key="role.id">{{role.slug}}</v-chip>
             <h2 class="text-overline">{{user.email}}</h2>
         </v-col>
         <v-col>
