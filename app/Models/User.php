@@ -48,7 +48,7 @@ class User extends Authenticatable
     }
 
     public function roles(){
-        return $this->belongsToMany(Role::class,'role_user')->withPivot('created_at');
+        return $this->belongsToMany(Role::class,'role_user')->select(['name', 'slug'])->withPivot('created_at');
     }
 
     public function department()
