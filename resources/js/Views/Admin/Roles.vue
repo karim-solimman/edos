@@ -1,12 +1,7 @@
 <template>
     <v-container>
-        <v-row align="center" justify="space-around" v-if="loading">
-            <v-col lg=1>
-                <div class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-            </v-col>
-        </v-row>
+       <Loading :loading="loading" />
+       <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <v-row v-if="roles.length == 0 && !loading"> 
             <v-col>
                 <v-alert
@@ -22,7 +17,9 @@
         <v-row v-for="role in roles" :key="role.id">
             <v-col>
                 <v-card>
-                    <v-card-title><v-badge overlap color="green" :content="role.users_count"> <h1 class="text-h2">{{role.name}}</h1> </v-badge></v-card-title>
+                    <v-card-title>
+                        <v-badge overlap color="green" :content="role.users_count"> <h1 class="text-h5 font-weight-light">{{role.name}}</h1> </v-badge>
+                    </v-card-title>
                     <v-card-text>
                         <v-simple-table dense>
                             <template v-slot:default>
@@ -63,11 +60,19 @@
 </template>
 
 <script>
+import Loading from '../../components/Loading.vue'
+import Alert from '../../components/Alert.vue'
 export default {
+    components:{
+        Loading, Alert
+    },
    data(){
        return{
            roles: [],
-           loading: true
+           loading: true,
+           alert: false,
+           alertType: null,
+           alertMessage: null
        }
    },
 
@@ -84,7 +89,10 @@ export default {
            this.roles = response.data
        })
        .catch((error)=>{
-           console.log(error.response.data);
+           this.alert = true
+           this.alertType = 'error'
+           this.alertMessage = error.response.data.message
+           this.loading = false
        })
    }
 }

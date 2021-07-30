@@ -49,7 +49,7 @@ class InvController extends Controller
 
     public function profile($id)
     {
-        $inv = Inv::with(['users.department', 'course.department', 'room'])->where('id', $id)->first();
+        $inv = Inv::with(['users.departmentp', 'course.department', 'room'])->where('id', $id)->first();
         return response($inv);
     }
 
