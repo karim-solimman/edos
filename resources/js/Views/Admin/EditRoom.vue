@@ -48,6 +48,9 @@
                     <template v-slot:[`item.time`]="{item}">
                         {{item.date_time | TimeFormat }}
                     </template>
+                    <template v-slot:[`item.users_count`]="{item}">
+                        {{item.users.length}} / {{room.users_limit}}
+                    </template>
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn style="text-decoration: none" :to="{name: 'invProfile', params:{id: item.id}}" icon x-small><v-icon>mdi-pencil</v-icon></v-btn>
                         <v-btn style="text-decoration: none" icon x-small color="error"><v-icon>mdi-close</v-icon></v-btn>
@@ -78,7 +81,7 @@ export default {
                 {text: '#', value: 'index'},
                 {text: 'date', value: 'date'},
                 {text: 'time', value: 'time'},
-                {text: 'users count', value: 'users.length'},
+                {text: 'users count', value: 'users_count'},
                 {text: 'course', value: 'course.code'},
                 {text: 'department', value: 'course.department.name'},
                 {text: 'actions', value: 'actions'}

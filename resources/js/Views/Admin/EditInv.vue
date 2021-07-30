@@ -92,7 +92,7 @@
                                 <tr v-for="(user, i) in inv.users" :key="i">
                                     <td>{{i+1}}</td>
                                     <td>{{user.name}}</td>
-                                    <td>TBD</td>
+                                    <td>{{user.department.name}}</td>
                                     <td>
                                         <v-btn color="success" style="text-decoration: none" small icon :to="{name: 'userProfile', params:{id: user.id}}"><v-icon small>mdi-account</v-icon></v-btn>
                                         <v-btn color="error" style="text-decoration: none" small icon @click="removeUser(user.id)"><v-icon>mdi-close</v-icon></v-btn>
@@ -151,7 +151,7 @@ export default {
             time: null,
             room: null,
             users_limit: null,
-            allowedMinutes: [0],
+            allowedMinutes: [0, 30],
             courses: [],
             rooms: [],
         }
@@ -167,6 +167,10 @@ export default {
         })
         .then((response) => {
             this.inv = response.data
+            this.courseId = this.inv.course.id
+            this.date = this.inv.date_time
+            this.users_limit = this.inv.room.users_limit
+            this.room = this.inv.room.id
             this.loading = false
         })
         .catch((error) => {
