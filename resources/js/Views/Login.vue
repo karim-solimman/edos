@@ -15,7 +15,6 @@
                             :rules="emailRules"
                             prepend-inner-icon="mdi-email"
                             label="Email"
-                            validate-on-blur
                             required
                         ></v-text-field>
                         <v-text-field
@@ -75,6 +74,7 @@ import Loading from '../components/Loading.vue'
        },
        methods: {
            login(){
+               let roles = []
                if(!this.$refs.form.validate())
                    return
                let formData = new FormData()
@@ -87,11 +87,13 @@ import Loading from '../components/Loading.vue'
                        .then((response => {
                            localStorage.setItem('token', response.data.token)
                            localStorage.setItem('user', JSON.stringify(response.data.user))
-                           this.$emit('logged-in',true)
                            this.$store.dispatch('updateUser', response.data.user)
                            this.$store.dispatch('updateInvs', response?.data?.invs)
-                           this.$store.dispatch('updateRoles', response?.data?.roles)
-                           this.checkRoles(this.$store.getters.getRoles)
+                           $.each(response.data.roles, (index, value) => {
+                               roles.push(response.data.roles[index]['slug'])
+                           })
+                           this.$store.dispatch('updateRoles', roles)
+                           this.$emit('logged-in',true)
                        }))
                        .catch((error) => {
                            this.alert = true
@@ -101,29 +103,6 @@ import Loading from '../components/Loading.vue'
                        })
                    })
            },
-           checkRoles(roles)
-            {
-                $.each(roles, (index, value)=>{
-                    if (roles[index]['name'] === 'admin')
-                    {
-                        this.$emit('role', 'admin')
-                        this.$router.push({name: 'dashboard'}).catch((error)=>{})
-                        return false
-                    }
-                    else if (roles[index]['name'] === 'user')
-                    {
-                        this.$emit('role', 'user')
-                        this.$router.push({name: 'profile'}).catch((error)=>{})
-                        return false
-                    }
-                    else 
-                    {
-                        this.$emit('role', 'other')
-                        this.$router.push({name: 'profile'}).catch((error)=>{})
-                    }
-                })
-                this.$router.push({name: 'profile'}).catch((error)=>{})
-            }
        }
    }
 </script>

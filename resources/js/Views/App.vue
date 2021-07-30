@@ -4,7 +4,7 @@
         <nav-bar @drawer-toggle="drawerToggle = !drawerToggle" @logged-out="loggedOut" :status="this.status"></nav-bar>
         <v-main>
         <v-container fluid>
-            <router-view @logged-out="loggedOut" @click="drawerToggle = !drawerToggle" @logged-in="loggedIn" @role="role"/>
+            <router-view @logged-out="loggedOut" @click="drawerToggle = !drawerToggle" @logged-in="loggedIn"/>
         </v-container>
         </v-main>
     </v-app>
@@ -41,19 +41,22 @@
                 this.isUser = false
             },
             loggedIn(){
+                let roles = this.$store.getters.getRoles
                 this.status = true
                 this.drawerToggle = true
-            },
-            role(data){
-                if (data === 'admin')
-                {
+                if(roles.includes('admin')){
                     this.isAdmin = true
+                    this.$router.push({name: 'dashboard'}).catch((error)=>{})
                 }
-                else if (data === 'user')
-                {
+                else if(roles.includes('user')){
                     this.isUser = true
+                    this.$router.push({name: 'profile'}).catch((error)=>{})
                 }
-            }
+                else{
+                    this.$router.push({name: 'profile'}).catch((error)=>{})
+                }
+
+            },
         }
     }
 </script>

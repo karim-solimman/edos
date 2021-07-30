@@ -71,8 +71,8 @@ import Alert from '../components/Alert.vue'
             return {
                 loading: true,
                 token: null,
-                invs: Array,
-                roles: Array,
+                invs: [],
+                roles: [],
                 user: JSON.parse(localStorage.getItem('user')),
                 alertType: null,
                 alertMessage: null,
@@ -92,12 +92,13 @@ import Alert from '../components/Alert.vue'
                 }
             })
             .then((response) => {
-                this.$store.dispatch('updateInvs', response?.data?.invs)
-                this.$store.dispatch('updateRoles', response?.data?.roles)
-                this.invs = response.data.invs
-                this.roles = response.data.roles
+                this.invs = response?.data?.invs
+                this.$store.dispatch('updateInvs', this.invs)
+                $.each(response.data.roles, (index, value) => {
+                    this.roles.push(response.data.roles[index]['slug'])
+                })
+                this.$store.dispatch('updateRoles', this.roles)
                 this.$emit('logged-in', true)
-                this.checkRoles(this.roles)
                 this.loading = false
             })
             .catch((error) => {
@@ -131,26 +132,6 @@ import Alert from '../components/Alert.vue'
                     console.log(error.response)
                 })
             },
-            checkRoles(roles)
-            {
-                $.each(roles, (index, value)=>{
-                    if (roles[index]['name'] === 'admin')
-                    {
-                        this.$emit('role', 'admin')
-                        this.$router.push({name: 'dashboard'})
-                        return false
-                    }
-                    else if (roles[index]['name'] === 'user')
-                    {
-                        this.$emit('role', 'user')
-                        return false
-                    }
-                    else 
-                    {
-                        this.$emit('role', 'other')
-                    }
-                })
-            }
         },
         filters:{
             DateFormat(value)
