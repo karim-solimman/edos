@@ -5,7 +5,7 @@
         <v-row v-if="!loading">
             <v-col>
                 <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat }}</h1>
-                <h2 class="text-h5 font-weight-light">{{inv.date_time | TimeFormat}} <v-chip small>{{inv.duration}} Hours</v-chip> </h2>
+                <h2 class="text-h5 font-weight-light">{{inv.date_time | TimeFormat}} <v-chip outlined small><v-icon left>mdi-alarm</v-icon>{{inv.duration}} Hours</v-chip> </h2>
                 <v-chip-group column>
                     <v-chip style="text-decoration: none" outlined :to="{name: 'roomProfile', params:{id: inv.room.id}}"><v-icon left>mdi-door</v-icon>{{inv.room.number}}</v-chip>
                     <v-chip style="text-decoration: none" outlined :to="{name: 'courseProfile', params:{id: inv.course.id}}"><v-icon left>mdi-book-open-page-variant-outline</v-icon>{{inv.course.code}} - {{inv.course.name}}</v-chip>
