@@ -6,7 +6,7 @@
            <v-col cols="12" lg="6" md="6">
                 <h1 class="text-h2">{{ user.name }}</h1>
                 <h2 class="text-overline">{{ user.email }}</h2>
-                <v-chip small color="primary" class="text-overline mr-2" v-for="role in roles" :key="role.id"><v-icon small left>mdi-account</v-icon>{{role.name}}</v-chip>
+                <v-chip small color="primary" class="text-overline mr-2" v-for="role in roles" :key="role.id"><v-icon small left>mdi-account</v-icon>{{role}}</v-chip>
                 <v-chip small outlined class="text-overline"><v-icon small left>mdi-folder</v-icon>{{user.department.name}}</v-chip>
             </v-col>
             <v-col>
@@ -35,20 +35,31 @@
        </v-row>
        <v-row v-if="!loading && invs.length > 0">
            <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
-               <v-card color="grey lighten-5" hover @click="deleteInv(inv.id)">
-                   <v-card-title>
-                        <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
-                        </v-card-title>
-                    <v-card-subtitle>Time: {{inv.date_time | TimeFormat}}</v-card-subtitle>
-                    <v-card-text>
-                        <v-chip dark small :color="inv.users_count < inv.room.users_limit? 'green darken-2' : 'red darken-2' ">
-                            <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
-                        </v-chip>
-                        <v-chip small color="info" outlined>
-                            <v-icon small left>mdi-clock-outline</v-icon>{{inv.pivot.created_at | ago}}
-                        </v-chip>
-                    </v-card-text>
-               </v-card>
+               <v-hover v-slot="{hover}">
+                    <v-card color="grey lighten-5" hover @click="deleteInv(inv.id)">
+                        <v-card-title>
+                                <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
+                                </v-card-title>
+                            <v-card-subtitle>Time: {{inv.date_time | TimeFormat}}</v-card-subtitle>
+                            <v-card-text>
+                                <v-chip dark small :color="inv.users_count < inv.room.users_limit? 'green darken-2' : 'red darken-2' ">
+                                    <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
+                                </v-chip>
+                                <v-chip small color="info" outlined>
+                                    <v-icon small left>mdi-clock-outline</v-icon>{{inv.pivot.created_at | ago}}
+                                </v-chip>
+                            </v-card-text>
+                            <v-expand-transition>
+                                <div
+                                    v-if="hover"
+                                    class="d-flex transition-fast-in-fast-out blue-grey darken-4 v-card--reveal text-h5 font-weight-light white--text"
+                                    style="height: 100%;"
+                                >
+                                <span class="text-h4 font-weight-thin text-center"><v-icon dark x-large left color="error">mdi-table-large-remove</v-icon><br/>REMOVE</span>
+                                </div>
+                            </v-expand-transition>
+                    </v-card>
+               </v-hover>
            </v-col>
        </v-row>
        <v-row>
@@ -59,6 +70,17 @@
        </v-row>
    </v-container>
 </template>
+
+<style scoped>
+.v-card--reveal {
+  align-items: center;
+  bottom: 0;
+  justify-content: center;
+  position: absolute;
+  opacity: 0.9;
+  width: 100%;
+}
+</style>
 
 <script>
 import Loading from '../components/Loading.vue'
