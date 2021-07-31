@@ -12,6 +12,6 @@ class Room extends Model
 
     public function invs()
     {
-        return $this->hasMany(Inv::class);
+        return $this->hasMany(Inv::class)->orderBy('date_time');
     }
 }

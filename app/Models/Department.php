@@ -22,6 +22,6 @@ class Department extends Model
 
     public function invs()
     {
-        return $this->hasManyThrough(Inv::class, Course::class);
+        return $this->hasManyThrough(Inv::class, Course::class)->orderBy('date_time');
     }
 }
