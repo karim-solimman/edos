@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" /> 
-        <v-row align-lg="center" align="center" justify="space-around"> 
+        <v-row style="margin-top: 10%" align="center" justify="space-around"> 
             <v-col cols="12" lg=5>
                 <v-stepper v-model="e1">
                     <v-stepper-items>

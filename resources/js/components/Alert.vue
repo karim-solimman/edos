@@ -24,7 +24,7 @@
 export default {
     data(){
         return{
-            timeout: 3000,
+            timeout: 4000,
             value: this.alert
         }
     },

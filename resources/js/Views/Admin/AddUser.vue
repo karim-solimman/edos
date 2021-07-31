@@ -116,6 +116,7 @@ export default {
                 this.alertType = 'success'
                 this.alertMessage = response.data.message
                 this.btnLoading = false
+                this.$refs.form.reset()
             })
             .catch((error) => {
                 this.alert = true
