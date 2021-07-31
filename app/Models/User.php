@@ -44,7 +44,7 @@ class User extends Authenticatable
     ];
 
     public function invs(){
-        return $this->belongsToMany(Inv::class, 'user_inv')->withPivot('created_at');
+        return $this->belongsToMany(Inv::class, 'user_inv')->orderBy('date_time')->withPivot('created_at');
     }
 
     public function roles(){
