@@ -75,7 +75,7 @@ class UserController extends Controller
         $inv = Inv::where('id', $inv_id)->first();
         $user = User::where('id', $user_id)->first();
         $user->invs()->detach($inv_id);
-        $invs = $user->invs()->with(['room', 'course', 'course.department'])->withCount('users')->get();
+        $invs = $user->invs()->with(['room', 'course', 'course.department'])->withCount('users')->orderBy('date_time')->get();
         return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s',$inv->date_time)->toDateString().', removed successfully from '.$user->name , 'invs' => $invs], 201);
     }
     public function attachRole(Request $request)
