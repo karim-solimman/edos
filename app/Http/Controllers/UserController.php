@@ -50,7 +50,7 @@ class UserController extends Controller
     {
         $user = User::with(['roles', 'department', 'invs.room', 'invs.course.department'])->where('id', $id)->first();
         $departments = Department::all();
-        return response(['user' => $user]);
+        return response(['user' => $user, 'departments' => $departments]);
     }
     public function checkEmail($email)
     {

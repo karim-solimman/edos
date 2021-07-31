@@ -4,7 +4,7 @@
         <nav-bar @drawer-toggle="drawerToggle = !drawerToggle" @logged-out="loggedOut" :status="this.status"></nav-bar>
         <v-main>
         <v-container fluid>
-            <router-view @logged-out="loggedOut" @click="drawerToggle = !drawerToggle" @logged-in="loggedIn"/>
+            <router-view @logged-out="loggedOut" @logged-in="loggedIn"/>
         </v-container>
         </v-main>
     </v-app>

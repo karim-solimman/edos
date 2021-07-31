@@ -1,7 +1,79 @@
 <template>
 <v-container>
     <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
-    <v-row style="margin-top: 10%" align="center" justify="space-around">
+    <v-row no-gutters>
+        <v-col>
+            <template>
+                <v-parallax src="/img/peak.jpg">
+                <v-row
+                    align="end"
+                    justify="center"
+                    >
+                    <v-col
+                        class="text-center"
+                        cols="12"
+                    >
+                        <h1 class="text-h2 font-weight-thin mb-4">
+                        EDOS
+                        </h1>
+                        <h4 class="subheading">
+                            Distribute, Swap, Monitor, with one Click!
+                        </h4>
+                    </v-col>
+                    </v-row>
+                
+                </v-parallax>
+            </template>
+        </v-col>
+    </v-row>
+    <v-row style="margin-top: 10%;" justify="space-around" align="center">
+        <v-col cols="6" lg="3" md="3">
+            <div class="text-center">
+                <h1 class="text-h3 font-weight-light">{{date_time | getDay}} {{date_time | getMonth}}</h1>
+                <h5 class="text-h5 font-weight-light">{{date_time | getDayName}}</h5>
+                <p class="text-overline">{{date_time | getYear}}</p>
+            </div>
+            <v-hover v-slot="{hover}">
+                <v-card hover color="grey lighten-5">
+                    <v-card-title class="d-flex justify-space-between">
+                        <h1 class="text-h4 font-weight-light">{{date_time | TimeFormat}}</h1>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-chip small dark color="green darken-2"><v-icon left>mdi-account-group</v-icon>2 / 3</v-chip>
+                        <v-chip small outlined><v-icon left>mdi-clock-outline</v-icon>{{date_time | ago}}</v-chip>
+                    </v-card-text>
+                    <v-expand-transition>
+                        <div
+                            v-if="hover"
+                            class="d-flex transition-fast-in-fast-out blue-grey darken-4 v-card--reveal text-h5 font-weight-light white--text"
+                            style="height: 100%;"
+                        >
+                        <span class="text-h4 font-weight-thin text-center"><v-icon dark x-large left color="success">mdi-table-large-plus</v-icon><br/>ADD</span>
+                        </div>
+                    </v-expand-transition>
+                </v-card>
+            </v-hover>
+        </v-col>
+        <v-col cols="12" lg="4" md="4">
+            <h1 class="text-center text-h3 font-weight-thin">
+                Choose your invs
+            </h1>
+            <p class="text-subtitle text-center">
+                With EDOS, you are freely to choose the date / time slot to be attached, without knowing the full details of inv. <br/>
+                The Admin has the ability to make all the details visible / hidden.
+            </p>
+        </v-col>
+    </v-row>
+    <v-row style="margin-top: 5%" align="center" justify="space-around">
+         <v-col cols="12" lg="4" md="4">
+            <h1 class="text-center text-h3 font-weight-thin">
+                Login to EDOS
+            </h1>
+            <p class="text-subtitle text-center">
+                To use EDOS you are welcomed to register, but the admin should first add you as a new user so you can register in the system and set your password for the first time. <br/>
+                EDOS not for everyone.
+            </p>
+        </v-col>
         <v-col lg="5">
             <v-card>
                 <v-card-title>
@@ -26,7 +98,7 @@
                             required
                         ></v-text-field>
                         <v-btn :disabled="!valid" color="success" :loading="loading" block success type="submit">
-                            <v-icon left>mdi-login</v-icon>
+                            <v-icon left>mdi-login-variant</v-icon>
                             Login
                         </v-btn>
                     </v-form>
@@ -46,6 +118,14 @@
     #router-link:hover{
         color: #008B8B;
         /* font-weight: bold; */
+    }
+    .v-card--reveal {
+        align-items: center;
+        bottom: 0;
+        justify-content: center;
+        position: absolute;
+        opacity: 0.9;
+        width: 100%;
     }
 </style>
 
@@ -69,7 +149,9 @@ import Loading from '../components/Loading.vue'
                alert: false,
                alertType: null,
                alertMessage: null,
-               loading: false
+               loading: false,
+               date_time: '2021-07-29 09:00:00',
+
            }
        },
        methods: {
@@ -103,6 +185,36 @@ import Loading from '../components/Loading.vue'
                        })
                    })
            },
-       }
+       },
+        filters:{
+            DateFormat(value)
+            {
+                return moment(value).format("ddd, MMM DD, YYYY") 
+            },
+            TimeFormat(value)
+            {
+                return moment(value).format("hh : mm A")
+            },
+            ago(value)
+            {
+                return moment(value).fromNow()
+            },
+            getDayName(value)
+            {
+                return moment(value).format("dddd")
+            },
+            getDay(value)
+            {
+                return moment(value).format("DD")
+            },
+            getMonth(value)
+            {
+                return moment(value).format("MMMM")
+            },
+            getYear(value)
+            {
+                return moment(value).format("YYYY")
+            }
+        }
    }
 </script>
