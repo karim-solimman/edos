@@ -11,7 +11,7 @@
                 </v-col>
                 <v-col cols="12" lg="3" md="3" v-for="(item, time) in inv" :key="item.id">
                     <v-hover v-slot="{hover}">
-                        <v-card hover :color="isExists(time)? 'green lighten-5' : 'grey lighten-5'"  @click="cardAction(time)">
+                        <v-card hover :color="isExists(time)? 'green lighten-5' : 'grey lighten-5'"  @click="cardAction(item, time)">
                             <v-card-title class="d-flex justify-space-between">
                                 <h1 class="text-h4 font-weight-light">{{time | TimeFormat}}</h1>
                                 <v-icon v-if="isExists(time)" color="green">mdi-account</v-icon>
@@ -26,8 +26,8 @@
                                     class="d-flex transition-fast-in-fast-out blue-grey darken-4 v-card--reveal text-h5 font-weight-light white--text"
                                     style="height: 100%;"
                                 >
-                                <span class="text-h4" v-if="isExists(time)"><v-icon dark x-large left color="error">mdi-close</v-icon> REMOVE</span>
-                                <span class="text-h4" v-else><v-icon dark x-large left color="success">mdi-plus</v-icon> ADD</span>
+                                <span class="text-h4 font-weight-thin text-center" v-if="isExists(time)"><v-icon dark x-large left color="error">mdi-table-large-remove</v-icon><br/>REMOVE</span>
+                                <span class="text-h4 font-weight-thin text-center" v-else><v-icon dark x-large left color="success">mdi-table-large-plus</v-icon><br/>ADD</span>
                                 </div>
                             </v-expand-transition>
                         </v-card>
@@ -78,16 +78,23 @@ import Alert from '../components/Alert.vue'
               })
               return status
           },
-          cardAction(date_time){
+          cardAction(item, date_time){
               if(this.isExists(date_time)){
                   this.removeInv(date_time)
               }
               else{
-                  this.addInv(date_time)
+                  if(item.users_count < item.users_limit) {
+                      this.addInv(date_time)
+                  }
+                  else {
+                      this.alert = true
+                      this.alertType = 'error'
+                      this.alertMessage = this.$options.filters.DateFormat(date_time) + " " + this.$options.filters.TimeFormat(date_time) + ", is FULL can't be added." 
+                  }
               }
           },
             updateInvs(){
-                this.loading = true
+                // this.loading = true
                 axios({
                     method: 'get',
                     url: '/api/invforusers',
