@@ -4,7 +4,7 @@
             <v-alert elevation="3" border="top" @click="close" :value="alert" dismissible :type="alertType">{{alertMessage}}</v-alert>
         </v-col>
     </v-row> -->
-    <v-snackbar :timeout="timeout" v-model="alert" elevation="3" :color="alertType">
+    <v-snackbar :timeout="timeout" v-model="value" elevation="3" :color="alertType">
       <v-icon left v-if="alertType == 'success'">mdi-check-circle-outline</v-icon>
       <v-icon left v-else>mdi-alert-circle-outline</v-icon>
       {{ alertMessage }}
@@ -24,8 +24,8 @@
 export default {
     data(){
         return{
-            alertClose: false,
-            timeout: 3000
+            timeout: 3000,
+            value: this.alert
         }
     },
     props:{
@@ -35,7 +35,20 @@ export default {
     },
     methods:{
         close(){
+            this.value = false
             this.$emit('alert-closed')
+        }
+    },
+    watch:{
+        alert: function (newVal, oldVal) {
+            if(newVal) {
+                this.value = newVal
+            }
+        },
+        value: function (newVal, oldVal) {
+            if(oldVal){
+                this.close()
+            }            
         }
     }
 }

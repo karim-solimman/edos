@@ -3,10 +3,11 @@
      <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
      <Loading :loading="loading" />
     <v-row v-if="!loading && user">
-        <v-col cols="3">
+        <v-col cols="5">
             <h1 class="text-h4 font-weight-light"> {{user.name}}</h1>
-            <v-chip class="mr-2" x-small color="primary" v-for="role in user.roles" :key="role.id">{{role.slug}}</v-chip>
             <h2 class="text-overline">{{user.email}}</h2>
+            <v-chip small color="primary" class="text-overline mr-2" v-for="role in user.roles" :key="role.id"><v-icon small left>mdi-account</v-icon>{{role.name}}</v-chip>
+            <v-chip small outlined class="text-overline"><v-icon small left>mdi-folder</v-icon>{{user.department.name}}</v-chip>
         </v-col>
         <v-col>
             <h1 class="text-h1 font-weight-light">{{user.invs.length}}<span class="text-overline">invs</span></h1>
@@ -67,7 +68,6 @@ import Alert from '../../components/Alert.vue'
             return{
                 loading: true,
                 user: Object,
-                invs: [],
                 alert: false,
                 alertMessage: null,
                 alertType: null
@@ -86,7 +86,6 @@ import Alert from '../../components/Alert.vue'
             .then((response) => {
                 this.loading = false
                 this.user = response.data.user
-                this.invs = response.data.invs
             })
             .catch((error) => {
                 this.loading = false

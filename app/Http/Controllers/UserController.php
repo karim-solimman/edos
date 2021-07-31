@@ -48,9 +48,9 @@ class UserController extends Controller
     }
     public function userProfile($id)
     {
-        $user = User::with(['roles', 'invs.room', 'invs.course.department'])->where('id', $id)->first();
+        $user = User::with(['roles', 'department', 'invs.room', 'invs.course.department'])->where('id', $id)->first();
         $departments = Department::all();
-        return response(['user' => $user, 'departments' => $departments]);
+        return response(['user' => $user]);
     }
     public function checkEmail($email)
     {

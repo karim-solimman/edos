@@ -1,8 +1,8 @@
 <template>
     <v-container>
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" /> 
-        <v-row align="center" justify="space-around">
-            <v-col lg=5>
+        <v-row align-lg="center" align="center" justify="space-around"> 
+            <v-col cols="12" lg=5>
                 <v-stepper v-model="e1">
                     <v-stepper-items>
                         <v-stepper-content step="1" >
@@ -23,6 +23,7 @@
                                 :disabled="!form1Valid"
                                 :loading="btn1Loading"
                             >
+                            <v-icon left>mdi-login-variant</v-icon>
                             Continue
                             </v-btn>
                         </v-form>
@@ -52,6 +53,7 @@
                                     :disabled="!form2Valid"
                                     :loading="btn2Loading"
                                 >
+                                <v-icon left>mdi-login-variant</v-icon>
                                     Continue
                                 </v-btn>
                                 <v-btn @click="nextStep(0)" text>
@@ -63,7 +65,7 @@
                 </v-stepper>
             </v-col>
         </v-row>
-        <v-row align="center" justify="space-around">
+        <!-- <v-row align="center" justify="space-around">
             <v-col lg="5">
                 <v-card>
                     <v-card-title>
@@ -113,7 +115,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-        </v-row>
+        </v-row> -->
     </v-container>
 </template>
 
@@ -192,6 +194,9 @@ import Alert from '../components/Alert.vue'
                 })
                 .then((response) => {
                     this.user = response.data.user
+                    this.alert = true
+                    this.alertType = 'success'
+                    this.alertMessage = "Welcome " + this.user.name
                     this.nextStep(1)
                     this.btn1Loading = false
                 })
