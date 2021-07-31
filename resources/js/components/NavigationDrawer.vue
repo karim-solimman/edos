@@ -129,7 +129,7 @@
                     <v-list-item-content><v-list-item-title>Profile</v-list-item-title></v-list-item-content>
                 </v-list-item>
                 <v-list-item color="primary" style="text-decoration:none" v-if="isUser" link :to="{name: 'invs'}">
-                    <v-list-item-icon><v-icon>mdi-information-outline</v-icon></v-list-item-icon>
+                    <v-list-item-icon><v-icon>mdi-table-eye</v-icon></v-list-item-icon>
                     <v-list-item-content><v-list-item-title>Invs</v-list-item-title></v-list-item-content>
                 </v-list-item>
             </v-list>
