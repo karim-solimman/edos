@@ -3,15 +3,17 @@
         <navigation-drawer @drawer-toggle-fun="drawerToggle = !drawerToggle" :drawerToggle="this.drawerToggle" :isAdmin="isAdmin" :isUser="isUser" :status="this.status" ></navigation-drawer>
         <nav-bar @drawer-toggle="drawerToggle = !drawerToggle" @logged-out="loggedOut" :status="this.status"></nav-bar>
         <v-main>
-        <v-container fluid>
-            <router-view @logged-out="loggedOut" @logged-in="loggedIn"/>
-        </v-container>
+            <v-container class="mb-12" fluid>
+                <router-view @logged-out="loggedOut" @logged-in="loggedIn"/>
+            </v-container>
+            <app-footer></app-footer>
         </v-main>
     </v-app>
 </template>
 
 <script>
-    export default {
+    export default 
+    {
         name: 'app-vue',
         data(){
             return{
