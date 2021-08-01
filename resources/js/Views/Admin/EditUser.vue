@@ -49,6 +49,7 @@
                         :items="departments"
                         item-text="name"
                         item-value="id"
+                        :value="user.department.id"
                         >
                         </v-select>
                     </v-card-text>

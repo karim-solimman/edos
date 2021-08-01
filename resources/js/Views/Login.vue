@@ -1,10 +1,9 @@
 <template>
-<v-container>
+<v-container fluid>
     <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
-    <v-row no-gutters>
+    <v-row v-if="!loading">
         <v-col>
-            <template>
-                <v-parallax src="/img/peak.jpg">
+            <v-parallax height="450" src="/img/peak.jpg">
                 <v-row
                     align="end"
                     justify="center"
@@ -13,17 +12,16 @@
                         class="text-center"
                         cols="12"
                     >
-                        <h1 class="text-h2 font-weight-thin mb-4">
+                        <v-icon x-large dark>mdi-vector-polyline-edit</v-icon>
+                        <h1 class="text-h1 font-weight-thin mb-4">
                         EDOS
                         </h1>
-                        <h4 class="subheading">
-                            Distribute, Swap, Monitor, with one Click!
+                        <h4 class="text-overline">
+                            Distribute, Swap, Monitor, and edit, it's all here!
                         </h4>
                     </v-col>
-                    </v-row>
-                
-                </v-parallax>
-            </template>
+                </v-row>
+            </v-parallax>
         </v-col>
     </v-row>
     <v-row style="margin-top: 10%;" justify="space-around" align="center">
@@ -70,11 +68,10 @@
                 Login to EDOS
             </h1>
             <p class="text-subtitle text-center">
-                To use EDOS you are welcomed to register, but the admin should first add you as a new user so you can register in the system and set your password for the first time. <br/>
-                EDOS not for everyone.
+                To use EDOS you are welcomed to register, but the admin should first add you as a new user so you can register in the system and set your password for the first time. EDOS not for everyone.
             </p>
         </v-col>
-        <v-col lg="5">
+        <v-col cols="12" lg="4">
             <v-card>
                 <v-card-title>
                     <h1 class="text-h5 font-weight-light">LOGIN</h1>
@@ -149,10 +146,13 @@ import Loading from '../components/Loading.vue'
                alert: false,
                alertType: null,
                alertMessage: null,
-               loading: false,
+               loading: true,
                date_time: '2021-07-29 09:00:00',
 
            }
+       },
+       mounted(){
+           this.loading = false
        },
        methods: {
            login(){
