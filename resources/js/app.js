@@ -19,12 +19,9 @@ const store = new Vuex.Store(
     dataStore
 )
 
-
-Vue.component('example-component', require('./components/ExampleComponent.vue').default)
-Vue.component('home', require('./Views/Home').default)
-Vue.component('invs-home', require('./Views/Invs').default)
 Vue.component('nav-bar', require('./components/Navbar').default)
-Vue.component('navigation-drawer', require('./components/NavigationDrawer.vue').default)
+Vue.component('navigation-drawer', require('./components/NavigationDrawer').default)
+Vue.component('app-footer', require('./components/Footer').default)
 Vue.component('app-vue', require('./Views/App').default)
 const app = new Vue({
     el: '#app',
