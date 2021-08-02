@@ -17,10 +17,11 @@
        <v-row v-if="!loading && invs.length === 0 && roles && roles.length > 0">
            <v-col>
                <v-alert
-                border="left"
-                color="orange"
+                border="top"
+                color="red darken-2"
                 type="info"
-                elevation="2"
+                elevation="3"
+                dismissible
                 >
                 Sorry, You didn't select any invs!
                 </v-alert>

@@ -3,17 +3,28 @@
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <Loading :loading="loading" />
         <v-row v-if="!loading">
-           <v-text-field
+           <v-col>
+               <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
                 label="Search"
                 single-line
                 hide-details
             ></v-text-field>
+           </v-col>
+           <v-col>
+               <v-text-field
+                v-model="date"
+                label="Date Filter"
+                single-line
+                hide-details
+                type="date"
+            ></v-text-field>
+           </v-col>
        </v-row>
        <v-row v-if="!loading">
            <v-col>
-               <v-data-table :headers="headers" :items="invs" :search="search" sort-by="date_time">
+               <v-data-table :headers="headers" :items="filteredInvs" :search="search" sort-by="date_time">
                     <template v-slot:[`item.index`]="{index}">
                         {{index+1}}
                     </template> 
@@ -61,6 +72,7 @@ export default {
                 {text: 'actions', value:'actions', sortable: false}
             ],
             search: '',
+            date:null,
             alert: false,
             alertType: null,
             alertMessage: null,
@@ -177,6 +189,18 @@ export default {
             {
                 return moment(value).fromNow()
             }
+        },
+    computed:{
+        filteredInvs(){
+            if(this.date){
+                return this.invs.filter(inv => {
+                    return inv.date_time.indexOf(this.date) > -1
+                })
+            }
+            else {
+                return this.invs
+            }
         }
+    }
 }
 </script>
