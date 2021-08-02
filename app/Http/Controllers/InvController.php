@@ -54,6 +54,64 @@ class InvController extends Controller
         return response($inv);
     }
 
+    public function create(Request $request)
+    {
+        $check = Inv::where('course_id', $request->input('course_id'))->get()->count();
+        if ($check > 0)
+        {
+            return response(['message' => 'Course already exists in invs.'], 402);
+        }
+        $request->validate([
+            'course_id' => ['required', 'integer', 'exists:courses,id' ],
+            'rooms' => ['required'],
+            'duration' => ['nullable', 'integer'],
+            'date' => ['required', 'date_format:Y-m-d'],
+            'time' => ['required', 'date_format:H:i']
+        ]);
+        $course_id = $request->input('course_id');
+        $duration = $request->input('duration');
+        $rooms = array_map('intVal', explode(',', $request->input('rooms')));
+        $date = $request->input('date');
+        $time = $request->input('time');
+        $date_time = Carbon::createFromFormat('Y-m-d H:i',$date.' '.$time)->toDateTimeString();
+        $course = Course::where('id', $course_id)->first();
+        foreach ($rooms as $room_id)
+        {
+            $room = Room::where('id', $room_id)->first();
+            $inv = new Inv();
+            $inv->date_time = $date_time;
+            $inv->users_count = 0;
+            $inv->users_limit = $room->users_limit;
+            $inv->room_id = $room->id;
+            $inv->duration = $duration;
+            $inv->course_id = $course_id;
+            $inv->save();
+        }
+        return response(['message' => $course->code.' - '.$course->name.', invs created successfully.'],201);
+    }
+
+    public function removeInv(Request $request)
+    {
+        $request->validate([
+           'id' => ['required', 'integer', 'exists:invs,id']
+        ]);
+        $id = $request->input('id');
+        $inv = Inv::where('id', $id)->first();
+        if ($inv->users()->count() > 0 )
+        {
+            return response(['message' => 'There are users attached to this inv. Remove them first'], 402);
+        }
+        else
+        {
+            $course = Course::where('id', $inv->course_id)->first();
+            $inv->delete();
+            $invs = $this->index();
+            return response([
+                'message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', Course: '.$course->code.' - '.$course->name.' Deleted successfully.',
+                'invs' => $invs ], 201);
+        }
+    }
+
     public function addUser(Request $request)
     {
         if ($inv = Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first())
@@ -95,34 +153,5 @@ class InvController extends Controller
         return response(['message' => 'User '.$user->name.' Removed successfully', 'users' => $inv->users()->get()], 201);
     }
 
-    public function create(Request $request)
-    {
-        $request->validate([
-            'course_id' => ['required', 'integer', 'exists:courses,id' ],
-            'rooms' => ['required'],
-            'duration' => ['nullable', 'integer'],
-            'date' => ['required', 'date_format:Y-m-d'],
-            'time' => ['required', 'date_format:H:i']
-        ]);
-        $course_id = $request->input('course_id');
-        $duration = $request->input('duration');
-        $rooms = array_map('intVal', explode(',', $request->input('rooms')));
-        $date = $request->input('date');
-        $time = $request->input('time');
-        $date_time = Carbon::createFromFormat('Y-m-d H:i',$date.' '.$time)->toDateTimeString();
-        $course = Course::where('id', $course_id)->first();
-        foreach ($rooms as $room_id)
-        {
-            $room = Room::where('id', $room_id)->first();
-            $inv = new Inv();
-            $inv->date_time = $date_time;
-            $inv->users_count = 0;
-            $inv->users_limit = $room->users_limit;
-            $inv->room_id = $room->id;
-            $inv->duration = $duration;
-            $inv->course_id = $course_id;
-            $inv->save();
-        }
-        return response(['message' => $course->code.' - '.$course->name.', invs created successfully.'],201);
-    }
+
 }

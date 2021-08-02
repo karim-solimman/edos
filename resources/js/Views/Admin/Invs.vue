@@ -2,8 +2,8 @@
         <v-container>
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <Loading :loading="loading" />
-        <v-row v-if="!loading">
-           <v-col>
+        <v-row align="center" justify="center" v-if="!loading">
+           <v-col lg="5" md="5">
                <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
@@ -12,7 +12,7 @@
                 hide-details
             ></v-text-field>
            </v-col>
-           <v-col>
+           <v-col lg="5" md="5">
                <v-text-field
                 v-model="date"
                 label="Date Filter"
@@ -20,6 +20,11 @@
                 hide-details
                 type="date"
             ></v-text-field>
+           </v-col>
+           <v-col class="text-center" lg="2" md="2">
+               <v-btn @click="date = null; search = null" class="mt-6" text>
+                   <v-icon left>mdi-delete-outline</v-icon>clear search
+               </v-btn>
            </v-col>
        </v-row>
        <v-row v-if="!loading">
@@ -35,9 +40,9 @@
                         {{item.date_time | TimeFormat}}
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
-                        <v-btn style="text-decoration: none" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-information</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" color="info" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-information</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class = "ml-2" icon small :to="{name: 'edit-inv', params:{id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
-                        <v-btn style="text-decoration: none" class = "ml-2" icon small><v-icon small>mdi-delete</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" class = "ml-2" color="error" icon small @click="removeInv(item.id)"><v-icon small>mdi-delete</v-icon></v-btn>
                     </template>
                 </v-data-table>
            </v-col>
@@ -128,33 +133,26 @@ export default {
         },
         removeInv(invId) {
             let formData = new FormData()
-            formData.append('user_id', JSON.parse(localStorage.getItem('user')).id)
-            formData.append('inv_id', invId)
-            axios.get('/sanctum/csrf-cookie')
-            .then(response => {
-                axios({
-                    method: 'post',
-                    url: '/api/users/removeinv',
-                    data: formData,
-                    headers: {
-                        Authorization: `Bearer ${window.localStorage.getItem('token')}`
-                    }
-                })
-                .then((response) => {
-                    this.alertType = "success"
-                    this.alertMessage = response.data.message
-                    this.$store.dispatch('updateInvs', response.data.invs)
-                    this.user_invs = this.$store.getters.getInvs
-                    this.alert = true
-                    this.updateInvs()
-                })
-                .catch((error) => {
-                    this.alertType = "error"
-                    this.alert = true
-                    this.alertMessage = error.response.data.message
-                })
+            formData.append('id', invId)
+            axios({
+                method: 'post',
+                url: '/api/invs/delete',
+                data: formData,
+                headers: {
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
             })
-
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+                this.invs = response.data.invs
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+            })
         }
     },
     mounted() {
