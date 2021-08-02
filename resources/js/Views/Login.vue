@@ -13,7 +13,7 @@
                         cols="12"
                     >
                         <v-icon x-large dark>mdi-vector-polyline-edit</v-icon>
-                        <h1 class="text-h1 font-weight-thin mb-4">
+                        <h1 class="text-lg-h1 font-weight-thin mb-4">
                         EDOS
                         </h1>
                         <h4 class="text-overline">
