@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Inv;
+use App\Models\Room;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -55,11 +56,20 @@ class InvController extends Controller
 
     public function addUser(Request $request)
     {
-        $inv = Inv::where('date_time', $request->input('date_time'))->first();
-        $user = User::where('id', $request->input('user_id'))->first();
-        $user->invs()->attach($inv->id, ['created_at' => now(), 'updated_at' => now()]);
-        $invs = $user->invs()->get();
-        return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', added successfully', 'invs' => $invs], 201);
+        if ($inv = Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first())
+        {
+            $user = User::where('id', $request->input('user_id'))->first();
+            $user->invs()->attach($inv->id, ['created_at' => now(), 'updated_at' => now()]);
+            $inv->users_count += 1;
+            $inv->save();
+            $invs = $user->invs()->get();
+            return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', added successfully', 'invs' => $invs], 201);
+        }
+        else
+        {
+            return response(['message' => 'Invs are full at '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString()],402);
+        }
+
     }
 
     public function removeUserByDate(Request $request)
@@ -67,6 +77,8 @@ class InvController extends Controller
         $user = User::where('id', $request->input('user_id'))->first();
         $inv = $user->invs()->where('date_time', $request->input('date_time'))->first();
         $user->invs()->detach($inv->id);
+        $inv->users_count -=1;
+        $inv->save();
         $invs = $user->invs()->get();
         return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', removed successfully', 'invs' => $invs],201);
     }
@@ -77,6 +89,8 @@ class InvController extends Controller
         $inv_id = $request->input('inv_id');
         $inv = Inv::where('id', $inv_id)->first();
         $user = User::where('id', $user_id)->first();
+        $inv->users_count -=1;
+        $inv->save();
         $inv->users()->detach($user_id);
         return response(['message' => 'User '.$user->name.' Removed successfully', 'users' => $inv->users()->get()], 201);
     }
@@ -97,11 +111,14 @@ class InvController extends Controller
         $time = $request->input('time');
         $date_time = Carbon::createFromFormat('Y-m-d H:i',$date.' '.$time)->toDateTimeString();
         $course = Course::where('id', $course_id)->first();
-        foreach ($rooms as $room)
+        foreach ($rooms as $room_id)
         {
+            $room = Room::where('id', $room_id)->first();
             $inv = new Inv();
             $inv->date_time = $date_time;
-            $inv->room_id = $room;
+            $inv->users_count = 0;
+            $inv->users_limit = $room->users_limit;
+            $inv->room_id = $room->id;
             $inv->duration = $duration;
             $inv->course_id = $course_id;
             $inv->save();

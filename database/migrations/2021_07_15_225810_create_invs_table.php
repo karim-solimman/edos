@@ -17,6 +17,8 @@ class CreateInvsTable extends Migration
             $table->id();
             $table->dateTime('date_time');
             $table->integer('duration')->nullable();
+            $table->integer('users_count')->default(0);
+            $table->integer('users_limit')->default(0);
             $table->unsignedBigInteger('room_id');
             $table->unsignedBigInteger('course_id');
             $table->foreign('room_id')->references('id')->on('rooms');

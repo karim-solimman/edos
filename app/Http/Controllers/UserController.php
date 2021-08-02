@@ -64,7 +64,10 @@ class UserController extends Controller
         $user_id = $request->input('user_id');
         $inv_id = $request->input('inv_id');
         $user = User::where('id', $user_id)->first();
+        $inv = Inv::where('id', $inv_id)->first();
         $user->invs()->attach($inv_id, ['created_at' => now(), 'updated_at' => now()]);
+        $inv->users_count +=1;
+        $inv->save();
         $invs = $user->invs()->get();
         return response(['message' => 'Inv added successfully', 'invs' => $invs], 201);
     }
@@ -75,6 +78,8 @@ class UserController extends Controller
         $inv = Inv::where('id', $inv_id)->first();
         $user = User::where('id', $user_id)->first();
         $user->invs()->detach($inv_id);
+        $inv->users_count -=1;
+        $inv->save();
         $invs = $user->invs()->with(['room', 'course', 'course.department'])->withCount('users')->orderBy('date_time')->get();
         return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s',$inv->date_time)->toDateString().', removed successfully from '.$user->name , 'invs' => $invs], 201);
     }
