@@ -2,6 +2,13 @@
         <v-container>
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <Loading :loading="loading" />
+        <Confirmation
+         @dialog-closed="dialog = false"
+         :confirmationText="'Are you sure you want to delete inv?'"
+         :onDeleteFunction="removeInv" 
+         :dialogData="dialogData" 
+         :dialog="dialog" 
+         />
         <v-row align="center" justify="center" v-if="!loading">
            <v-col lg="5" md="5">
                <v-text-field
@@ -42,7 +49,7 @@
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn style="text-decoration: none" color="info" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-information</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class = "ml-2" icon small :to="{name: 'edit-inv', params:{id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
-                        <v-btn style="text-decoration: none" class = "ml-2" color="error" icon small @click="removeInv(item.id)"><v-icon small>mdi-delete</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" class = "ml-2" color="error" icon small @click="confirm(item.id)"><v-icon small>mdi-delete</v-icon></v-btn>
                     </template>
                 </v-data-table>
            </v-col>
@@ -53,10 +60,11 @@
 <script>
 import Loading from '../../components/Loading.vue'
 import Alert from '../../components/Alert.vue'
+import Confirmation from '../../components/Confirmation.vue'
 export default {
     name: 'invs',
     components: {
-        Loading, Alert
+        Loading, Alert, Confirmation
     },
     data()
     {
@@ -78,6 +86,8 @@ export default {
             ],
             search: '',
             date:'',
+            dialog: false,
+            dialogData: null,
             alert: false,
             alertType: null,
             alertMessage: null,
@@ -131,7 +141,13 @@ export default {
                 })
             })
         },
+        confirm(invId)
+        {
+            this.dialogData = invId
+            this.dialog = true
+        },
         removeInv(invId) {
+            this.dialog = false
             let formData = new FormData()
             formData.append('id', invId)
             axios({

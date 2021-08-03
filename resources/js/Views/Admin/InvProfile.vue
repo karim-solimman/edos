@@ -2,6 +2,13 @@
     <v-container>
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <Loading :loading="loading"/>
+        <Confirmation
+        @dialog-closed="dialog = false"
+        :confirmationText="'Are you sure you want to detach user?'"
+        :onDeleteFunction="removeUser" 
+        :dialogData="dialogData" 
+        :dialog="dialog" 
+        />        
         <v-row v-if="!loading">
             <v-col>
                 <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat }}</h1>
@@ -46,7 +53,7 @@
                         <td>{{user.pivot.created_at | ago}}</td>
                         <td>
                             <v-btn style="text-decoration: none" small icon :to="{name: 'userProfile', params:{id: user.id}}"><v-icon small>mdi-account</v-icon></v-btn>
-                            <v-btn color="error" style="text-decoration: none" small icon @click="removeUser(user.id)"><v-icon>mdi-close</v-icon></v-btn>
+                            <v-btn color="error" style="text-decoration: none" small icon @click="confirm(user.id)"><v-icon>mdi-close</v-icon></v-btn>
                         </td>
                     </tr>
                     </tbody>
@@ -59,15 +66,18 @@
 <script>
 import Alert from '../../components/Alert.vue'
 import Loading from '../../components/Loading.vue'
+import Confirmation from '../../components/Confirmation.vue'
     export default {
         components: {
-            Loading, Alert
+            Loading, Alert, Confirmation
         },
         data(){
             return {
                 invId : null,
                 inv: {},
                 loading: true,
+                dialog: false,
+                dialogData: null,
                 alert: false,
                 alertType: '',
                 alertMessage: ''
@@ -93,6 +103,10 @@ import Loading from '../../components/Loading.vue'
             })
         },
         methods:{
+            confirm(userId){
+                this.dialogData = userId
+                this.dialog = true
+            },
             removeUser(userId){
                 let formData = new FormData()
                 formData.append('user_id', userId)
