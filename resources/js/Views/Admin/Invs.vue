@@ -22,7 +22,7 @@
             ></v-text-field>
            </v-col>
            <v-col class="text-center" lg="2" md="2">
-               <v-btn @click="date = null; search = null" class="mt-6" text>
+               <v-btn @click="date = ''; search = ''" class="mt-6" text>
                    <v-icon left>mdi-delete-outline</v-icon>clear search
                </v-btn>
            </v-col>
@@ -77,7 +77,7 @@ export default {
                 {text: 'actions', value:'actions', sortable: false}
             ],
             search: '',
-            date:null,
+            date:'',
             alert: false,
             alertType: null,
             alertMessage: null,
@@ -190,14 +190,9 @@ export default {
         },
     computed:{
         filteredInvs(){
-            if(this.date){
-                return this.invs.filter(inv => {
-                    return inv.date_time.indexOf(this.date) > -1
+             return this.invs.filter(inv => {
+                    return inv.date_time.match(this.date)
                 })
-            }
-            else {
-                return this.invs
-            }
         }
     }
 }

@@ -9,7 +9,7 @@
                         <h1 class="text-h4 font-weight-light">Add new inv/s</h1>
                     </v-card-title>
                     <v-card-text>
-                        <v-form @submit.prevent="addInvs" ref="form">
+                        <v-form v-model="valid" @submit.prevent="addInvs" ref="form">
                             <v-row>
                                 <v-col cols="12" lg="6" md="6">
                                     <v-autocomplete 
@@ -64,7 +64,7 @@
                                     full-width
                                     required
                                     ></v-date-picker>
-                                    <v-btn type="submit" block color="success"><v-icon left>mdi-plus</v-icon>Add new invs</v-btn>
+                                    <v-btn :disabled="!valid" type="submit" block color="success"><v-icon left>mdi-plus</v-icon>Add new invs</v-btn>
                                 </v-col>
                             </v-row>
                             </v-form>
@@ -91,6 +91,7 @@ export default {
             alertMessage: null,
             courses: [],
             rooms: [],
+            valid: false,
             courseId: null,
             courseIdRules: [
                 v => !!v || 'Course is required',
@@ -101,8 +102,8 @@ export default {
             ],
             duration:null,
             durationRules: [
-                v => !!v || 'Duration is required',
                 v => /^\d+$/.test(v) || 'Duration must be digits ',
+                v => (v > 0 && v <= 5) || 'Duration period is not acceptable'
             ],
             date: null,
             time: null,
