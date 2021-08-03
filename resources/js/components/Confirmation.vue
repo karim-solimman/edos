@@ -1,8 +1,10 @@
 <template>
     <v-dialog width="650" v-model="status">
-        <v-card color="grey lighten-5" elevation="5">
+        <v-card color="grey lighten-4" elevation="5">
             <v-card-title>
-                <h4 class="font-weight-light">{{confirmationText}}</h4>
+                <h4 class="my-auto font-weight-light">{{confirmationText}}</h4>
+                <v-spacer></v-spacer>
+                <v-icon color="error" large>mdi-information-outline</v-icon>
             </v-card-title>
             <v-divider></v-divider>
             <v-card-actions>

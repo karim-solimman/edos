@@ -4,7 +4,8 @@
         <nav-bar @drawer-toggle="drawerToggle = !drawerToggle" @logged-out="loggedOut" :status="this.status"></nav-bar>
         <v-main>
             <v-container class="mb-12" fluid>
-                <router-view @logged-out="loggedOut" @logged-in="loggedIn"/>
+                <Loading :loading="loading" />
+                <router-view v-if="!loading" @logged-out="loggedOut" @logged-in="loggedIn"/>
             </v-container>
             <app-footer></app-footer>
         </v-main>
@@ -12,27 +13,62 @@
 </template>
 
 <script>
+import Loading from '../components/Loading.vue'
     export default 
     {
         name: 'app-vue',
+        components:{
+            Loading
+        },
         data(){
             return{
                 token: localStorage.getItem('token'),
                 status: false,
                 drawerToggle: false,
                 isAdmin: false,
-                isUser: false
+                isUser: false,
+
+                loading: true,
+                invs: [],
+                roles: [],
+                user: JSON.parse(localStorage.getItem('user')),
             }
         },
         mounted() {
             if (this.token)
             {
-                this.$router.push({name: 'profile'}).catch((error)=>{})
+                let formData = new FormData()
+                formData.append('user_id', this.user.id)
+                axios({
+                    method: 'post',
+                    url: '/api/profile',
+                    data: formData,
+                    headers: {
+                        Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                    }
+                })
+                .then((response) => {
+                    this.invs = response?.data?.invs
+                    this.$store.dispatch('updateInvs', this.invs)
+                    $.each(response.data.roles, (index, value) => {
+                        this.roles.push(response.data.roles[index]['slug'])
+                    })
+                    this.$store.dispatch('updateRoles', this.roles)
+                    this.loggedIn()
+                    this.loading = false
+                })
+                .catch((error) => {
+                    this.loggedOut()
+                    this.$router.push('/')
+                    window.localStorage.clear()
+                    this.loading = false
+                })
             }
             else {
                 localStorage.clear()
                 this.loggedOut()
                 this.$router.push('/').catch((error)=>{})
+                this.loading = false
             }
         },
         methods: {
