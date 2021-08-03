@@ -65,57 +65,6 @@
                 </v-stepper>
             </v-col>
         </v-row>
-        <!-- <v-row align="center" justify="space-around">
-            <v-col lg="5">
-                <v-card>
-                    <v-card-title>
-                        <h1 class="text-h5 font-weight-light">Registration</h1>
-                    </v-card-title>
-                    <v-card-text>
-                        <v-form ref="form" @submit.prevent="register" v-model="valid">
-                            <v-text-field
-                                label="Name"
-                                placeholder="Please insert your first and last name only"
-                                v-model="name"
-                                :rules="nameRules"
-                                name="name"
-                                type="text"
-                                required
-                            ></v-text-field>
-                            <v-text-field
-                                label="Email"
-                                type="email"
-                                name="email"
-                                ref="email"
-                                prepend-inner-icon="mdi-email"
-                                validate-on-blur
-                                v-model="email"
-                                :rules="emailRules"
-                                required
-                            >
-                            </v-text-field>
-                            <v-text-field
-                                label="Password"
-                                type="password"
-                                name="password"
-                                v-model="password"
-                                :rules="passwordRules"
-                                required
-                            ></v-text-field>
-                            <v-text-field
-                                label="Confirm Password"
-                                type="password"
-                                name="password_confirmation"
-                                v-model="password_confirm"
-                                :rules="password_confirmRules"
-                                required
-                            ></v-text-field>
-                            <v-btn :disabled="!valid" block color="success" type="submit"><v-icon left>mdi-account-plus</v-icon>Registration</v-btn>
-                        </v-form>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row> -->
     </v-container>
 </template>
 

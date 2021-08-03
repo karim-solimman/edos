@@ -118,7 +118,7 @@ import Confirmation from '../components/Confirmation.vue'
                   else {
                       this.alert = true
                       this.alertType = 'error'
-                      this.alertMessage = this.$options.filters.DateFormat(date_time) + " " + this.$options.filters.TimeFormat(date_time) + ", is FULL can't be added." 
+                      this.alertMessage = this.$options.filters.DateFormat(date_time) + " - " + this.$options.filters.TimeFormat(date_time) + ", is FULL can't be added." 
                   }
               }
           },
@@ -255,7 +255,6 @@ import Confirmation from '../components/Confirmation.vue'
         },
         computed:{
         filteredInvs(){
-                console.log(typeof(this.search));
                 return this.search? {[this.search] : this.invs[this.search]} : this.invs
             }
         }
