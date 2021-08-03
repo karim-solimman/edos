@@ -2,12 +2,22 @@
  <v-container>
      <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
      <Loading :loading="loading" />
+     <Confirmation
+     @dialog-closed="dialog = false"
+     :confirmationText="dialogText"
+     :dialog="dialog"
+     :dialogData="dialogData"
+     :onDeleteFunction="dialogFunction"
+     />
     <v-row v-if="!loading && user">
         <v-col cols="5">
             <h1 class="text-h4 font-weight-light"> {{user.name}}</h1>
             <h2 class="text-overline">{{user.email}}</h2>
             <v-chip small color="primary" class="text-overline mr-2" v-for="role in user.roles" :key="role.id"><v-icon small left>mdi-account</v-icon>{{role.name}}</v-chip>
-            <v-chip small outlined class="text-overline"><v-icon small left>mdi-folder</v-icon>{{user.department.name}}</v-chip>
+            <v-chip small outlined class="text-overline"><v-icon small left>mdi-folder</v-icon>
+                    <span v-if="user.department">{{user.department.name}}</span>
+                    <span v-else>No department</span>
+                </v-chip>
         </v-col>
         <v-col>
             <h1 class="text-h1 font-weight-light">{{user.invs.length}}<span class="text-overline">invs</span></h1>
@@ -46,7 +56,7 @@
                             <td>{{inv.course.code}}</td>
                             <td>{{inv.course.department.name}}</td>
                             <td>{{inv.pivot.created_at | ago}}</td>
-                            <td><v-btn @click="removInv(inv.id)" color="error" icon x-small><v-icon>mdi-close</v-icon></v-btn></td>
+                            <td><v-btn @click="confirm(inv.id)" color="error" icon x-small><v-icon>mdi-close</v-icon></v-btn></td>
                         </tr>
                     </tbody>
                 </template>
@@ -59,10 +69,11 @@
 <script>
 import Loading from '../../components/Loading.vue'
 import Alert from '../../components/Alert.vue'
+import Confirmation from '../../components/Confirmation.vue'
     export default {
         name: 'user-profile',
         components: {
-            Loading, Alert
+            Loading, Alert, Confirmation
         },
         data(){
             return{
@@ -70,7 +81,11 @@ import Alert from '../../components/Alert.vue'
                 user: Object,
                 alert: false,
                 alertMessage: null,
-                alertType: null
+                alertType: null,
+                dialog: false,
+                dialogData: null,
+                dialogFunction: null,
+                dialogText: null
             }
         },
         mounted() {
@@ -86,6 +101,7 @@ import Alert from '../../components/Alert.vue'
             .then((response) => {
                 this.loading = false
                 this.user = response.data.user
+                $.each(this.user.roles)
             })
             .catch((error) => {
                 this.loading = false
@@ -93,6 +109,12 @@ import Alert from '../../components/Alert.vue'
             })
         },
         methods:{
+            confirm(invId){
+                this.dialog = true
+                this.dialogData = invId
+                this.dialogFunction = this.removInv
+                this.dialogText = 'Are you sure you want to remove inv?'
+            },
             removInv(invId){
                 let formData = new FormData()
                 formData.append('user_id', this.user.id)

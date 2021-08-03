@@ -47,7 +47,7 @@
                         {{item.date_time | TimeFormat}}
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
-                        <v-btn style="text-decoration: none" color="info" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-information</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" color="info" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-calendar-outline</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class = "ml-2" icon small :to="{name: 'edit-inv', params:{id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class = "ml-2" color="error" icon small @click="confirm(item.id)"><v-icon small>mdi-delete</v-icon></v-btn>
                     </template>
