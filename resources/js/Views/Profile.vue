@@ -2,12 +2,22 @@
    <v-container>
        <Loading :loading="loading" />
        <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
+       <Confirmation
+         @dialog-closed="dialog = false"
+         :confirmationText="dialogText"
+         :onDeleteFunction="dialogFunction" 
+         :dialogData="dialogData" 
+         :dialog="dialog" 
+         />
        <v-row v-if="!loading">
            <v-col cols="12" lg="6" md="6">
                 <h1 class="text-h2">{{ user.name }}</h1>
                 <h2 class="text-overline">{{ user.email }}</h2>
                 <v-chip small color="primary" class="text-overline mr-2" v-for="role in roles" :key="role.id"><v-icon small left>mdi-account</v-icon>{{role}}</v-chip>
-                <v-chip small outlined class="text-overline"><v-icon small left>mdi-folder</v-icon>{{user.department.name}}</v-chip>
+                <v-chip small outlined class="text-overline"><v-icon small left>mdi-folder</v-icon>
+                    <span v-if="user.department">{{user.department.name}}</span>
+                    <span v-else>No department</span>
+                </v-chip>
             </v-col>
             <v-col>
                 <h1 class="text-h1 font-weight-light">{{ invs.length }}<span class="text-overline">invs</span></h1>
@@ -37,7 +47,7 @@
        <v-row v-if="!loading && invs.length > 0">
            <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
                <v-hover v-slot="{hover}">
-                    <v-card color="grey lighten-5" hover @click="deleteInv(inv.id)">
+                    <v-card color="grey lighten-5" hover @click="confirm(inv.id)">
                         <v-card-title>
                                 <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
                                 </v-card-title>
@@ -86,9 +96,10 @@
 <script>
 import Loading from '../components/Loading.vue'
 import Alert from '../components/Alert.vue'
+import Confirmation from '../components/Confirmation.vue'
     export default {
         components:{
-            Loading, Alert
+            Loading, Alert, Confirmation
         },
         data(){
             return {
@@ -99,7 +110,11 @@ import Alert from '../components/Alert.vue'
                 user: JSON.parse(localStorage.getItem('user')),
                 alertType: null,
                 alertMessage: null,
-                alert: false
+                alert: false,
+                dialog: false,
+                dialogData: null,
+                dialogFunction: null,
+                dialogText: ''
             }
         },
         mounted() {
@@ -131,6 +146,12 @@ import Alert from '../components/Alert.vue'
             })
         },
         methods:{
+            confirm(invId){
+                this.dialog = true
+                this.dialogText = "Are you sure you want to delete inv?"
+                this.dialogFunction = this.deleteInv
+                this.dialogData = invId
+            },
             deleteInv(invId)
             {
               let formData = new FormData()

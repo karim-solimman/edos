@@ -140,7 +140,7 @@
                     </v-form>
                 </v-card-text>
             </v-card>
-            <h5 class="body-1 text-center">Don't have an account? <router-link id='router-link' to="register">Register now</router-link></h5>
+            <h5 class="body-1 text-center mt-2">Don't have an account? <router-link id='router-link' to="register">Register now</router-link></h5>
         </v-col>
     </v-row>
 </v-container>
