@@ -2,6 +2,13 @@
     <v-container>
        <Loading :loading="loading" />
        <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
+       <Confirmation
+       @dialog-closed="dialog = false"
+       :confirmationText="dialogText"
+       :dialog="dialog"
+       :dialogData="dialogData"
+       :onDeleteFunction="dialogFunction" 
+       />
         <v-row v-if="!loading">
             <v-col>
                 <h5 class="text-h4 font-weight-light">
@@ -23,7 +30,7 @@
                     <v-divider></v-divider>
                     <v-card-title class="text-h5 font-weight-light">Password Reset</v-card-title>
                     <v-card-text>
-                        <p><strong color="error">Warning</strong>, by reseting the user password, user won't be able to login again until new registeration is done
+                        <p class="text-body-1"><strong color="error">Warning</strong>, by reseting the user password, user won't be able to login again until new registeration is done
                         <strong>, user data and invs won't be removed</strong></p>
                     </v-card-text>
                     <v-card-actions>
@@ -32,7 +39,7 @@
                     <v-divider></v-divider>
                     <v-card-title class="text-h5 font-weight-light">Remove all users invs</v-card-title>
                     <v-card-text>
-                        <p><strong color="error">Warning</strong>, This action can't be undo.
+                        <p class="text-body-1"><strong color="error">Warning</strong>, This action can't be undo.
                         <strong>, User name, department, email and password will still the same!</strong></p>
                     </v-card-text>
                     <v-card-actions>
@@ -57,12 +64,26 @@
                         <v-btn color="primary" block><v-icon left>mdi-pencil</v-icon>change</v-btn>
                     </v-card-actions>
                 </v-card>
+                <v-card class="mb-5" color="grey lighten-5">
+                    <v-card-title>
+                        <h1 class="text-h5 font-weight-light">Delete User</h1>
+                    </v-card-title>
+                    <v-card-text>
+                        <p class="text-body-1">
+                            <strong>Warning</strong>, deleting user will detach all invs from this user before deleting.
+                            Deleting user will remove all related data to the user and <strong>this action can't be undo.</strong>
+                        </p>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn block color="error"><v-icon left>mdi-delete-outline</v-icon>Delete user</v-btn>
+                    </v-card-actions>
+                </v-card>
                 <v-card color="grey lighten-5">
                     <v-card-title>
                         <h1 class="text-h5 font-weight-light">User Invs</h1>
                     </v-card-title>
                     <v-card-text>
-                        <v-data-table :headers="headers" :items="user.invs">
+                        <v-data-table v-if="user.invs && user.invs.length > 0" :headers="headers" :items="user.invs">
                             <template v-slot:[`item.index`]="{index}">
                                 {{index+1}}
                             </template>
@@ -73,10 +94,11 @@
                                 {{item.date_time | TimeFormat}}
                             </template>
                             <template v-slot:[`item.actions`]="{item}">
-                                <v-btn style="text-decoration: none" small icon :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small>mdi-account</v-icon></v-btn>
-                                <v-btn style="text-decoration: none" color="error" small icon :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small>mdi-close</v-icon></v-btn>
+                                <v-btn style="text-decoration: none" color="info" small icon :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small>mdi-calendar-outline</v-icon></v-btn>
+                                <v-btn style="text-decoration: none" color="error" small icon><v-icon small @click="confirmRemoveInv(item.id)">mdi-delete</v-icon></v-btn>
                             </template>
                         </v-data-table>
+                        <p class="text-body-1">No invs to be displayed!</p>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -87,9 +109,10 @@
 <script>
 import Loading from '../../components/Loading.vue'
 import Alert from '../../components/Alert.vue'
+import Confirmation from '../../components/Confirmation.vue'
 export default {
     components: {
-        Loading, Alert
+        Loading, Alert, Confirmation
     },
     data(){
         return{
@@ -105,7 +128,11 @@ export default {
             ],
             alert: false,
             alertMessage: null,
-            alertType: null
+            alertType: null,
+            dialog: false,
+            dialogData: null,
+            dialogText: null,
+            dialogFunction: null
         }
     },
     mounted(){
@@ -119,9 +146,44 @@ export default {
         })
         .then((response)=>{
             this.user = response.data.user
+            if(this.user.department == null) {
+                this.user.department = {id: 1}
+            }
             this.departments = response.data.departments
             this.loading = false
         })
+    },
+    methods:{
+        confirmRemoveInv(invId){
+            this.dialog = true
+            this.dialogData = invId
+            this.dialogFunction = this.removeInv
+            this.dialogText = "Are you sure you want to delete inv?"
+        },
+        removeInv(invId){
+            let formData = new FormData()
+                formData.append('user_id', this.user.id)
+                formData.append('inv_id', invId)
+                axios({
+                    method: 'post',
+                    url: '/api/users/removeinv',
+                    data: formData,
+                    headers:{
+                        Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                    }
+                })
+                .then((response) => {
+                    this.alert = true
+                    this.alertMessage = response.data.message
+                    this.alertType = "success"
+                    this.user.invs = response.data.invs
+                })
+                .catch((error)=>{
+                    this.alert = true
+                    this.alertMessage = error.response.data.message
+                    this.alertType = "error"
+                })
+        }
     },
     filters:{
             DateFormat(value)

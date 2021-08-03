@@ -56,10 +56,10 @@
                         <h1 class="text-h5 font-weight-light">Delete inv</h1>
                     </v-card-title>
                     <v-card-text>
-                        <p><strong>Warning</strong>, by deleting the inv all users attached to this inv will be cleared from inv resgitration, this action can't be undo</p>
+                        <p class="text-body-1"><strong>Warning</strong>, by deleting the inv all users attached to this inv will be cleared from inv resgitration, this action can't be undo</p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn @click="confirmInv(inv.id)" block color="error"><v-icon left>mdi-close</v-icon>delete inv</v-btn>
+                        <v-btn @click="confirmInv(inv.id)" block color="error"><v-icon left>mdi-delete</v-icon>delete inv</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
