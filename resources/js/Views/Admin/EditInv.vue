@@ -78,8 +78,7 @@
               <v-card color="grey lighten-5">
                   <v-card-title><h1 class="text-h5 font-weight-light">Users</h1></v-card-title>
                   <v-card-text>
-                      <v-simple-table>
-                        <template v-slot:default>
+                      <v-simple-table v-if="!loading && inv.users && inv.users.length > 0">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -99,8 +98,8 @@
                                     </td>  
                                 </tr>
                             </tbody>
-                        </template>
                     </v-simple-table>
+                    <p class="text-body2" v-else>Sorry, no users to be displayed</p>
                   </v-card-text>
               </v-card>
             </v-col>
@@ -145,7 +144,7 @@ export default {
             alert: false,
             alertType: null,
             alertMessage: null,
-            inv: Object,
+            inv: {},
             courseId: null,
             date: null,
             time: null,
@@ -169,7 +168,7 @@ export default {
             this.inv = response.data
             this.courseId = this.inv.course.id
             this.date = this.inv.date_time
-            this.users_limit = this.inv.room.users_limit
+            this.users_limit = this.inv.users_limit
             this.room = this.inv.room.id
             this.loading = false
         })
@@ -219,7 +218,7 @@ export default {
             removeUser(userId){
                 let formData = new FormData()
                 formData.append('user_id', userId)
-                formData.append('inv_id', this.invId)
+                formData.append('inv_id', this.inv.id)
                 axios({
                     method: 'post',
                     url: '/api/users/removeinv',
@@ -232,7 +231,7 @@ export default {
                     this.alert = true
                     this.alertType = "success"
                     this.alertMessage = response.data.message
-                    this.inv.users = response.data.users
+                    this.inv.users = response.data.inv.users
                 })
                 .catch((error) => {
                     this.alert = true

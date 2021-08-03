@@ -24,7 +24,7 @@
             </v-parallax>
         </v-col>
     </v-row>
-    <v-row style="margin-top: 10%;" justify="space-around" align="center">
+    <v-row style="margin-top: 5%;" justify="space-around" align="center">
         <v-col cols="6" lg="3" md="3">
             <div class="text-center">
                 <h1 class="text-h3 font-weight-light">{{date_time | getDay}} {{date_time | getMonth}}</h1>
@@ -56,10 +56,49 @@
             <h1 class="text-center text-h3 font-weight-thin">
                 Choose your invs
             </h1>
-            <p class="text-subtitle text-center">
-                With EDOS, you are freely to choose the date / time slot to be attached, without knowing the full details of inv. <br/>
+            <p class="text-body-1 text-center">
+                With EDOS, users are freely to choose the date / time slot to be attached, without knowing the full details of inv. <br/>
                 The Admin has the ability to make all the details visible / hidden.
             </p>
+        </v-col>
+    </v-row>
+    <v-row justify="space-around" align="center">
+         <v-col cols="12" lg="4" md="4">
+            <h1 class="text-center text-h3 font-weight-thin">
+                Remove with one click
+            </h1>
+            <p class="text-body-1 text-center">
+                Users are free to remove the registered invs or swap it with your colleagues, no extra paper work, no extra overhead and time waste. <br/>
+                It's all with a simple one click.
+            </p>
+        </v-col>
+        <v-col cols="6" lg="3" md="3">
+            <div class="text-center">
+                <h1 class="text-h3 font-weight-light">{{date_time | getDay}} {{date_time | getMonth}}</h1>
+                <h5 class="text-h5 font-weight-light">{{date_time | getDayName}}</h5>
+                <p class="text-overline">{{date_time | getYear}}</p>
+            </div>
+            <v-hover v-slot="{hover}">
+                <v-card  hover color="green lighten-5">
+                    <v-card-title class="d-flex justify-space-between">
+                        <h1 class="text-h4 font-weight-light">{{date_time | TimeFormat}}</h1>
+                        <v-icon color="green">mdi-account</v-icon>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-chip small dark color="green darken-2"><v-icon left>mdi-account-group</v-icon>2 / 3</v-chip>
+                        <v-chip small outlined><v-icon left>mdi-clock-outline</v-icon>{{date_time | ago}}</v-chip>
+                    </v-card-text>
+                    <v-expand-transition>
+                        <div
+                            v-if="hover"
+                            class="d-flex transition-fast-in-fast-out blue-grey darken-4 v-card--reveal text-h5 font-weight-light white--text"
+                            style="height: 100%;"
+                        >
+                        <span class="text-h4 font-weight-thin text-center"><v-icon dark x-large left color="error">mdi-table-large-remove</v-icon><br/>REMOVE</span>
+                        </div>
+                    </v-expand-transition>
+                </v-card>
+            </v-hover>
         </v-col>
     </v-row>
     <v-row style="margin-top: 5%" align="center" justify="space-around">
@@ -67,7 +106,7 @@
             <h1 class="text-center text-h3 font-weight-thin">
                 Login to EDOS
             </h1>
-            <p class="text-subtitle text-center">
+            <p class="text-body-1 text-center">
                 To use EDOS you are welcomed to register, but the admin should first add you as a new user so you can register in the system and set your password for the first time. EDOS not for everyone.
             </p>
         </v-col>
