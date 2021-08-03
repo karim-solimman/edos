@@ -45,6 +45,7 @@ class InvController extends Controller
         }
         foreach ($data as $item)
             ksort($item);
+
         return response(['invs' => $data]);
     }
 
