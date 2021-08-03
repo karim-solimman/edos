@@ -109,7 +109,7 @@ import Loading from '../../components/Loading.vue'
                     this.alert = true
                     this.alertType = "success"
                     this.alertMessage = response.data.message
-                    this.inv.users = response.data.users
+                    this.inv.users = response.data.inv.users
                 })
                 .catch((error) => {
                     this.alert = true
