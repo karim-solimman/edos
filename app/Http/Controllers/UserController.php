@@ -50,7 +50,7 @@ class UserController extends Controller
     public function userProfile($id)
     {
         $user = User::with(['roles', 'department', 'invs.room', 'invs.course.department'])->where('id', $id)->first();
-        $departments = Department::all();
+        $departments = Department::all(); //for editUser component at front end
         return response(['user' => $user, 'departments' => $departments]);
     }
     public function checkEmail($email)

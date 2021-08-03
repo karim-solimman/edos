@@ -115,8 +115,9 @@ class InvController extends Controller
 
     public function addUser(Request $request)
     {
-        if ($inv = Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first())
+        if (Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first() != null)
         {
+            $inv = Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first();
             $user = User::where('id', $request->input('user_id'))->first();
             $user->invs()->attach($inv->id, ['created_at' => now(), 'updated_at' => now()]);
             $inv->users_count += 1;
@@ -126,7 +127,7 @@ class InvController extends Controller
         }
         else
         {
-            return response(['message' => 'Invs are full at '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString()],402);
+            return response(['message' => 'Invs are full on date '.Carbon::createFromFormat('Y-m-d H:i:s', $request->input('date_time'))->toDateString()],402);
         }
 
     }
