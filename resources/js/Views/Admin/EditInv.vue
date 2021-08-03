@@ -2,6 +2,13 @@
     <v-container>
         <Loading :loading="loading" />
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
+        <Confirmation
+         @dialog-closed="dialog = false"
+         :confirmationText="dialogText"
+         :onDeleteFunction="dialogFunction" 
+         :dialogData="dialogData" 
+         :dialog="dialog"
+         />
         <v-row v-if="!loading && inv">
             <v-col>
                 <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat }}</h1>
@@ -52,7 +59,7 @@
                         <p><strong>Warning</strong>, by deleting the inv all users attached to this inv will be cleared from inv resgitration, this action can't be undo</p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn block color="error"><v-icon left>mdi-close</v-icon>delete inv</v-btn>
+                        <v-btn @click="confirmInv(inv.id)" block color="error"><v-icon left>mdi-close</v-icon>delete inv</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -94,7 +101,7 @@
                                     <td>{{user.department.name}}</td>
                                     <td>
                                         <v-btn color="success" style="text-decoration: none" small icon :to="{name: 'userProfile', params:{id: user.id}}"><v-icon small>mdi-account</v-icon></v-btn>
-                                        <v-btn color="error" style="text-decoration: none" small icon @click="removeUser(user.id)"><v-icon>mdi-close</v-icon></v-btn>
+                                        <v-btn color="error" style="text-decoration: none" small icon @click="confirmUser(user.id)"><v-icon>mdi-close</v-icon></v-btn>
                                     </td>  
                                 </tr>
                             </tbody>
@@ -134,13 +141,18 @@
 <script>
 import Loading from '../../components/Loading.vue'
 import Alert from '../../components/Alert.vue'
+import Confirmation from '../../components/Confirmation.vue'
 export default {
     components:{
-        Alert, Loading
+        Alert, Loading, Confirmation
     },
     data(){
         return{
             loading: true,
+            dialogText: '',
+            dialogFunction: null,
+            dialog: false,
+            dialogData: null,
             alert: false,
             alertType: null,
             alertMessage: null,
@@ -215,30 +227,68 @@ export default {
 
     },
     methods:{
-            removeUser(userId){
-                let formData = new FormData()
-                formData.append('user_id', userId)
-                formData.append('inv_id', this.inv.id)
-                axios({
-                    method: 'post',
-                    url: '/api/users/removeinv',
-                    data: formData,
-                    headers: {
-                        Authorization: `Bearer ${window.localStorage.getItem('token')}`
-                    }
-                })
-                .then((response) => {
-                    this.alert = true
-                    this.alertType = "success"
-                    this.alertMessage = response.data.message
-                    this.inv.users = response.data.inv.users
-                })
-                .catch((error) => {
-                    this.alert = true
-                    this.alertType = "error"
-                    this.alertMessage = error.response.data.message
-                })
-            }
+        confirmInv(invId){
+            this.dialog = true
+            this.dialogData = invId
+            this.dialogText = 'Are you sure you want to delete the inv?'
+            this.dialogFunction = this.removeInv
+        },
+        confirmUser(userId){
+            this.dialog = true
+            this.dialogData = userId
+            this.dialogText = 'Are you sure you want to detach the user?'
+            this.dialogFunction = this.removeUser
+        },
+        removeUser(userId){
+            let formData = new FormData()
+            formData.append('user_id', userId)
+            formData.append('inv_id', this.inv.id)
+            axios({
+                method: 'post',
+                url: '/api/users/removeinv',
+                data: formData,
+                headers: {
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = "success"
+                this.alertMessage = response.data.message
+                this.inv.users = response.data.inv.users
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = "error"
+                this.alertMessage = error.response.data.message
+            })
+        },
+        removeInv(invId) {
+            this.dialog = false
+            let formData = new FormData()
+            formData.append('id', invId)
+            axios({
+                method: 'post',
+                url: '/api/invs/delete',
+                data: formData,
+                headers: {
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+                setTimeout(() => {
+                    this.$router.push({name: 'admin-invs'})
+                }, 2000)
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+            })
+        }
         },
     filters:{
             DateFormat(value)

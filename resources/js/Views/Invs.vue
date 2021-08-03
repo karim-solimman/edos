@@ -2,6 +2,13 @@
         <v-container>
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <Loading :loading="loading" />
+        <Confirmation
+         @dialog-closed="dialog = false"
+         :confirmationText="dialogText"
+         :onDeleteFunction="dialogFunction" 
+         :dialogData="dialogData" 
+         :dialog="dialog" 
+         />
         <div v-if="!loading">
             <v-row>
                 <v-col cols="10" lg="10" md="10">
@@ -65,10 +72,11 @@
 <script>
 import Loading from '../components/Loading.vue'
 import Alert from '../components/Alert.vue'
+import Confirmation from '../components/Confirmation.vue'
     export default {
         name: 'invs',
         components: {
-            Loading, Alert
+            Loading, Alert, Confirmation
         },
         data()
         {
@@ -80,7 +88,11 @@ import Alert from '../components/Alert.vue'
                 alertType: null,
                 alertMessage: null,
                 loading: true,
-                search: ''
+                search: '',
+                dialog: false,
+                dialogData: null,
+                dialogFunction: null,
+                dialogText: ''
             }
         },
         methods:{
@@ -94,7 +106,10 @@ import Alert from '../components/Alert.vue'
           },
           cardAction(item, date_time){
               if(this.isExists(date_time)){
-                  this.removeInv(date_time)
+                  this.dialog = true
+                  this.dialogData = date_time
+                  this.dialogText = 'Are you sure you want to delete inv?'
+                  this.dialogFunction = this.removeInv
               }
               else{
                   if(item.users_count < item.users_limit) {
