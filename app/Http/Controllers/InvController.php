@@ -13,7 +13,7 @@ class InvController extends Controller
 {
     public function index()
     {
-        return Inv::with(['users', 'course.department', 'room'])->withCount('users')->orderBy('date_time')->get();
+        return Inv::with(['users', 'course.department', 'room'])->orderBy('date_time')->get();
     }
 
     public function index_groupBy()
