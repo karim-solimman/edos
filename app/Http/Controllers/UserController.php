@@ -11,6 +11,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules\In;
 
 class UserController extends Controller
 {
@@ -65,8 +66,10 @@ class UserController extends Controller
         $inv_id = $request->input('inv_id');
         $user = User::where('id', $user_id)->first();
         $inv = Inv::where('id', $inv_id)->first();
-        $user->invs()->attach($inv_id, ['created_at' => now(), 'updated_at' => now()]);
-        $inv->users_count +=1;
+        if($user->invs()->attach($inv_id, ['created_at' => now(), 'updated_at' => now()]))
+        {
+            $inv->users_count +=1;
+        }
         $inv->save();
         $invs = $user->invs()->get();
         return response(['message' => 'Inv added successfully', 'invs' => $invs], 201);
@@ -77,11 +80,17 @@ class UserController extends Controller
         $inv_id = $request->input('inv_id');
         $inv = Inv::where('id', $inv_id)->first();
         $user = User::where('id', $user_id)->first();
-        $user->invs()->detach($inv_id);
-        $inv->users_count -=1;
+        if($user->invs()->detach($inv_id))
+        {
+            $inv->users_count -=1;
+        }
         $inv->save();
-        $invs = $user->invs()->with(['room', 'course', 'course.department'])->withCount('users')->orderBy('date_time')->get();
-        return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s',$inv->date_time)->toDateString().', removed successfully from '.$user->name , 'invs' => $invs], 201);
+        $inv = Inv::with('users.department')->where('id', $inv_id)->first();
+        $invs = $user->invs()->with(['room', 'course', 'course.department'])->orderBy('date_time')->get();
+        return response([
+            'message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s',$inv->date_time)->toDateString().', removed successfully from '.$user->name ,
+            'invs' => $invs,
+            'inv' => $inv], 201);
     }
     public function attachRole(Request $request)
     {

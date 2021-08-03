@@ -94,7 +94,6 @@ import Alert from '../components/Alert.vue'
               }
           },
             updateInvs(){
-                // this.loading = true
                 axios({
                     method: 'get',
                     url: '/api/invforusers',
