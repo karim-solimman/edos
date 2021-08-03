@@ -85,7 +85,7 @@
                         <v-icon color="green">mdi-account</v-icon>
                     </v-card-title>
                     <v-card-text>
-                        <v-chip small dark color="green darken-2"><v-icon left>mdi-account-group</v-icon>2 / 3</v-chip>
+                        <v-chip small dark color="red darken-2"><v-icon left>mdi-account-group</v-icon>3 / 3</v-chip>
                         <v-chip small outlined><v-icon left>mdi-clock-outline</v-icon>{{date_time | ago}}</v-chip>
                     </v-card-text>
                     <v-expand-transition>

@@ -3,7 +3,20 @@
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <Loading :loading="loading" />
         <div v-if="!loading">
-            <v-row  v-for="(inv, date) in invs" :key="inv.id">
+            <v-row>
+                <v-col cols="10" lg="10" md="10">
+                    <v-text-field
+                    label="search"
+                    type="date"
+                    v-model="search"
+                    >
+                    </v-text-field>
+                </v-col>
+                <v-col align-self="center" cols="2" lg="2" md="2">
+                    <v-btn text @click="search = ''"><v-icon left>mdi-delete-outline</v-icon>clear search</v-btn>
+                </v-col>
+            </v-row>
+            <v-row  v-for="(inv, date) in filteredInvs" :key="inv.id">
                 <v-col class="text-center my-auto" cols="12" lg="3" md="3">
                    <h1 class="text-h3 font-weight-light">{{date | getDay}} {{date | getMonth}}</h1>
                    <h5 class="text-h5 font-weight-light">{{date | getDayName}}</h5>
@@ -67,6 +80,7 @@ import Alert from '../components/Alert.vue'
                 alertType: null,
                 alertMessage: null,
                 loading: true,
+                search: ''
             }
         },
         methods:{
@@ -184,6 +198,7 @@ import Alert from '../components/Alert.vue'
             })
             .then((response) => {
                 this.invs = response.data.invs
+               
                 this.loading = false
             })
             .catch((error) => {
@@ -221,6 +236,12 @@ import Alert from '../components/Alert.vue'
             getYear(value)
             {
                 return moment(value).format("YYYY")
+            }
+        },
+        computed:{
+        filteredInvs(){
+                console.log(typeof(this.search));
+                return this.search? {[this.search] : this.invs[this.search]} : this.invs
             }
         }
     }
