@@ -1,13 +1,8 @@
 <template>
-    <!-- <v-row v-if="alert">
-        <v-col>
-            <v-alert elevation="3" border="top" @click="close" :value="alert" dismissible :type="alertType">{{alertMessage}}</v-alert>
-        </v-col>
-    </v-row> -->
-    <v-snackbar multi-line :timeout="timeout" v-model="value" elevation="3" :color="alertType">
-      <v-icon left v-if="alertType == 'success'">mdi-check-circle-outline</v-icon>
-      <v-icon left v-else>mdi-alert-circle-outline</v-icon>
-      {{ alertMessage }}
+    <v-snackbar width="700" multi-line :timeout="timeout" v-model="value" elevation="3" :color="alertType">
+        <v-icon left v-if="alertType == 'success'">mdi-check-circle-outline</v-icon>
+        <v-icon left v-else>mdi-alert-circle-outline</v-icon>
+        {{ alertMessage }}
       <template v-slot:action="{ attrs }">
         <v-btn
           text
