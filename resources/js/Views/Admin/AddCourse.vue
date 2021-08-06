@@ -107,6 +107,9 @@ export default {
         addCourse(){
             this.btnLoading = true
             this.courseCode = this.courseCode.toUpperCase()
+             this.courseName = this.courseName.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+                return letter.toUpperCase()
+            })
             let formData = new FormData()
             formData.append('course_code', this.courseCode)
             formData.append('course_name', this.courseName)

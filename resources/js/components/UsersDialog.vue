@@ -6,12 +6,17 @@
                 <v-icon color="primary" large>mdi-information</v-icon>
             </v-card-title>
             <v-card-text>
-                <h4 class="text-4 font-weight-light"><v-icon left>mdi-calendar</v-icon> {{inv.date_time | DateFormat}}</h4>
-                <h4 class="text-4 font-weight-light"><v-icon left>mdi-clock</v-icon> {{inv.date_time | TimeFormat}}</h4>
-                <v-chip-group v-if="inv.users.length > 0">
-                    <v-chip style="text-decoration: none" :to="{name: 'userProfile', params:{id: user.id}}" v-for="user in inv.users" :key="user.id">{{user.name}}</v-chip>
-                </v-chip-group>
-                <p v-else class="text-body-2">No users to be displayed</p>
+                <v-row>
+                    <v-col>
+                        <h4 class="text-h6"><v-icon left>mdi-calendar</v-icon> {{inv.date_time | DateFormat}}</h4>
+                        <h4 class="text-h6"><v-icon left>mdi-clock</v-icon> {{inv.date_time | TimeFormat}}</h4>
+                        <h4 class="text-h6"><v-icon left>mdi-book</v-icon> {{inv.course.code}} - {{inv.course.name}} </h4>
+                        <v-chip-group v-if="inv.users.length > 0">
+                            <v-chip style="text-decoration: none" :to="{name: 'userProfile', params:{id: user.id}}" v-for="user in inv.users" :key="user.id">{{user.name}}</v-chip>
+                        </v-chip-group>
+                        <h2 v-else class="text-body-1">No users to be displayed</h2>
+                    </v-col>
+                </v-row>
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
