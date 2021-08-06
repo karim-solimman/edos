@@ -1,5 +1,5 @@
 <template>
-    <v-dialog width="650" v-model="status">
+    <v-dialog width="750" v-model="status">
         <v-card color="grey lighten-4" elevation="5">
             <v-card-title>
                 <h4 class="my-auto font-weight-light">{{confirmationText}}</h4>
