@@ -4,11 +4,12 @@
         <Loading :loading="loading" />
         <Confirmation
          @dialog-closed="dialog = false"
-         :confirmationText="'Are you sure you want to delete inv?'"
+         :confirmationText="dialogText"
          :onDeleteFunction="removeInv" 
          :dialogData="dialogData" 
          :dialog="dialog" 
          />
+         <UserDialog :dialog="userDialog" :inv="inv" @user-dialog-closed="userDialog = false" />
         <v-row align="center" justify="center" v-if="!loading">
            <v-col lg="5" md="5">
                <v-text-field
@@ -47,9 +48,10 @@
                         {{item.date_time | TimeFormat}}
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
-                        <v-btn style="text-decoration: none" color="info" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-calendar-outline</v-icon></v-btn>
-                        <v-btn style="text-decoration: none" class = "ml-2" icon small :to="{name: 'edit-inv', params:{id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
-                        <v-btn style="text-decoration: none" class = "ml-2" color="error" icon small @click="confirm(item.id)"><v-icon small>mdi-delete</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" color="primary" icon small><v-icon small @click="showInvUsers(item)">mdi-account-group</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" class="ml-1" color="info" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-calendar-outline</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" class = "ml-1" icon small :to="{name: 'edit-inv', params:{id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" class = "ml-1" color="error" icon small @click="confirm(item.id)"><v-icon small>mdi-delete</v-icon></v-btn>
                     </template>
                 </v-data-table>
            </v-col>
@@ -61,10 +63,11 @@
 import Loading from '../../components/Loading.vue'
 import Alert from '../../components/Alert.vue'
 import Confirmation from '../../components/Confirmation.vue'
+import UserDialog from '../../components/UsersDialog.vue'
 export default {
     name: 'invs',
     components: {
-        Loading, Alert, Confirmation
+        Loading, Alert, Confirmation, UserDialog
     },
     data()
     {
@@ -86,8 +89,14 @@ export default {
             ],
             search: '',
             date:'',
+            
             dialog: false,
             dialogData: null,
+            dialogText: null,
+
+            userDialog: false,
+            inv : {},
+
             alert: false,
             alertType: null,
             alertMessage: null,
@@ -145,6 +154,7 @@ export default {
         {
             this.dialogData = invId
             this.dialog = true
+            this.dialogText = 'Are you sure you want to delete inv?'
         },
         removeInv(invId) {
             this.dialog = false
@@ -169,6 +179,10 @@ export default {
                 this.alertType = 'error'
                 this.alertMessage = error.response.data.message
             })
+        },
+        showInvUsers(inv){
+            this.userDialog = true
+            this.inv = inv
         }
     },
     mounted() {

@@ -17,6 +17,7 @@
                     <v-chip style="text-decoration: none" outlined :to="{name: 'roomProfile', params:{id: inv.room.id}}"><v-icon left>mdi-door</v-icon>{{inv.room.number}}</v-chip>
                     <v-chip style="text-decoration: none" outlined :to="{name: 'courseProfile', params:{id: inv.course.id}}"><v-icon left>mdi-book-open-page-variant-outline</v-icon>{{inv.course.code}} - {{inv.course.name}}</v-chip>
                     <v-chip style="text-decoration: none" outlined :to="{name: 'departmentProfile', params:{id: inv.course.department.id}}"><v-icon left>mdi-folder</v-icon>{{inv.course.department.name}}</v-chip>
+                    <v-chip style="text-decoration: none" dark :color="inv.users_count < inv.users_limit? 'green darken-4' : 'red darken-4'"><v-icon left>mdi-alert-octagon</v-icon> {{inv.users_count }} / {{inv.users_limit}}</v-chip>
                 </v-chip-group>
             </v-col>
         </v-row>
@@ -124,6 +125,7 @@ import Confirmation from '../../components/Confirmation.vue'
                     this.alertType = "success"
                     this.alertMessage = response.data.message
                     this.inv.users = response.data.inv.users
+                    this.inv.users_count -=1
                 })
                 .catch((error) => {
                     this.alert = true
