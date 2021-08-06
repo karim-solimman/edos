@@ -2,6 +2,13 @@
     <v-container>
         <Loading :loading="loading" />
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
+        <Confirmation
+         @dialog-closed="dialog = false"
+         :confirmationText="dialogText"
+         :onDeleteFunction="deleteCourse" 
+         :dialogData="dialogData" 
+         :dialog="dialog" 
+         /> 
          <v-row v-if="!loading && courses">
            <v-text-field
                 v-model="search"
@@ -20,7 +27,7 @@
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn style="text-decoration: none" icon small :to="{name: 'courseProfile', params:{id: item.id}}"><v-icon small>mdi-book-account</v-icon></v-btn>
                         <v-btn style="text-decoration: none" icon small :to="{name: 'editCourse', params: {id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
-                        <v-btn style="text-decoration: none" color="error" icon small @click="deleteCourse(item.id)"><v-icon small>mdi-close</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" color="error" icon small @click="confirm(item)"><v-icon small>mdi-close</v-icon></v-btn>
                     </template>   
                 </v-data-table>
             </v-col>
@@ -31,9 +38,10 @@
 <script>
 import Loading from '../../components/Loading.vue'
 import Alert from '../../components/Alert.vue'
+import Confirmation from '../../components/Confirmation.vue'
 export default {
     components: {
-        Loading, Alert
+        Loading, Alert, Confirmation
     },
     data(){
         return{
@@ -51,13 +59,22 @@ export default {
                 {text: 'department', value: 'department.name'},
                 {text: 'actions', value: 'actions'}
             ],
-            search: ''
+            search: '',
+            dialog: false,
+            dialogData: null,
+            dialogText: null,
+
         }
     },
     mounted(){
         this.getCourses()
     },
     methods:{
+        confirm(course){
+            this.dialog = true
+            this.dialogText = 'Are you sure you want to delete ' + course.code + ' - ' + course.name
+            this.dialogData = course.id
+        },
         deleteCourse(courseId){
             axios({
                 method: 'get',
