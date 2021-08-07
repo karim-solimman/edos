@@ -51,7 +51,7 @@
                         <v-btn style="text-decoration: none" color="primary" icon small><v-icon small @click="showInvUsers(item)">mdi-account-group</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class="ml-1" color="info" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-calendar-outline</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class = "ml-1" icon small :to="{name: 'edit-inv', params:{id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
-                        <v-btn style="text-decoration: none" class = "ml-1" color="error" icon small @click="confirm(item.id)"><v-icon small>mdi-delete</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" class = "ml-1" color="error" icon small @click="confirm(item)"><v-icon small>mdi-delete</v-icon></v-btn>
                     </template>
                 </v-data-table>
            </v-col>
@@ -150,11 +150,11 @@ export default {
                 })
             })
         },
-        confirm(invId)
+        confirm(inv)
         {
-            this.dialogData = invId
+            this.dialogData = inv.id
             this.dialog = true
-            this.dialogText = 'Are you sure you want to delete inv?'
+            this.dialogText = `Are you sure you want to delete inv on\n${this.$options.filters.DateFormat(inv.date_time)} at ${this.$options.filters.TimeFormat(inv.date_time)}\n${inv.course.code} - ${inv.course.name}`
         },
         removeInv(invId) {
             this.dialog = false

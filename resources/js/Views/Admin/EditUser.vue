@@ -34,7 +34,7 @@
                         <strong>, user data and invs won't be removed</strong></p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="error" block><v-icon left>mdi-lock-reset</v-icon>reset</v-btn>
+                        <v-btn @click="confirmResetPassword" color="error" block><v-icon left>mdi-lock-reset</v-icon>reset</v-btn>
                     </v-card-actions>
                     <v-divider></v-divider>
                     <v-card-title class="text-h5 font-weight-light">Remove all users invs</v-card-title>
@@ -43,7 +43,7 @@
                         <strong>, User name, department, email and password will still the same!</strong></p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="error" block><v-icon left>mdi-delete-forever</v-icon>remove all invs</v-btn>
+                        <v-btn @click="confirmRemoveAllInvs" color="error" block><v-icon left>mdi-delete-forever</v-icon>remove all invs</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -95,10 +95,10 @@
                             </template>
                             <template v-slot:[`item.actions`]="{item}">
                                 <v-btn style="text-decoration: none" color="info" small icon :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small>mdi-calendar-outline</v-icon></v-btn>
-                                <v-btn style="text-decoration: none" color="error" small icon><v-icon small @click="confirmRemoveInv(item.id)">mdi-delete</v-icon></v-btn>
+                                <v-btn style="text-decoration: none" color="error" small icon><v-icon small @click="confirmRemoveInv(item)">mdi-delete</v-icon></v-btn>
                             </template>
                         </v-data-table>
-                        <p class="text-body-1">No invs to be displayed!</p>
+                        <p v-else class="text-body-1">No invs to be displayed!</p>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -154,11 +154,11 @@ export default {
         })
     },
     methods:{
-        confirmRemoveInv(invId){
+        confirmRemoveInv(inv){
             this.dialog = true
-            this.dialogData = invId
+            this.dialogData = inv.id
             this.dialogFunction = this.removeInv
-            this.dialogText = "Are you sure you want to delete inv?"
+            this.dialogText = `Are you sure you want to delete inv on\n${this.$options.filters.DateFormat(inv.date_time)} at ${this.$options.filters.TimeFormat(inv.date_time)}`
         },
         removeInv(invId){
             let formData = new FormData()
@@ -183,6 +183,58 @@ export default {
                     this.alertMessage = error.response.data.message
                     this.alertType = "error"
                 })
+        },
+        confirmRemoveAllInvs()
+        {
+            this.dialog = true
+            this.dialogText = `Are you sure you want to delete all invs for ${this.user.name}?`
+            this.dialogData = this.user.id
+            this.dialogFunction = this.removeAllInvs
+        },
+        removeAllInvs(){
+            axios({
+                method: 'get',
+                url: `/api/users/deletealluserinvs/${this.user.id}`,
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertMessage = response.data.message
+                this.alertType = 'success'
+                this.user.invs = []
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertMessage = error.response.data.message
+                this.alertType = 'error'
+            })
+        },
+        confirmResetPassword(){
+            this.dialog = true
+            this.dialogText = `Are you sure you want to reset password for ${this.user.name}?`
+            this.dialogData = this.user.id
+            this.dialogFunction = this.resetPassword
+        },
+        resetPassword(){
+            axios({
+                method: 'get',
+                url: `/api/users/resetpassword/${this.user.id}`,
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response)=>{
+                this.alert = true
+                this.alertMessage = response.data.message
+                this.alertType = 'success'
+            })
+            .catch((error)=>{
+                this.alert = true
+                this.alertMessage = error.response.data.message
+                this.alertType = 'error'
+            })
         }
     },
     filters:{
