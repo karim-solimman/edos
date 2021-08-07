@@ -54,7 +54,7 @@ class UserController extends Controller
         $departments = Department::all(); //for editUser component at front end
         return response(['user' => $user, 'departments' => $departments]);
     }
-    
+
     public function checkEmail($email)
     {
         $check = User::where('email', $email)->get();

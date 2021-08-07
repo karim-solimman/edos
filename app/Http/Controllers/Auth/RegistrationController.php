@@ -55,8 +55,10 @@ class RegistrationController extends Controller
         $request->validate([
             'email' => ['required', 'email', 'exists:users,email'],
         ]);
-        $user = User::where('email', $request->input('email'))->first();
-        return response(['message' => 'found', 'user' => $user], 201);
+        if($user = User::where('email', $request->input('email'))->where('password', NULL)->first())
+            return response(['message' => 'found', 'user' => $user], 201);
+        if ($user = User::where('email', $request->input('email'))->whereNotNull('password')->first())
+            return response(['message' => $user->email.', already registered'], 402);
     }
 
     public function set_password(Request $request)
