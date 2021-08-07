@@ -47,7 +47,7 @@
        <v-row v-if="!loading && invs.length > 0">
            <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
                <v-hover v-slot="{hover}">
-                    <v-card color="grey lighten-5" hover @click="confirm(inv.id)">
+                    <v-card color="grey lighten-5" hover @click="confirm(inv)">
                         <v-card-title>
                                 <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
                                 </v-card-title>
@@ -104,7 +104,6 @@ import Confirmation from '../components/Confirmation.vue'
         data(){
             return {
                 loading: true,
-                token: null,
                 invs: [],
                 roles: [],
                 user: JSON.parse(localStorage.getItem('user')),
@@ -118,7 +117,6 @@ import Confirmation from '../components/Confirmation.vue'
             }
         },
         mounted() {
-            this.token = localStorage.getItem('token')
             let formData = new FormData()
             formData.append('user_id', this.user.id)
             axios({
@@ -146,11 +144,11 @@ import Confirmation from '../components/Confirmation.vue'
             })
         },
         methods:{
-            confirm(invId){
+            confirm(inv){
                 this.dialog = true
-                this.dialogText = "Are you sure you want to delete inv?"
+                this.dialogText = `Are you sure you want to delete inv on\n${this.$options.filters.DateFormat(inv.date_time)} at ${this.$options.filters.TimeFormat(inv.date_time)}`
                 this.dialogFunction = this.deleteInv
-                this.dialogData = invId
+                this.dialogData = inv.id
             },
             deleteInv(invId)
             {

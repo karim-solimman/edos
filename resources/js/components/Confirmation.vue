@@ -2,9 +2,14 @@
     <v-dialog width="750" v-model="status">
         <v-card color="grey lighten-4" elevation="5">
             <v-card-title>
-                <h4 class="my-auto font-weight-light">{{confirmationText}}</h4>
-                <v-spacer></v-spacer>
-                <v-icon color="error" large>mdi-information-outline</v-icon>
+                <v-row>
+                     <v-col cols="11">
+                        <h4 style="white-space: pre" class="text-h5 font-weight-light">{{confirmationText}}</h4>
+                    </v-col>
+                      <v-col>
+                        <v-icon color="error" large>mdi-information-outline</v-icon>
+                    </v-col>
+                </v-row>                
             </v-card-title>
             <v-divider></v-divider>
             <v-card-actions>
