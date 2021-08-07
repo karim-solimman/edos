@@ -56,7 +56,7 @@
                             <td>{{inv.course.code}}</td>
                             <td>{{inv.course.department.name}}</td>
                             <td>{{inv.pivot.created_at | ago}}</td>
-                            <td><v-btn @click="confirm(inv.id)" color="error" icon x-small><v-icon>mdi-close</v-icon></v-btn></td>
+                            <td><v-btn @click="confirm(inv)" color="error" icon x-small><v-icon>mdi-close</v-icon></v-btn></td>
                         </tr>
                     </tbody>
                 </template>
@@ -109,11 +109,11 @@ import Confirmation from '../../components/Confirmation.vue'
             })
         },
         methods:{
-            confirm(invId){
+            confirm(inv){
                 this.dialog = true
-                this.dialogData = invId
+                this.dialogData = inv.id
                 this.dialogFunction = this.removInv
-                this.dialogText = 'Are you sure you want to remove inv?'
+                this.dialogText = `Are you sure you want to remove inv on\n${this.$options.filters.DateFormat(inv.date_time)} at ${this.$options.filters.TimeFormat(inv.date_time)}`
             },
             removInv(invId){
                 let formData = new FormData()

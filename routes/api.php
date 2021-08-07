@@ -43,8 +43,10 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'userProfile']);
     Route::post('/users/create', [RegistrationController::class, 'create']);
+    Route::get('/users/resetpassword/{id}', [UserController::class, 'resetPassword']);
     Route::post('/users/addinv', [UserController::class, 'addInv']);
     Route::post('/users/removeinv', [UserController::class, 'removeInv']);
+    Route::get('/users/deletealluserinvs/{id}', [UserController::class, 'removeAllUserInvs']);
 
     Route::get('/invs',[InvController::class,'index']);
     Route::get('/invforusers', [InvController::class, 'index_groupBy']);
