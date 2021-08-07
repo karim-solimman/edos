@@ -47,12 +47,14 @@ class UserController extends Controller
         $roles = $user->roles()->get();
         return response(['user' => $user ,'invs' => $invs, 'roles' => $roles]);
     }
+
     public function userProfile($id)
     {
         $user = User::with(['roles', 'department', 'invs.room', 'invs.course.department'])->where('id', $id)->first();
         $departments = Department::all(); //for editUser component at front end
         return response(['user' => $user, 'departments' => $departments]);
     }
+    
     public function checkEmail($email)
     {
         $check = User::where('email', $email)->get();
@@ -60,6 +62,7 @@ class UserController extends Controller
             return response(1);
         return response(0);
     }
+
     public function addInv(Request $request)
     {
         $user_id = $request->input('user_id');
@@ -74,24 +77,42 @@ class UserController extends Controller
         $invs = $user->invs()->get();
         return response(['message' => 'Inv added successfully', 'invs' => $invs], 201);
     }
+
     public function removeInv(Request $request)
     {
         $user_id = $request->input('user_id');
         $inv_id = $request->input('inv_id');
-        $inv = Inv::where('id', $inv_id)->first();
+        $inv = Inv::with('users.department')->where('id', $inv_id)->first();
         $user = User::where('id', $user_id)->first();
         if($user->invs()->detach($inv_id))
         {
             $inv->users_count -=1;
         }
         $inv->save();
-        $inv = Inv::with('users.department')->where('id', $inv_id)->first();
         $invs = $user->invs()->with(['room', 'course', 'course.department'])->orderBy('date_time')->get();
         return response([
             'message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s',$inv->date_time)->toDateString().', removed successfully from '.$user->name ,
             'invs' => $invs,
             'inv' => $inv], 201);
     }
+
+    public function removeAllUserInvs($id)
+    {
+        $user = User::where('id', $id)->first();
+        $user->invs()->decrement('users_count', 1);
+        $user->invs()->detach();
+        return response(['message' => 'All invs for '.$user->name.' deleted successfully'],201);
+    }
+
+    public function resetPassword($id)
+    {
+        $user = User::where('id', $id)->first();
+        $user->password = NULL;
+        $user->save();
+
+        return response(['message' => 'Password for '.$user->name.' reset successfully'],201);
+    }
+
     public function attachRole(Request $request)
     {
         $user_id = $request->input('user_id');
