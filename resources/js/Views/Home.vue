@@ -150,10 +150,10 @@ import Alert from '../components/Alert.vue'
                     this.btn1Loading = false
                 })
                 .catch((error) => {
+                    this.btn1Loading = false
                     this.alert = true
                     this.alertType = 'error'
-                    this.alertMessage = error.response.data.message + " " + error.response.data.errors['email']
-                    this.btn1Loading = false
+                    this.alertMessage = error.response.data.message
                 })
             },
             setPasswordLogin(){
@@ -168,9 +168,7 @@ import Alert from '../components/Alert.vue'
                     data: formData
                 })
                 .then((response) => {
-                    this.alert = true
-                    this.alertType = 'success'
-                    this.alertMessage = response.data.message
+                   
                 })
                 .catch((error) => {
                     this.alert = true
