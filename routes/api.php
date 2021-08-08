@@ -53,9 +53,10 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/invs/adduser', [InvController::class, 'addUser']);
     Route::post('/invs/removeuserbydate', [InvController::class, 'removeUserByDate']);
     Route::post('/invs/removeuser', [InvController::class, 'removeUser']);
-    Route::get('/invs/{id}',[InvController::class, 'profile']);
     Route::post('/invs/create',[InvController::class, 'create']);
     Route::post('/invs/delete', [InvController::class, 'removeInv']);
+    Route::get('/invs/statistics', [InvController::class, 'invStatistics']);
+    Route::get('/invs/{id}',[InvController::class, 'profile']);
 
     Route::get('/roles',[RoleController::class, 'index']);
     Route::post('/roles/add',[UserController::class, 'attachRole']);
