@@ -2,6 +2,13 @@
     <v-container>
         <Loading :loading="loading" />
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
+        <Confirmation
+         @dialog-closed="dialog = false"
+         :confirmationText="dialogText"
+         :onDeleteFunction="dialogFunction" 
+         :dialogData="dialogData" 
+         :dialog="dialog" 
+         />
         <v-row v-if="!loading">
             <v-col>
                 <v-card color="grey lighten-4">
@@ -10,30 +17,50 @@
                     </v-card-title>
                     <v-card-text>
                         <p class="text-body-1">
-                            With random distribution, EDOS will automatically distribute users over all the invs <br/>
+                            With random distribution, EDOS will automatically distribute users over all the invs. <br/>
+                            <strong>Warning</strong>, using automatic distribution will unlink and detach all users first then redistribute them. <br/>
                             <strong>Be Attention</strong>, that users count must be greater than the greatest count of users required per inv period. <br/>
-                            <strong>Be Attention</strong>, if the users count is less than the greatest count of users required per any inv period the system can't distribute.
+                            <strong>Take care</strong>, if the users count is less than the greatest count of users required per any inv period the system can't distribute.
                         </p>
                         <v-row>
                             <v-col>
-                                <v-alert v-if="users < max_slot.users_count" border="top" colored-border elevation="2" type="error">
-                                    can't run automatic distribution due to max number of <strong>users is {{users}}</strong> less than of max <strong>required {{max_slot.users_count}}</strong> <br/>
+                                <v-alert v-if="slots === 0" border="top" colored-border elevation="2" type="error">
+                                    Automatic distribution can't be executed. No invs in the system.
+                                </v-alert>
+                                <v-alert v-else-if="users < max_slot.users_count" border="top" colored-border elevation="2" type="error">
+                                    can't run automatic distribution due to count of <strong>users is {{users}}</strong> less than of max <strong>required {{max_slot.users_count}}</strong> <br/>
                                     <v-icon left small>mdi-table-eye</v-icon> {{max_slot.date_time | DateFormat}} <br/>
                                     <v-icon left small>mdi-clock</v-icon> {{max_slot.date_time | TimeFormat}}
                                 </v-alert>
                                 <v-alert v-else border="top" colored-border elevation="2" type="success">
-                                    Automatic users distribution can be run
+                                    Automatic users distribution can be executed.
                                 </v-alert>
                             </v-col>
                         </v-row>
-                        <v-row v-if="users >= max_slot.users_count">
+                        <v-row v-if="slots > 0 && users >= max_slot.users_count">
                             <v-col>
-                                <p class="text-h6"> {{slots}}<span class="text-caption">slots</span> / {{users}}<span class="text-caption">users</span> = {{(slots/users).toFixed(2)}} <span class="text-caption">each user will have {{Math.floor((slots/users).toFixed(2))}} or {{Math.ceil((slots/users).toFixed(2))}} invs.</span></p>
+                                <p class="text-h6">{{slots}}<span class="text-caption">(slots)</span> / {{users}}<span class="text-caption">(users)</span> = {{(slots/users).toFixed(2)}} <span class="text-caption">each user will have {{Math.floor((slots/users).toFixed(2))}} or {{Math.ceil((slots/users).toFixed(2))}} invs.</span></p>
                             </v-col>
                         </v-row>                        
                     </v-card-text>
-                    <v-card-actions v-if="users >= max_slot.users_count">
+                    <v-card-actions v-if="slots > 0 && users >= max_slot.users_count">
                         <v-btn block color="success"><v-icon left>mdi-shuffle</v-icon> execute random distribution</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-col>
+            <v-col>
+                <v-card loading color="grey lighten-4">
+                    <v-card-title>
+                        <h1 class="text-h5 font-weight-light">Flush all invs</h1>
+                    </v-card-title>
+                    <v-card-text>
+                        <p class="text-body-1">
+                            <strong>Warning</strong>, flushing all the invs will delete all the invs, detach and unlink all the users, courses, departments, and rooms from all invs. <br/>
+                            <strong>This action can't be undo.</strong>
+                        </p>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn :loading="btn1Loading" @click="confirmFlushInvs" color="error" block><v-icon left>mdi-delete</v-icon>flush edos system invs</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -44,9 +71,10 @@
 <script>
 import Loading from '../../components/Loading.vue'
 import Alert from '../../components/Alert.vue'
+import Confirmation from '../../components/Confirmation.vue'
 export default {
     components:{
-        Loading, Alert
+        Loading, Alert, Confirmation
     },
     data(){
         return{
@@ -54,10 +82,16 @@ export default {
             max_slot: null,
             slots: null,
             users: null,
+            btn1Loading: false,
 
             alert: false,
             alertType: null,
-            alertMessage: null
+            alertMessage: null,
+
+            dialog: false,
+            dialogText: null,
+            dialogData: null,
+            dialogFunction: null
         }
     },
     mounted(){
@@ -72,7 +106,15 @@ export default {
             this.loading = false
             this.users = response.data.users
             this.slots = response.data.sum
-            this.max_slot = response.data.max_slot
+            if(response.data.max_slot === 0)
+            {
+                this.max_slot = {}
+                this.max_slot['users_count'] = 0
+                this.max_slot['date_time'] = Date.now()
+            }
+            else {
+                this.max_slot = response.data.max_slot
+            }
         })
         .catch((error) => {
             this.loading = false
@@ -80,6 +122,36 @@ export default {
             this.alertType = 'error'
             this.alertMessage = error.response.data.message
         })
+    },
+    methods:{
+        confirmFlushInvs(){
+            this.dialog = true
+            this.dialogText = 'Are you sure you want to flush all invs?'
+            this.dialogFunction = this.flushInvs
+        },
+        flushInvs(){
+            this.btn1Loading = true
+            axios({
+                method: 'get',
+                url: '/api/invs/flush',
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response)=>{
+                this.btn1Loading = false
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+                this.slots = 0
+            })
+            .catch((error)=>{
+                this.btn1Loading = false
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+            })
+        }
     },
     filters:{
             DateFormat(value)
