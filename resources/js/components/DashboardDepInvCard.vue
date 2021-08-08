@@ -27,7 +27,8 @@
       >
         mdi-clock
       </v-icon>
-      <span class="text-caption grey--text font-weight-light">last update {{last_inv.created_at | ago}}</span>
+      <span v-if="last_inv" class="text-caption grey--text font-weight-light">last update {{last_inv.created_at | ago}}</span>
+      <span v-else class="text-caption grey--text font-weight-light">No invs found</span>
     </v-card-text>
   </v-card>
 </template>
@@ -56,7 +57,12 @@
       draw(){
             $.each(this.department_invs,(index, value) => {
                 this.labels.push(value['name'].split(" ").map((n)=>n[0]).join(""))
-                this.value.push(value['invs_count'])
+                if(value['invs_count'] > 0){
+                  this.value.push(value['invs_count'])
+                }
+                else{
+                  this.value.push(0)
+                }
             })
         }
     },

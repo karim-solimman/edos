@@ -1,8 +1,14 @@
 <template>
     <v-snackbar width="700" multi-line :timeout="timeout" v-model="value" elevation="3" :color="alertType">
-        <v-icon left v-if="alertType == 'success'">mdi-check-circle-outline</v-icon>
-        <v-icon left v-else>mdi-alert-circle-outline</v-icon>
-        {{ alertMessage }}
+        <v-row>
+            <v-col class="my-auto" cols="1">
+                <v-icon left v-if="alertType == 'success'">mdi-check-circle-outline</v-icon>
+                <v-icon left v-else>mdi-alert-circle-outline</v-icon>
+            </v-col>
+            <v-col>
+                {{ alertMessage }}
+            </v-col>
+        </v-row>
       <template v-slot:action="{ attrs }">
         <v-btn
           text
