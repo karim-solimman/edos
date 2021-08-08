@@ -9,6 +9,7 @@ use App\Models\Room;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class InvController extends Controller
 {
@@ -158,20 +159,39 @@ class InvController extends Controller
 
     public function invStatistics()
     {
-        $invs = Inv::all()->sum('users_limit');
-        $max_inv = Inv::all()->groupBy('date_time');
-        $array = [];
-        foreach ($max_inv as $key => $timeslot)
+        if(Inv::all()->count() > 0 && Role::where('name', 'user')->first()->users()->count() > 0)
         {
-            $array[$key] = 0;
-            foreach ($timeslot as $slot)
+            $invs = Inv::all()->sum('users_limit') ;
+            $users = Role::where('name', 'user')->first()->users()->count();
+            $max_inv = Inv::all()->groupBy('date_time');
+            $array = [];
+            foreach ($max_inv as $key => $timeslot)
             {
-                $array[$key] += $slot->users_limit;
+                $array[$key] = 0;
+                foreach ($timeslot as $slot)
+                {
+                    $array[$key] += $slot->users_limit;
+                }
             }
+            $max_slot['date_time'] = array_search(max($array), $array);
+            $max_slot['users_count'] = max($array);
+            return response(['sum' => $invs, 'users' => $users, 'max_slot' => $max_slot], 201);
         }
-        $max_slot['date_time'] = array_search(max($array), $array);
-        $max_slot['users_count'] = max($array);
-        $users = Role::where('name', 'user')->first()->users()->count();
-        return response(['sum' => $invs, 'users' => $users, 'max_inv' => $max_inv, 'max_slot' => $max_slot], 201);
+        else
+        {
+            $users = Role::where('name', 'user')->first()->users()->count();
+            return response(['sum' => 0, 'users' => $users, 'max_slot' => 0], 201);
+        }
+    }
+
+    public function flushInvs()
+    {
+        $invs = Inv::all();
+        foreach ($invs as $inv)
+        {
+            $inv->users()->detach();
+        }
+        DB::table('invs')->delete();
+        return response(['message' => 'All invs deleted successfully'], 201);
     }
 }
