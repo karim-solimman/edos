@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Inv;
+use App\Models\Role;
 use App\Models\Room;
 use App\Models\User;
 use Carbon\Carbon;
@@ -155,5 +156,22 @@ class InvController extends Controller
         return response(['message' => 'User '.$user->name.' Removed successfully', 'users' => $inv->users()->get()], 201);
     }
 
-
+    public function invStatistics()
+    {
+        $invs = Inv::all()->sum('users_limit');
+        $max_inv = Inv::all()->groupBy('date_time');
+        $array = [];
+        foreach ($max_inv as $key => $timeslot)
+        {
+            $array[$key] = 0;
+            foreach ($timeslot as $slot)
+            {
+                $array[$key] += $slot->users_limit;
+            }
+        }
+        $max_slot['date_time'] = array_search(max($array), $array);
+        $max_slot['users_count'] = max($array);
+        $users = Role::where('name', 'user')->first()->users()->count();
+        return response(['sum' => $invs, 'users' => $users, 'max_inv' => $max_inv, 'max_slot' => $max_slot], 201);
+    }
 }
