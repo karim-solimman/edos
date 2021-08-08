@@ -6,7 +6,7 @@
                 <h1 class="text-h4 font-weight-light">Dashboard</h1>
             </v-col>
         </v-row>
-        <v-row v-if="!loading && roles">
+        <v-row justify="center" v-if="!loading && roles">
             <v-col lg=2 md=2 cols=6>
                 <v-hover v-slot="{hover}">
                     <v-card color="light-blue darken-1" dark :ripple="ripple" :hover="true" style="text-decoration: none" :to="{name: 'users'}">
@@ -23,7 +23,7 @@
                     </v-card>   
                 </v-hover>
             </v-col>
-            <v-col lg=2 md=2 cols=6>
+            <v-col lg=3 md=3 cols=6>
                 <v-hover v-slot="{hover}">
                     <v-card color="purple darken-1" dark :ripple="ripple" hover style="text-decoration: none" :to="{name: 'users'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon large>mdi-account-group</v-icon></span>{{roles[1].users_count}}</v-card-title>
@@ -39,7 +39,7 @@
                     </v-card>
                 </v-hover>
             </v-col>
-            <v-col lg=2 md=2 cols=6>
+            <v-col lg=3 md=3 cols=6>
                 <v-hover v-slot="{hover}">
                     <v-card dark color="pink darken-2" :ripple="ripple" hover style="text-decoration: none" :to="{name: 'admin-invs'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-table-eye</v-icon></span>{{invs}}</v-card-title>
@@ -87,7 +87,7 @@
                     </v-card>
                 </v-hover>
             </v-col>
-            <v-col lg=2 md=2 cols=6>
+            <v-col lg=3 md=3 cols=6>
                 <v-hover v-slot="{hover}">
                     <v-card color="blue-grey darken-1" dark :ripple="ripple" hover style="text-decoration: none" :to="{name: 'courses'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-book-open-page-variant-outline</v-icon></span>{{courses}}</v-card-title>

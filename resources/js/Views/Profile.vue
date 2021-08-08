@@ -19,9 +19,12 @@
                     <span v-else>No department</span>
                 </v-chip>
             </v-col>
-            <v-col>
+            <v-col class="d-flex my-auto">
                 <h1 class="text-h1 font-weight-light">{{ invs.length }}<span class="text-overline">invs</span></h1>
             </v-col>
+            <v-col v-if="!loading && invs && invs.length > 0" class="d-flex flex-row-reverse my-auto">
+               <v-switch @click="switchView" :prepend-icon="switchIcon" inset v-model="switchToggle" :persistent-hint="true" :hint="switchHint"></v-switch>
+           </v-col>
        </v-row>
        <v-divider></v-divider>
        <v-row v-if="!loading && invs.length === 0 && roles && roles.length > 0">
@@ -44,12 +47,12 @@
                </v-alert>
            </v-col>
        </v-row>
-       <v-row v-if="!loading && invs.length > 0">
-           <v-col lg=4 md=4 cols=12 v-for="inv in invs" :key="inv.id">
+       <v-row v-if="!loading && invs.length > 0 && view == 'grid'">
+           <v-col lg=3 md=3 cols=11 v-for="inv in invs" :key="inv.id">
                <v-hover v-slot="{hover}">
                     <v-card color="grey lighten-5" hover @click="confirm(inv)">
                         <v-card-title>
-                                <h1 class="text-h4 font-weight-light">{{inv.date_time | DateFormat}}</h1>
+                                <h1 class="text-h5 font-weight-light">{{inv.date_time | DateFormat}}</h1>
                                 </v-card-title>
                             <v-card-subtitle>Time: {{inv.date_time | TimeFormat}}</v-card-subtitle>
                             <v-card-text>
@@ -73,10 +76,32 @@
                </v-hover>
            </v-col>
        </v-row>
-       <v-row>
+       <v-row v-if="!loading && invs.length > 0 && view == 'table'">
            <v-col>
-               <v-sheet rounded="xl" height="100" width="100">
-               </v-sheet>
+               <v-simple-table>
+                   <thead>
+                       <tr>
+                           <th>#</th>
+                           <th>Date</th>
+                           <th>Time</th>
+                           <th>Users</th>
+                           <th>Enrolled</th>
+                       </tr>
+                   </thead>
+                   <tbody>
+                       <tr v-for="(inv, i) in invs" :key="inv.id">
+                           <td>{{i+1}}</td>
+                           <td>{{inv.date_time | DateFormat}}</td>
+                           <td>{{inv.date_time | TimeFormat}}</td>
+                           <td>
+                               <v-chip dark small :color="inv.users_count < inv.room.users_limit? 'green darken-2' : 'red darken-2' ">
+                                    <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
+                                </v-chip>
+                           </td>
+                           <td>{{inv.pivot.created_at | ago}}</td>
+                       </tr>
+                   </tbody>
+               </v-simple-table>
            </v-col>
        </v-row>
    </v-container>
@@ -113,7 +138,12 @@ import Confirmation from '../components/Confirmation.vue'
                 dialog: false,
                 dialogData: null,
                 dialogFunction: null,
-                dialogText: ''
+                dialogText: '',
+
+                switchToggle: false,
+                switchHint: 'Table view',
+                switchIcon: 'mdi-table-eye',
+                view: 'grid'
             }
         },
         mounted() {
@@ -174,6 +204,21 @@ import Confirmation from '../components/Confirmation.vue'
                     console.log(error.response)
                 })
             },
+            switchView(){
+                if(!this.switchToggle)
+                {
+                    this.switchHint = "Table View"
+                    this.switchIcon = "mdi-table-eye"
+                    this.view = 'grid'
+                }
+                else 
+                {
+                    this.switchHint = "Grid View"
+                    this.switchIcon = "mdi-view-grid"
+                    this.view = 'table'
+                }
+                
+            }
         },
         filters:{
             DateFormat(value)
