@@ -7,6 +7,16 @@ const routes = [
         name: 'home'
     },
     {
+        path: '/profile',
+        component: require('./Views/Profile').default,
+        name: 'profile'
+    },
+    {
+        path: '/register',
+        component: require('./Views/Home').default,
+        name: 'register'
+    },
+    {
         path: '/invs',
         component: require('./Views/Invs').default,
         name: 'invs'
@@ -30,16 +40,6 @@ const routes = [
         path: '/admin/invs/:id/edit',
         component: require('./Views/Admin/EditInv.vue').default,
         name: 'edit-inv'
-    },
-    {
-        path: '/profile',
-        component: require('./Views/Profile').default,
-        name: 'profile'
-    },
-    {
-        path: '/register',
-        component: require('./Views/Home').default,
-        name: 'register'
     },
     {
         path: '/admin/users',
@@ -130,7 +130,13 @@ const routes = [
         path: '/admin/courses/:id',
         component: require('./Views/Admin/CourseProfile').default,
         name: 'courseProfile'
-    }
+    },
+    {
+        path: '/admin/settings',
+        component: require('./Views/Admin/Settings').default,
+        name: 'settings'
+    },
+
 ]
 
 export default new VueRouter({

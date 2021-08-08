@@ -10,10 +10,12 @@
                     </v-list-item-content>
                 </v-list-item>
                 <v-divider></v-divider>
+
                   <v-list-item color="primary" style="text-decoration: none" link v-if="isAdmin" :to="{name: 'dashboard'}">
                     <v-list-item-icon><v-icon>mdi-view-dashboard</v-icon></v-list-item-icon>
                     <v-list-item-content><v-list-item-title>Dashboard</v-list-item-title></v-list-item-content>
                 </v-list-item>
+                
                 <v-list-group v-if="isAdmin" no-action :value="false" prepend-icon="mdi-account-circle">
                     <template v-slot:activator>
                         <v-list-item-title>Users</v-list-item-title>
@@ -117,9 +119,15 @@
                     </v-list-item>
                 </v-list-group>
 
+
                 <v-list-item color="primary" style="text-decoration: none" link v-if="isAdmin" :to="{name: 'roles'}">
                     <v-list-item-icon><v-icon>mdi-lock-check-outline</v-icon></v-list-item-icon>
                     <v-list-item-content><v-list-item-title>Roles and Permissions</v-list-item-title></v-list-item-content>
+                </v-list-item>
+
+                <v-list-item color="primary" style="text-decoration: none" link v-if="isAdmin" :to="{name: 'settings'}">
+                    <v-list-item-icon><v-icon>mdi-cog</v-icon></v-list-item-icon>
+                    <v-list-item-content><v-list-item-title>System Settings</v-list-item-title></v-list-item-content>
                 </v-list-item>
 
 
