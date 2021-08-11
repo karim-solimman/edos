@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -22,7 +23,11 @@ class LoginController extends Controller
             return response(['message' => "Email or password doesn't match our records"], 401);
         }
 
-        $token = $user->createToken($user->email)->plainTextToken;
+        $roles = [];
+        foreach ($user->roles as $role)
+            array_push($roles, $role->name);
+
+        $token = $user->createToken($user->email, $roles)->plainTextToken;
         $invs = $user->invs()->get();
         $roles = $user->roles()->get();
         return response([

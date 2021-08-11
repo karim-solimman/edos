@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules\In;
 
 class InvController extends Controller
 {
@@ -67,7 +68,7 @@ class InvController extends Controller
         $request->validate([
             'course_id' => ['required', 'integer', 'exists:courses,id' ],
             'rooms' => ['required'],
-            'duration' => ['nullable', 'integer'],
+            'duration' => ['nullable'],
             'date' => ['required', 'date_format:Y-m-d'],
             'time' => ['required', 'date_format:H:i']
         ]);
@@ -159,7 +160,7 @@ class InvController extends Controller
 
     public function invStatistics()
     {
-        if(Inv::all()->count() > 0 && Role::where('name', 'user')->first()->users()->count() > 0)
+        if(Inv::all()->count() > 0 && Role::where('name', 'user')->first()->users()->count() )
         {
             $invs = Inv::all()->sum('users_limit') ;
             $users = Role::where('name', 'user')->first()->users()->count();
@@ -184,6 +185,53 @@ class InvController extends Controller
         }
     }
 
+    public function randomDistribution()
+    {
+        $all_invs = Inv::all()->groupBy('date_time');
+        $users = Role::where('name', 'user')->first()->users()->get()->shuffle();
+        $i = 0;
+        foreach ($all_invs as $date_time => $period_invs)
+        {
+            while($inv = Inv::where('date_time', $date_time)->whereColumn('users_count', '<', 'users_limit')->first())
+            {
+               $check = $users[$i]->invs()->get()->contains(function ($item, $key) use ($date_time) {
+                    return $item->date_time == $date_time;
+                });
+               if ($check)
+               {
+                   echo 'duplication';
+                   $i++;
+               }
+               else
+               {
+                   $inv->users()->attach($users[$i]['id']);
+                   $inv->users_count += 1;
+                   $inv->save();
+                   $i++;
+                   if($i === count($users))
+                   {
+                       $i = 0;
+                       $users = $users->shuffle();
+                   }
+               }
+
+            }
+        }
+
+        return response(['invs' => $all_invs, 'users' => $users],201);
+    }
+
+    public function detachAllUsers()
+    {
+        $invs = Inv::all();
+        foreach ($invs as $inv)
+        {
+            $inv->users()->detach();
+            $inv->users_count = 0;
+            $inv->save();
+        }
+        return response(['message' => 'All invs detached successfully'], 201);
+    }
     public function flushInvs()
     {
         $invs = Inv::all();
