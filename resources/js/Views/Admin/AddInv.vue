@@ -9,7 +9,7 @@
                         <h1 class="text-h4 font-weight-light">Add new inv/s</h1>
                     </v-card-title>
                     <v-card-text>
-                        <v-form v-model="valid" @submit.prevent="addInvs" ref="form">
+                        <v-form @submit.prevent="addInvs" ref="form">
                             <v-row>
                                 <v-col cols="12" lg="6" md="6">
                                     <v-autocomplete 
@@ -42,6 +42,7 @@
                                     label="Duration"
                                     v-model="duration"
                                     :rules="durationRules"
+                                    :error-messages="errorMessages['duration']"
                                     type="number"
                                     >
                                     </v-text-field>
@@ -64,7 +65,7 @@
                                     full-width
                                     required
                                     ></v-date-picker>
-                                    <v-btn :disabled="!valid" type="submit" block color="success"><v-icon left>mdi-plus</v-icon>Add new invs</v-btn>
+                                    <v-btn type="submit" block color="success"><v-icon left>mdi-plus</v-icon>Add new invs</v-btn>
                                 </v-col>
                             </v-row>
                             </v-form>
@@ -91,7 +92,6 @@ export default {
             alertMessage: null,
             courses: [],
             rooms: [],
-            valid: false,
             courseId: null,
             courseIdRules: [
                 v => !!v || 'Course is required',
@@ -100,7 +100,7 @@ export default {
             selectedRoomsRules: [
                 v => this.selectedRooms.length > 0 || 'At lease one room is required',
             ],
-            duration:null,
+            duration: '',
             durationRules: [
                 v => /^\d+$/.test(v) || 'Duration must be digits ',
                 v => (v > 0 && v <= 5) || 'Duration period is not acceptable'
@@ -111,6 +111,7 @@ export default {
             errorMessages: [
                 {course: ''},
                 {rooms: ''},
+                {duration: ''}
             ],
         }
     },
@@ -172,6 +173,11 @@ export default {
                 this.alertType = 'success'
                 this.alertMessage = response.data.message
                 this.btnLoading = false
+                //reset form
+                this.$refs.form.reset()
+                this.date = null
+                this.time = null
+                
             })
             .catch((error) => {
                 this.alert = true
@@ -179,6 +185,7 @@ export default {
                 this.alertMessage = error.response.data.message
                 this.errorMessages['course'] = error.response.data.errors['course_id']
                 this.errorMessages['rooms'] = error.response.data.errors['rooms']
+                this.errorMessages['duration'] = error.response.data.errors['duration']
                 this.btnLoading = false
             })
         }

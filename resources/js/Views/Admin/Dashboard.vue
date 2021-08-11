@@ -7,7 +7,7 @@
             </v-col>
         </v-row>
         <v-row justify="center" v-if="!loading && roles">
-            <v-col lg=2 md=2 cols=6>
+            <!-- <v-col lg=2 md=2 cols=6>
                 <v-hover v-slot="{hover}">
                     <v-card color="light-blue darken-1" dark :ripple="ripple" :hover="true" style="text-decoration: none" :to="{name: 'users'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon large>mdi-account-tie</v-icon></span>{{roles[0].users_count}}</v-card-title>
@@ -22,7 +22,7 @@
                             </v-expand-transition>
                     </v-card>   
                 </v-hover>
-            </v-col>
+            </v-col> -->
             <v-col lg=3 md=3 cols=6>
                 <v-hover v-slot="{hover}">
                     <v-card color="purple darken-1" dark :ripple="ripple" hover style="text-decoration: none" :to="{name: 'users'}">
@@ -87,7 +87,7 @@
                     </v-card>
                 </v-hover>
             </v-col>
-            <v-col lg=3 md=3 cols=6>
+            <v-col lg=2 md=2 cols=6>
                 <v-hover v-slot="{hover}">
                     <v-card color="blue-grey darken-1" dark :ripple="ripple" hover style="text-decoration: none" :to="{name: 'courses'}">
                         <v-card-title class="font-weight-light text-h1"><span class="text-overline"><v-icon>mdi-book-open-page-variant-outline</v-icon></span>{{courses}}</v-card-title>
