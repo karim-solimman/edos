@@ -39,17 +39,17 @@
                         </v-row>
                         <v-row v-if="slots > 0 && users >= max_slot.users_count">
                             <v-col>
-                                <p class="text-h6">{{slots}}<span class="text-caption">(slots)</span> / {{users}}<span class="text-caption">(users)</span> = {{(slots/users).toFixed(2)}} <span class="text-caption">each user will have {{Math.floor((slots/users).toFixed(2))}} or {{Math.ceil((slots/users).toFixed(2))}} invs.</span></p>
+                                <p class="text-h6">{{slots}}<span class="text-caption">(slots)</span> / {{users}}<span class="text-caption">(users)</span> = {{(slots/users).toFixed(2)}} <span class="text-caption">each user may have {{Math.floor((slots/users).toFixed(2))}} or {{Math.ceil((slots/users).toFixed(2))}} invs.</span></p>
                             </v-col>
                         </v-row>                        
                     </v-card-text>
                     <v-card-actions v-if="slots > 0 && users >= max_slot.users_count">
-                        <v-btn block color="success"><v-icon left>mdi-shuffle</v-icon> execute random distribution</v-btn>
+                        <v-btn style="text-decoration: none" :to="{name: 'random-distribution'}" block color="success"><v-icon left>mdi-shuffle</v-icon> execute random distribution</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
             <v-col>
-                <v-card loading color="grey lighten-4">
+                <v-card color="grey lighten-4">
                     <v-card-title>
                         <h1 class="text-h5 font-weight-light">Flush all invs</h1>
                     </v-card-title>
@@ -62,6 +62,33 @@
                     <v-card-actions>
                         <v-btn :loading="btn1Loading" @click="confirmFlushInvs" color="error" block><v-icon left>mdi-delete</v-icon>flush edos system invs</v-btn>
                     </v-card-actions>
+                </v-card>
+                 <v-card class="mt-5" color="grey lighten-4">
+                    <v-card-title>
+                        <h1 class="text-h5 font-weight-light">Clear all users invs</h1>
+                    </v-card-title>
+                    <v-card-text>
+                        <p class="text-body-1">
+                            <strong>Warning</strong>, Clearing all users invs will permenantly remove and unlink all users invs. <br/>
+                            <strong>No inv will be removed.</strong> <br/>
+                            <strong>This action can't be undo.</strong>
+                        </p>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn :loading="btn1Loading" @click="confirmDetachAllInvs" color="error" block><v-icon left>mdi-delete-forever</v-icon>clear all users invs</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-card color="grey lighten-4">
+                    <v-card-title>
+                        <h1 class="text-h4 font-weight-light">EDOS options</h1>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-switch label="Switch"></v-switch>
+                    </v-card-text>
                 </v-card>
             </v-col>
         </v-row>
@@ -147,6 +174,32 @@ export default {
             })
             .catch((error)=>{
                 this.btn1Loading = false
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+            })
+        },
+        confirmDetachAllInvs()
+        {
+            this.dialog = true
+            this.dialogText = 'Are you sure you want to unlink all users?'
+            this.dialogFunction = this.detachAllInvs
+        },
+        detachAllInvs()
+        {
+            axios({
+                method: 'post',
+                url: '/api/invs/detachallusers',
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+            })
+            .catch((error) => {
                 this.alert = true
                 this.alertType = 'error'
                 this.alertMessage = error.response.data.message
