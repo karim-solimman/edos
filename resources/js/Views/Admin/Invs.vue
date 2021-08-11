@@ -47,6 +47,10 @@
                     <template v-slot:[`item.time`]="{ item }">
                         {{item.date_time | TimeFormat}}
                     </template>
+                    <template v-slot:[`item.duration`]="{ item }">
+                        <span v-if="item.duration">{{item.duration}}</span>
+                        <span style="color: red" v-else> 0 </span>
+                    </template>
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn style="text-decoration: none" color="primary" icon small><v-icon small @click="showInvUsers(item)">mdi-account-group</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class="ml-1" color="info" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-calendar-outline</v-icon></v-btn>
@@ -185,7 +189,7 @@ export default {
             this.inv = inv
         }
     },
-    mounted() {
+    beforeMount() {
         axios({
             method: 'get',
             url: '/api/invs',
