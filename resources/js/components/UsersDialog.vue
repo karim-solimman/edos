@@ -6,13 +6,13 @@
                 <v-icon color="primary" large>mdi-information</v-icon>
             </v-card-title>
             <v-card-text>
-                <v-row>
+                <v-row v-if="item">
                     <v-col>
-                        <h4 class="text-h6"><v-icon left>mdi-calendar</v-icon> {{inv.date_time | DateFormat}}</h4>
-                        <h4 class="text-h6"><v-icon left>mdi-clock</v-icon> {{inv.date_time | TimeFormat}}</h4>
-                        <h4 class="text-h6"><v-icon left>mdi-book</v-icon> {{inv.course.code}} - {{inv.course.name}} </h4>
+                        <h4 v-if="item != null" class="text-h6"><v-icon left>mdi-calendar</v-icon> {{item.date_time | DateFormat}}</h4>
+                        <h4 class="text-h6"><v-icon left>mdi-clock</v-icon> {{item.date_time | TimeFormat}}</h4>
+                        <h4 class="text-h6"><v-icon left>mdi-book</v-icon> {{item.course.code}} - {{item.course.name}} </h4>
                         <v-chip-group v-if="inv.users.length > 0">
-                            <v-chip style="text-decoration: none" :to="{name: 'userProfile', params:{id: user.id}}" v-for="user in inv.users" :key="user.id">{{user.name}}</v-chip>
+                            <v-chip style="text-decoration: none" :to="{name: 'userProfile', params:{id: user.id}}" v-for="user in item.users" :key="user.id">{{user.name}}</v-chip>
                         </v-chip-group>
                         <h2 v-else class="text-body-1">No users to be displayed</h2>
                     </v-col>
@@ -36,7 +36,7 @@ export default {
     data(){
         return{
             status: this.dialog,
-            item: this.inv,
+            item: null,
         }
     },
     methods:{

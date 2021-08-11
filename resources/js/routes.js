@@ -136,6 +136,11 @@ const routes = [
         component: require('./Views/Admin/Settings').default,
         name: 'settings'
     },
+    {
+        path: '/admin/randomdistribution',
+        component: require('./Views/Admin/RandomDistribution').default,
+        name: 'random-distribution'
+    }
 
 ]
 
