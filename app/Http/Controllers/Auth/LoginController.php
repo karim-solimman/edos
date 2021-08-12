@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
@@ -30,11 +31,13 @@ class LoginController extends Controller
         $token = $user->createToken($user->email, $roles)->plainTextToken;
         $invs = $user->invs()->get();
         $roles = $user->roles()->get();
+        $settings = DB::table('settings')->get();
         return response([
             'user' => $user,
             'token' => $token,
             'invs' => $invs,
-            'roles' => $roles
+            'roles' => $roles,
+            'settings' => $settings
         ]);
     }
 

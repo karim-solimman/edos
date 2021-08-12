@@ -50,9 +50,10 @@ class UserController extends Controller
     public function profile(Request $request)
     {
         $user = User::where('id', $request->input('user_id'))->with(['department', 'roles'])->first();
-        $invs = $user->invs()->orderBy('date_time')->with('room')->withCount('users')->get();
+        $invs = $user->invs()->orderBy('date_time')->with(['room', 'course.department', 'users'])->withCount('users')->get();
         $roles = $user->roles()->get();
-        return response(['user' => $user ,'invs' => $invs, 'roles' => $roles]);
+        $settings = DB::table('settings')->get();
+        return response(['user' => $user ,'invs' => $invs, 'roles' => $roles, 'settings' => $settings]);
     }
 
     public function userProfile($id)
