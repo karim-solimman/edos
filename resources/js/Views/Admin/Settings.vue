@@ -28,7 +28,7 @@
                                     Automatic distribution can't be executed. No invs in the system.
                                 </v-alert>
                                 <v-alert v-else-if="users < max_slot.users_count" border="top" colored-border elevation="2" type="error">
-                                    can't run automatic distribution due to count of <strong>users is {{users}}</strong> less than of max <strong>required {{max_slot.users_count}}</strong> <br/>
+                                    can't run automatic distribution due to count of <strong>users is {{users}}</strong> less than of <strong>required {{max_slot.users_count}}</strong> <br/>
                                     <v-icon left small>mdi-table-eye</v-icon> {{max_slot.date_time | DateFormat}} <br/>
                                     <v-icon left small>mdi-clock</v-icon> {{max_slot.date_time | TimeFormat}}
                                 </v-alert>
@@ -80,14 +80,49 @@
                 </v-card>
             </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="!loading">
             <v-col>
                 <v-card color="grey lighten-4">
                     <v-card-title>
                         <h1 class="text-h4 font-weight-light">EDOS options</h1>
                     </v-card-title>
                     <v-card-text>
-                        <v-switch label="Switch"></v-switch>
+                        <v-row>
+                            <v-col class="my-auto" cols="6" lg="3" md="3">
+                                <v-switch
+                                color="success"
+                                inset>
+                                <template v-slot:label>
+                                    <span class="my-auto mt-2">Manual Selection</span>
+                                </template>
+                                </v-switch>
+                            </v-col>
+                            <v-col cols="6" lg="9" md="9">
+                                <p class="text-body-1 mt-6">
+                                    Apply the manual selection so the users can access and manually select invs based on their
+                                    convience.<br/><strong>Notice:</strong> it's not allowed to distribute users automatically while manual 
+                                    selection is ON.
+                                </p>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col class="my-auto" cols="6" lg="3" md="3">
+                                <v-switch
+                                color="info"
+                                inset>
+                                <template v-slot:label>
+                                    <span class="my-auto mt-2">Show Invs Details</span>
+                                </template>
+                                </v-switch>
+                            </v-col>
+                            <v-col cols="6" lg="9" md="9">
+                                <p class="text-body-1 mt-6">
+                                    Show invs details to users. The information that will be shown are 
+                                    <strong>[Department Name, Course Code, Course Name, Exam Duration]</strong>.
+                                    Users can only see these information after they inv selection not before.
+                                </p>
+                            </v-col>
+                        </v-row>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -118,7 +153,7 @@ export default {
             dialog: false,
             dialogText: null,
             dialogData: null,
-            dialogFunction: null
+            dialogFunction: null,
         }
     },
     mounted(){
