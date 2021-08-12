@@ -149,7 +149,7 @@ export default {
    name: 'navigation-drawer',
    data(){
        return{
-           drawer: false
+           drawer: this.drawerToggle
        }
    },
    props: {
