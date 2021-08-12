@@ -12,7 +12,6 @@
                         class="text-center"
                         cols="12"
                     >
-                        <v-icon x-large dark>mdi-vector-polyline-edit</v-icon>
                         <h1 class="text-lg-h1 font-weight-thin mb-4">
                         EDOS
                         </h1>
@@ -72,7 +71,7 @@
                 It's all with a simple one click.
             </p>
         </v-col>
-        <v-col cols="6" lg="3" md="3">
+        <v-col cols="12" lg="3" md="3">
             <div class="text-center">
                 <h1 class="text-h3 font-weight-light">{{date_time | getDay}} {{date_time | getMonth}}</h1>
                 <h5 class="text-h5 font-weight-light">{{date_time | getDayName}}</h5>
@@ -110,7 +109,7 @@
                 To use EDOS you are welcomed to register, but the admin should first add you as a new user so you can register in the system and set your password for the first time. EDOS not for everyone.
             </p>
         </v-col>
-        <v-col cols="12" lg="4">
+        <v-col cols="12" lg="4" md="4">
             <v-card>
                 <v-card-title>
                     <h1 class="text-h5 font-weight-light">LOGIN</h1>
