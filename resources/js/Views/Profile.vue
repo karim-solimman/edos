@@ -72,6 +72,9 @@
                                     <v-chip v-if="settings[1].value" small outlined color="info">
                                         <v-icon small left>mdi-folder</v-icon>{{inv.course.department.name}}
                                     </v-chip>
+                                    <v-chip v-if="settings[1].value" small outlined color="teal lighten-3">
+                                        <v-icon small left>mdi-alarm</v-icon>{{inv.duration? inv.duration+' hours' : 'no duration'}}
+                                    </v-chip>
                                 </v-chip-group>
                             </v-card-text>
                             <v-expand-transition>
@@ -97,6 +100,7 @@
                            <th v-if="settings[1].value">Room</th>
                            <th v-if="settings[1].value">Course</th>
                            <th v-if="settings[1].value">Dep</th>
+                           <th v-if="settings[1].value">Dur</th>
                            <th>Users</th>
                            <th>Enrolled</th>
                            <th>Actions</th>
@@ -109,6 +113,7 @@
                            <td v-if="settings[1].value">{{inv.room.number}}</td>
                            <td v-if="settings[1].value">{{inv.course.code}}</td>
                            <td v-if="settings[1].value">{{inv.course.department.name}}</td>
+                           <td v-if="settings[1].value">{{inv.duration? inv.duration + ' hours' : 'No duration'}}</td>
                            <td>
                                <v-chip dark small :color="inv.users_count < inv.room.users_limit? 'green darken-2' : 'red darken-2' ">
                                     <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}

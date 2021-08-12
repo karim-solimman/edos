@@ -100,8 +100,8 @@
                                     <td>{{user.name}}</td>
                                     <td>{{user.department.name}}</td>
                                     <td>
-                                        <v-btn color="success" style="text-decoration: none" small icon :to="{name: 'userProfile', params:{id: user.id}}"><v-icon small>mdi-account</v-icon></v-btn>
-                                        <v-btn color="error" style="text-decoration: none" small icon @click="confirmUser(user.id)"><v-icon>mdi-close</v-icon></v-btn>
+                                        <v-btn color="info" style="text-decoration: none" small icon :to="{name: 'userProfile', params:{id: user.id}}"><v-icon small>mdi-account</v-icon></v-btn>
+                                        <v-btn color="error" style="text-decoration: none" small icon @click="confirmUser(user.id)"><v-icon small>mdi-delete</v-icon></v-btn>
                                     </td>  
                                 </tr>
                             </tbody>
