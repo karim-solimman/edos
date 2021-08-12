@@ -2,7 +2,8 @@ export default {
     state: {
         user: JSON.parse(localStorage.getItem('user')),
         invs: Array,
-        roles: Array
+        roles: Array,
+        settings: Array
     },
     mutations: {
         updateUser(state, newUser) {
@@ -13,6 +14,9 @@ export default {
         },
         updateRoles(state, updatedRoles) {
             state.roles = updatedRoles
+        },
+        updateSettings(state, updatedSettings) {
+            state.settings = updatedSettings
         }
     },
     actions: {
@@ -24,6 +28,9 @@ export default {
         },
         updateRoles({ commit }, updateRoles) {
             commit('updateRoles', updateRoles)
+        },
+        updateSettings({ commit }, updateSettings) {
+            commit('updateSettings', updateSettings)
         }
     },
     getters: {
@@ -35,6 +42,9 @@ export default {
         },
         getRoles(state) {
             return state.roles
+        },
+        getSettings(state) {
+            return state.settings
         }
     },
     modules: {

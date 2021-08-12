@@ -9,7 +9,7 @@
          :dialogData="dialogData" 
          :dialog="dialog" 
          />
-        <div v-if="!loading">
+        <div v-if="!loading && settings[0].value">
             <v-row>
                 <v-col cols="10" lg="10" md="10">
                     <v-text-field
@@ -55,6 +55,13 @@
                 </v-col>
             </v-row>
         </div>
+        <v-row v-if="!loading && !settings[0].value">
+            <v-col>
+                <v-alert border="top" colored-border elevation="2" type="error">
+                    Admin turn off manual selection please contact admin to authorize manual selection.
+                </v-alert>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
@@ -84,15 +91,19 @@ import Confirmation from '../components/Confirmation.vue'
                 invs: [],
                 user_invs: [],
                 tmp_data: [],
+                loading: true,
+                search: '',
+
                 alert: false,
                 alertType: null,
                 alertMessage: null,
-                loading: true,
-                search: '',
+
                 dialog: false,
                 dialogData: null,
                 dialogFunction: null,
-                dialogText: ''
+                dialogText: '',
+
+                settings: this.$store.getters.getSettings
             }
         },
         methods:{
@@ -108,7 +119,7 @@ import Confirmation from '../components/Confirmation.vue'
               if(this.isExists(date_time)){
                   this.dialog = true
                   this.dialogData = date_time
-                  this.dialogText = 'Are you sure you want to delete inv?'
+                  this.dialogText = 'Are you sure you want to delete inv on ' + this.$options.filters.DateFormat(date_time) + ' ?' 
                   this.dialogFunction = this.removeInv
               }
               else{
@@ -213,7 +224,7 @@ import Confirmation from '../components/Confirmation.vue'
             })
             .then((response) => {
                 this.invs = response.data.invs
-               
+                this.$store.dispatch('updateSettings', response?.data?.settings)
                 this.loading = false
             })
             .catch((error) => {
