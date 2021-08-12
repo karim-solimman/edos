@@ -22,22 +22,29 @@ class UserController extends Controller
 
     public function dashboard()
     {
-        $roles = Role::withCount('users')->get();
-        $invs = Inv::all()->count();
-        $departments = Department::all()->count();
-        $department_courses = Department::withCount('courses')->get();
-        $department_invs = Department::withCount('invs')->get();
-        $last_inv = Inv::orderByDesc('created_at')->first();
-        $rooms = Room::all()->count();
-        $courses = Course::all()->count();
+        if (auth()->user()->tokenCan('admin'))
+        {
+            $roles = Role::withCount('users')->get();
+            $invs = Inv::all()->count();
+            $departments = Department::all()->count();
+            $department_courses = Department::withCount('courses')->get();
+            $department_invs = Department::withCount('invs')->get();
+            $last_inv = Inv::orderByDesc('created_at')->first();
+            $rooms = Room::all()->count();
+            $courses = Course::all()->count();
 
-        return response(['roles' => $roles, 'invs' => $invs,
-            'departments' => $departments,
-            'rooms' => $rooms,
-            'courses' => $courses,
-            'department_courses' => $department_courses,
-            'department_invs' => $department_invs,
-            'last_inv' => $last_inv], 201);
+            return response(['roles' => $roles, 'invs' => $invs,
+                'departments' => $departments,
+                'rooms' => $rooms,
+                'courses' => $courses,
+                'department_courses' => $department_courses,
+                'department_invs' => $department_invs,
+                'last_inv' => $last_inv], 201);
+        }
+        else
+        {
+            return response(['message' => 'Unauthorized'], 402);
+        }
     }
 
     public function profile(Request $request)
@@ -82,7 +89,7 @@ class UserController extends Controller
     {
         $user_id = $request->input('user_id');
         $inv_id = $request->input('inv_id');
-        $inv = Inv::with('users.department')->where('id', $inv_id)->first();
+        $inv = Inv::where('id', $inv_id)->first();
         $user = User::where('id', $user_id)->first();
         if($user->invs()->detach($inv_id))
         {
@@ -90,6 +97,7 @@ class UserController extends Controller
         }
         $inv->save();
         $invs = $user->invs()->with(['room', 'course', 'course.department'])->orderBy('date_time')->get();
+        $inv = Inv::with(['room', 'course.department' ,'users.department'])->where('id', $inv_id)->first();
         return response([
             'message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s',$inv->date_time)->toDateString().', removed successfully from '.$user->name ,
             'invs' => $invs,

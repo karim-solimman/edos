@@ -199,7 +199,6 @@ class InvController extends Controller
                 });
                if ($check)
                {
-                   echo 'duplication';
                    $i++;
                }
                else
@@ -218,6 +217,7 @@ class InvController extends Controller
             }
         }
 
+        $users = Role::where('name', 'user')->first()->users()->with(['department'])->withCount('invs')->get();
         return response(['invs' => $all_invs, 'users' => $users],201);
     }
 
