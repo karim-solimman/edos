@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer v-model="drawer" app>
+    <v-navigation-drawer disable-resize-watcher v-model="drawer" app>
             <v-list dense>
                 <v-list-item>
                     <v-list-item-content>
