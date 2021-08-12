@@ -69,9 +69,9 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/departments/{id}', [DepartmentController::class, 'profile']);
     Route::post('/departments/create', [DepartmentController::class, 'create']);
 
+    Route::post('/rooms/create',[RoomController::class,'create']);
     Route::get('/rooms',[RoomController::class, 'index']);
     Route::get('/rooms/{id}',[RoomController::class, 'profile']);
-    Route::post('/rooms/create',[RoomController::class,'create']);
 
     Route::get('/courses',[CourseController::class,'index']);
     Route::post('/courses/create',[CourseController::class, 'create']);

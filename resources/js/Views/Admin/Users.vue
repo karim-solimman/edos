@@ -39,7 +39,7 @@
                         <v-switch color="info" @click="changeRole(item.id,'dataEntery')" v-model="switchButtons" :value="item.id+':dataEntery'"></v-switch>
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
-                        <v-btn style="text-decoration: none" icon small :to="{name: 'userProfile', params:{id: item.id}}"><v-icon small>mdi-account</v-icon></v-btn>
+                        <v-btn color="info" style="text-decoration: none" icon small :to="{name: 'userProfile', params:{id: item.id}}"><v-icon small>mdi-account</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class = "ml-2" icon small :to="{name: 'editUser', params:{id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
                     </template>
                 </v-data-table>
