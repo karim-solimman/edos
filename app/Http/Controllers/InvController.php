@@ -49,7 +49,9 @@ class InvController extends Controller
         foreach ($data as $item)
             ksort($item);
 
-        return response(['invs' => $data]);
+
+        $settings = DB::table('settings')->get();
+        return response(['invs' => $data, 'settings' => $settings], 201);
     }
 
     public function profile($id)
@@ -160,6 +162,7 @@ class InvController extends Controller
 
     public function invStatistics()
     {
+        $settings = DB::table('settings')->get();
         if(Inv::all()->count() > 0 && Role::where('name', 'user')->first()->users()->count() )
         {
             $invs = Inv::all()->sum('users_limit') ;
@@ -176,19 +179,23 @@ class InvController extends Controller
             }
             $max_slot['date_time'] = array_search(max($array), $array);
             $max_slot['users_count'] = max($array);
-            return response(['sum' => $invs, 'users' => $users, 'max_slot' => $max_slot], 201);
+            return response(['sum' => $invs, 'users' => $users, 'max_slot' => $max_slot, 'settings' => $settings], 201);
         }
         else
         {
             $users = Role::where('name', 'user')->first()->users()->count();
-            return response(['sum' => 0, 'users' => $users, 'max_slot' => 0], 201);
+            return response(['sum' => 0, 'users' => $users, 'max_slot' => 0, 'settings' => $settings], 201);
         }
     }
 
     public function randomDistribution()
     {
+        $conflict_queue = array();
         $all_invs = Inv::all()->groupBy('date_time');
         $users = Role::where('name', 'user')->first()->users()->get()->shuffle();
+        foreach ($users as $user)
+            $user->invs()->detach();
+        DB::table('invs')->update(['users_count' => 0]);
         $i = 0;
         foreach ($all_invs as $date_time => $period_invs)
         {
@@ -199,26 +206,46 @@ class InvController extends Controller
                 });
                if ($check)
                {
-                   $i++;
+                   array_push($conflict_queue, $users[$i]);
                }
                else
                {
                    $inv->users()->attach($users[$i]['id']);
                    $inv->users_count += 1;
                    $inv->save();
-                   $i++;
-                   if($i === count($users))
-                   {
-                       $i = 0;
-                       $users = $users->shuffle();
-                   }
                }
+                $i++;
+                if($i === count($users))
+                {
+                    while(Inv::where('date_time', $date_time)->whereColumn('users_count', '<', 'users_limit')->first() && count($conflict_queue))
+                    {
+                        $inv = Inv::where('date_time', $date_time)->whereColumn('users_count', '<', 'users_limit')->first();
+                        $user = array_shift($conflict_queue);
+                        $check = $user->invs()->get()->contains(function ($item, $key) use ($date_time) {
+                            return $item->date_time == $date_time;
+                        });
+                        if(!$check)
+                        {
+                            $inv->users()->attach($user->id);
+                            $inv->users_count += 1;
+                            $inv->save();
+                        }
+                        else
+                        {
+                            array_push($conflict_queue, $user);
+                        }
+                    }
+                    $i = 0;
+                    $users = $users->shuffle();
+                }
 
             }
         }
-
+        $original_queue = $conflict_queue;
+        $original_queue = array_reverse($original_queue);
+        $reverse_queue = array_pop($conflict_queue);
         $users = Role::where('name', 'user')->first()->users()->with(['department'])->withCount('invs')->get();
-        return response(['invs' => $all_invs, 'users' => $users],201);
+        return response(['invs' => $all_invs, 'users' => $users, 'conflict_queue' => $original_queue, 'reverse_queue' => $reverse_queue],201);
     }
 
     public function detachAllUsers()
