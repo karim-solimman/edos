@@ -7,6 +7,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\InvController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -77,4 +78,6 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/courses/create',[CourseController::class, 'create']);
     Route::get('/courses/{id}',[CourseController::class, 'profile']);
     Route::get('/courses/{id}/remove',[CourseController::class,'delete']);
+
+    Route::post('/settings/update', [SettingsController::class, 'updateSettings']);
 });
