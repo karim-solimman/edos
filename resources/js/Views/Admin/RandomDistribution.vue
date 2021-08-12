@@ -1,11 +1,13 @@
 <template>
     <v-container>
-        <v-row>
+        <Loading :loading="loading" />
+        <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
+        <v-row v-if="!loading">
             <v-col>
                 <h1 class="text-h4 font-weight-light">Random distribution</h1>
             </v-col>
         </v-row>
-        <v-row justify="center" v-if="users && users.length > 0">
+        <v-row justify="center" v-if="!loading && users && users.length > 0">
             <v-col cols="6" lg="3" md="3">
                 <v-card elevation="3" color="green lighten-4">
                     <v-card-title class="justify-center">
@@ -37,7 +39,7 @@
                 </v-card> 
             </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="!loading && users" >
             <v-col>
                 <v-data-table :headers="headers" :items="users">
                     <template v-slot:[`item.index`]="{index}">
@@ -54,7 +56,12 @@
 </template>
 
 <script>
+import Loading from '../../components/Loading.vue'
+import Alert from '../../components/Alert.vue'
 export default {
+    components:{
+        Loading, Alert
+    },
     data(){
         return{
             data: '',
@@ -66,7 +73,13 @@ export default {
                 {text: 'department', value: 'department.name'},
                 {text: 'invs count', value: 'invs_count'},
                 {text: 'actions', value: 'actions'}
-            ]
+            ],
+
+            loading: true,
+
+            alert: false,
+            alertType: null,
+            alertMessage: null,
         }
     },
     mounted(){
@@ -80,9 +93,13 @@ export default {
         .then((response) => {
             this.data = response.data
             this.users = response.data.users
+            this.loading = false
         })
         .catch((error) => {
-            console.log(error.response.data)
+            this.alert = true
+            this.alertType = 'error'
+            this.alertMessage = error.response.data.message
+            this.loading = false
         })
     },
     methods:{

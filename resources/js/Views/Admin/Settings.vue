@@ -75,7 +75,7 @@
                         </p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn :loading="btn1Loading" @click="confirmDetachAllInvs" color="error" block><v-icon left>mdi-delete-forever</v-icon>clear all users invs</v-btn>
+                        <v-btn :loading="btn2Loading" @click="confirmDetachAllInvs" color="error" block><v-icon left>mdi-delete-forever</v-icon>clear all users invs</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -90,6 +90,8 @@
                         <v-row>
                             <v-col class="my-auto" cols="6" lg="3" md="3">
                                 <v-switch
+                                v-model="settings[0].value"
+                                @click="updateSettings"
                                 color="success"
                                 inset>
                                 <template v-slot:label>
@@ -109,6 +111,8 @@
                             <v-col class="my-auto" cols="6" lg="3" md="3">
                                 <v-switch
                                 color="info"
+                                v-model="settings[1].value"
+                                @click="updateSettings"
                                 inset>
                                 <template v-slot:label>
                                     <span class="my-auto mt-2">Show Invs Details</span>
@@ -145,6 +149,7 @@ export default {
             slots: null,
             users: null,
             btn1Loading: false,
+            btn2Loading: false,
 
             alert: false,
             alertType: null,
@@ -154,6 +159,8 @@ export default {
             dialogText: null,
             dialogData: null,
             dialogFunction: null,
+
+            settings: null
         }
     },
     mounted(){
@@ -168,6 +175,7 @@ export default {
             this.loading = false
             this.users = response.data.users
             this.slots = response.data.sum
+            this.settings = response.data.settings
             if(response.data.max_slot === 0)
             {
                 this.max_slot = {}
@@ -222,6 +230,7 @@ export default {
         },
         detachAllInvs()
         {
+            this.btn2Loading = true
             axios({
                 method: 'post',
                 url: '/api/invs/detachallusers',
@@ -233,6 +242,34 @@ export default {
                 this.alert = true
                 this.alertType = 'success'
                 this.alertMessage = response.data.message
+                this.btn2Loading = false
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+                this.btn2Loading = false
+            })
+        },
+        updateSettings(){
+            let formData = new FormData()
+            formData.append('manual_selection', this.settings[0].value ? 1 : 0)
+            formData.append('show_details', this.settings[1].value ? 1 : 0)
+            axios({
+                method: 'post',
+                url: '/api/settings/update',
+                data: formData,
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+
+                this.$store.dispatch('updateSettings', response?.data?.settings)
+                this.settings = response?.data?.settings
             })
             .catch((error) => {
                 this.alert = true
