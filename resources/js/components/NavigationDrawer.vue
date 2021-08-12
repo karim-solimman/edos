@@ -159,6 +159,10 @@ export default {
    },
    watch:{
        drawerToggle: function(newVal, oldVal) {this.drawer = newVal},
+       drawer: function(newVal, oldVal) {
+           if(oldVal)
+                this.$emit('drawer-close')
+        }
    }
 }
 </script>

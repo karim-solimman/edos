@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <navigation-drawer @drawer-toggle-fun="drawerToggle = !drawerToggle" :drawerToggle="this.drawerToggle" :isAdmin="isAdmin" :isUser="isUser" :status="this.status" ></navigation-drawer>
+        <navigation-drawer @drawer-close="drawerToggle = false" :drawerToggle="this.drawerToggle" :isAdmin="isAdmin" :isUser="isUser" :status="this.status" ></navigation-drawer>
         <nav-bar @drawer-toggle="drawerToggle = !drawerToggle" @logged-out="loggedOut" :status="this.status"></nav-bar>
         <v-main>
             <v-container class="mb-12" fluid>
