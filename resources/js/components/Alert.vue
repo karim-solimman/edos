@@ -1,5 +1,5 @@
 <template>
-    <v-snackbar width="700" multi-line :timeout="timeout" v-model="value" elevation="3" :color="alertType">
+    <v-snackbar width="720" multi-line :timeout="timeout" v-model="value" elevation="3" :color="alertType">
         <v-row>
             <v-col class="my-auto" cols="1">
                 <v-icon left v-if="alertType == 'success'">mdi-check-circle-outline</v-icon>
