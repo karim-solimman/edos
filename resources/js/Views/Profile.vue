@@ -48,7 +48,7 @@
            </v-col>
        </v-row>
        <v-row v-if="!loading && invs.length > 0 && view == 'grid'">
-           <v-col lg=3 md=3 cols=11 v-for="inv in invs" :key="inv.id">
+           <v-col lg=4 md=4 cols=6 v-for="inv in invs" :key="inv.id">
                <v-hover v-slot="{hover}">
                     <v-card color="grey lighten-5" hover @click="confirm(inv)">
                         <v-card-title>
@@ -56,12 +56,23 @@
                                 </v-card-title>
                             <v-card-subtitle>Time: {{inv.date_time | TimeFormat}}</v-card-subtitle>
                             <v-card-text>
-                                <v-chip dark small :color="inv.users_count < inv.room.users_limit? 'green darken-2' : 'red darken-2' ">
-                                    <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
-                                </v-chip>
-                                <v-chip small color="info" outlined>
-                                    <v-icon small left>mdi-clock-outline</v-icon>{{inv.pivot.created_at | ago}}
-                                </v-chip>
+                                <v-chip-group active-class="primary--text" column>
+                                    <v-chip dark small :color="inv.users_count < inv.room.users_limit? 'green darken-2' : 'red darken-2' ">
+                                        <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
+                                    </v-chip>
+                                    <v-chip small color="info" outlined>
+                                        <v-icon small left>mdi-clock-outline</v-icon>{{inv.pivot.created_at | ago}}
+                                    </v-chip>
+                                    <v-chip v-if="settings[1].value" small color="primary">
+                                        <v-icon small left>mdi-door</v-icon>{{inv.room.number}}
+                                    </v-chip>
+                                    <v-chip v-if="settings[1].value" small color="warning">
+                                        <v-icon small left>mdi-book</v-icon>{{inv.course.code}}
+                                    </v-chip>
+                                    <v-chip v-if="settings[1].value" small outlined color="info">
+                                        <v-icon small left>mdi-folder</v-icon>{{inv.course.department.name}}
+                                    </v-chip>
+                                </v-chip-group>
                             </v-card-text>
                             <v-expand-transition>
                                 <div
@@ -81,24 +92,32 @@
                <v-simple-table>
                    <thead>
                        <tr>
-                           <th>#</th>
                            <th>Date</th>
                            <th>Time</th>
+                           <th v-if="settings[1].value">Room</th>
+                           <th v-if="settings[1].value">Course</th>
+                           <th v-if="settings[1].value">Dep</th>
                            <th>Users</th>
                            <th>Enrolled</th>
+                           <th>Actions</th>
                        </tr>
                    </thead>
                    <tbody>
-                       <tr v-for="(inv, i) in invs" :key="inv.id">
-                           <td>{{i+1}}</td>
+                       <tr v-for="(inv) in invs" :key="inv.id">
                            <td>{{inv.date_time | DateFormat}}</td>
                            <td>{{inv.date_time | TimeFormat}}</td>
+                           <td v-if="settings[1].value">{{inv.room.number}}</td>
+                           <td v-if="settings[1].value">{{inv.course.code}}</td>
+                           <td v-if="settings[1].value">{{inv.course.department.name}}</td>
                            <td>
                                <v-chip dark small :color="inv.users_count < inv.room.users_limit? 'green darken-2' : 'red darken-2' ">
                                     <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
                                 </v-chip>
                            </td>
                            <td>{{inv.pivot.created_at | ago}}</td>
+                           <td>
+                               <v-btn style="text-decoration: none" @click="confirm(inv)" icon small color="error"><v-icon small>mdi-delete</v-icon></v-btn>
+                           </td>
                        </tr>
                    </tbody>
                </v-simple-table>
@@ -131,7 +150,7 @@ import Confirmation from '../components/Confirmation.vue'
                 loading: true,
                 invs: [],
                 roles: [],
-                user: JSON.parse(localStorage.getItem('user')),
+                user: this.$store.getters.getUser,
                 alertType: null,
                 alertMessage: null,
                 alert: false,
@@ -143,7 +162,9 @@ import Confirmation from '../components/Confirmation.vue'
                 switchToggle: false,
                 switchHint: 'Table view',
                 switchIcon: 'mdi-table-eye',
-                view: 'grid'
+                view: 'grid',
+
+                settings: null
             }
         },
         mounted() {
@@ -164,6 +185,8 @@ import Confirmation from '../components/Confirmation.vue'
                     this.roles.push(response.data.roles[index]['slug'])
                 })
                 this.$store.dispatch('updateRoles', this.roles)
+                this.$store.dispatch('updateSettings', response.data.settings)
+                this.settings = this.$store.getters.getSettings
                 this.$emit('logged-in', true)
                 this.loading = false
             })

@@ -210,8 +210,9 @@ import Loading from '../components/Loading.vue'
                            localStorage.setItem('user', JSON.stringify(response.data.user))
                            this.$store.dispatch('updateUser', response.data.user)
                            this.$store.dispatch('updateInvs', response?.data?.invs)
+                           this.$store.dispatch('updateSettings', response?.data?.settings)
                            $.each(response.data.roles, (index, value) => {
-                               roles.push(response.data.roles[index]['slug'])
+                               roles.push(value['slug'])
                            })
                            this.$store.dispatch('updateRoles', roles)
                            this.$emit('logged-in',true)
