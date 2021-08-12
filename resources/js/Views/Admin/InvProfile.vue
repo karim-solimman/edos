@@ -4,8 +4,8 @@
         <Loading :loading="loading"/>
         <Confirmation
         @dialog-closed="dialog = false"
-        :confirmationText="'Are you sure you want to detach user?'"
-        :onDeleteFunction="removeUser" 
+        :confirmationText="dialogText"
+        :onDeleteFunction="dialogFunction" 
         :dialogData="dialogData" 
         :dialog="dialog" 
         />        
@@ -54,7 +54,7 @@
                         <td>{{user.pivot.created_at | ago}}</td>
                         <td>
                             <v-btn style="text-decoration: none" small icon :to="{name: 'userProfile', params:{id: user.id}}"><v-icon small>mdi-account</v-icon></v-btn>
-                            <v-btn color="error" style="text-decoration: none" small icon @click="confirm(user.id)"><v-icon>mdi-close</v-icon></v-btn>
+                            <v-btn color="error" style="text-decoration: none" small icon @click="confirm(user)"><v-icon small>mdi-delete</v-icon></v-btn>
                         </td>
                     </tr>
                     </tbody>
@@ -77,11 +77,15 @@ import Confirmation from '../../components/Confirmation.vue'
                 invId : null,
                 inv: {},
                 loading: true,
+
                 dialog: false,
                 dialogData: null,
+                dialogText: null,
+                dialogFunction: null,
+
                 alert: false,
-                alertType: '',
-                alertMessage: ''
+                alertType: null,
+                alertMessage: null
             }
         },
         mounted() {
@@ -104,8 +108,10 @@ import Confirmation from '../../components/Confirmation.vue'
             })
         },
         methods:{
-            confirm(userId){
-                this.dialogData = userId
+            confirm(user){
+                this.dialogData = user.id
+                this.dialogText = "Are you sure you want to unlink " + user.name +" ?"
+                this.dialogFunction = this.removeUser
                 this.dialog = true
             },
             removeUser(userId){
@@ -124,8 +130,7 @@ import Confirmation from '../../components/Confirmation.vue'
                     this.alert = true
                     this.alertType = "success"
                     this.alertMessage = response.data.message
-                    this.inv.users = response.data.inv.users
-                    this.inv.users_count -=1
+                    this.inv = response.data.inv
                 })
                 .catch((error) => {
                     this.alert = true

@@ -25,9 +25,9 @@
                        {{index+1}}
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
-                        <v-btn style="text-decoration: none" icon small :to="{name: 'courseProfile', params:{id: item.id}}"><v-icon small>mdi-book-account</v-icon></v-btn>
+                        <v-btn color="info" style="text-decoration: none" icon small :to="{name: 'courseProfile', params:{id: item.id}}"><v-icon small>mdi-book-account</v-icon></v-btn>
                         <v-btn style="text-decoration: none" icon small :to="{name: 'editCourse', params: {id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
-                        <v-btn style="text-decoration: none" color="error" icon small @click="confirm(item)"><v-icon small>mdi-close</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" color="error" icon small @click="confirm(item)"><v-icon small>mdi-delete</v-icon></v-btn>
                     </template>   
                 </v-data-table>
             </v-col>
@@ -72,7 +72,7 @@ export default {
     methods:{
         confirm(course){
             this.dialog = true
-            this.dialogText = 'Are you sure you want to delete ' + course.code + ' - ' + course.name
+            this.dialogText = 'Are you sure you want to delete ' + course.code + ' - ' + course.name + " ?"
             this.dialogData = course.id
         },
         deleteCourse(courseId){
