@@ -1,26 +1,35 @@
 import VueRouter from "vue-router";
 
 const routes = [
+    //public routes
     {
         path: '/',
         component: require('./Views/Login').default,
         name: 'home'
     },
     {
-        path: '/profile',
-        component: require('./Views/Profile').default,
-        name: 'profile'
+        path: '/about',
+        component: require('./Views/About').default,
+        name: 'about'
     },
     {
         path: '/register',
         component: require('./Views/Home').default,
         name: 'register'
     },
+    //user routes
+    {
+        path: '/profile',
+        component: require('./Views/Profile').default,
+        name: 'profile'
+    },
     {
         path: '/invs',
         component: require('./Views/Invs').default,
         name: 'invs'
     },
+   
+    //admin routes
     {
         path: '/admin/invs',
         component: require('./Views/Admin/Invs').default,
