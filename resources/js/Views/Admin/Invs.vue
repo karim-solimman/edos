@@ -11,7 +11,7 @@
          />
          <UserDialog :dialog="userDialog" :inv="inv" @user-dialog-closed="userDialog = false" />
         <v-row align="center" justify="center" v-if="!loading">
-           <v-col lg="5" md="5">
+           <v-col cols="12" lg="4" md="4">
                <v-text-field
                 v-model="search"
                 append-icon="mdi-magnify"
@@ -20,7 +20,7 @@
                 hide-details
             ></v-text-field>
            </v-col>
-           <v-col lg="5" md="5">
+           <v-col cols="12" lg="4" md="4">
                <v-text-field
                 v-model="date"
                 label="Date Filter"
@@ -29,13 +29,20 @@
                 type="date"
             ></v-text-field>
            </v-col>
-           <v-col class="text-center" lg="2" md="2">
-               <v-btn @click="date = ''; search = ''" class="mt-6" text>
-                   <v-icon left>mdi-delete-outline</v-icon>clear search
+           <v-col class="text-center d-flex flex-row justify-center" cols="6" lg="2" md="2">
+               <v-btn icon @click="date = ''; search = ''" class="mt-6" text>
+                   <v-icon>mdi-delete-outline</v-icon>
                </v-btn>
+                <export-excel name="invs.xls" :data="export_data" :fields="export_fields">
+                    <v-btn class="mt-6 ml-3" color="success" icon><v-icon>mdi-microsoft-excel</v-icon></v-btn>
+               </export-excel>
+           </v-col>
+           <v-col class="my-auto mt-5" cols="6" lg="2" md="2">
+               <v-switch prepend-icon="mdi-account-group" v-model="toggleUsers" inset hint="Show Users" persistent-hint>
+               </v-switch>
            </v-col>
        </v-row>
-       <v-row v-if="!loading">
+       <v-row v-if="!loading && !toggleUsers">
            <v-col>
                <v-data-table :headers="headers" :items="filteredInvs" :search="search" sort-by="date_time">
                     <template v-slot:[`item.index`]="{index}">
@@ -56,6 +63,32 @@
                         <v-btn style="text-decoration: none" class="ml-1" color="info" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-calendar-outline</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class = "ml-1" icon small :to="{name: 'edit-inv', params:{id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class = "ml-1" color="error" icon small @click="confirm(item)"><v-icon small>mdi-delete</v-icon></v-btn>
+                    </template>
+                </v-data-table>
+           </v-col>
+       </v-row>
+
+       <v-row v-if="!loading && toggleUsers">
+           <v-col>
+               <v-data-table :headers="headersUsers" :items="filteredInvs" :search="search" sort-by="date_time">
+                    <template v-slot:[`item.index`]="{index}">
+                        {{index+1}}
+                    </template> 
+                    <template v-slot:[`item.date`]="{ item }">
+                        {{item.date_time | DateFormat}}
+                    </template>
+                    <template v-slot:[`item.time`]="{ item }">
+                        {{item.date_time | TimeFormat}}
+                    </template>
+                     <template v-slot:[`item.users`]="{ item }">
+                         <v-chip-group column>
+                             <v-chip
+                             v-for="user in item.users" :key="user.id"
+                             :to="{name: 'userProfile', params:{id: user.id}}"
+                             style="text-decoration: none"
+                             small
+                             >{{user.name}}</v-chip>
+                         </v-chip-group>
                     </template>
                 </v-data-table>
            </v-col>
@@ -91,6 +124,17 @@ export default {
                 {text: 'users limit', value: 'users_limit'},
                 {text: 'actions', value:'actions', sortable: false}
             ],
+
+            headersUsers:[
+                {text: '#', value: 'index'},
+                {text: 'date', value: 'date'},
+                {text: 'time', value: 'time'},
+                {text: 'course', value: 'course.code'},
+                {text: 'room', value: 'room.number'},
+                {text: 'department', value:'course.department.name'},
+                {text: 'users', value:'users', sortable: false}
+            ],
+
             search: '',
             date:'',
             
@@ -104,6 +148,27 @@ export default {
             alert: false,
             alertType: null,
             alertMessage: null,
+
+            toggleUsers: false,
+
+            export_fields:{
+                '#': 'index',
+                'date': 'date',
+                'time': 'time',
+                'duration': 'duration',
+                'code': 'code',
+                'course': 'course',
+                'room': 'roomnumber',
+                'department': 'department',
+                'users count': 'users_count',
+                'users limit': 'users_limit',
+                'inv 1': 'user_01',
+                'inv 2': 'user_02',
+                'inv 3': 'user_03',
+                'inv 4': 'user_04',
+                'inv 5': 'user_05'
+            },
+            export_data:[]
         }
     },
     methods:{
@@ -187,6 +252,34 @@ export default {
         showInvUsers(inv){
             this.userDialog = true
             this.inv = inv
+        },
+        exportData(){
+            this.export_data = []
+            let users = []
+            $.each(this.filteredInvs, (index, value) => {
+                users = []
+                $.each(value.users,(index, value) => {
+                    users.push(value.name)
+                })
+                    this.export_data.push({
+                        'index': index+1,
+                        'date': this.$options.filters.DateFormat(value.date_time),
+                        'time': this.$options.filters.TimeFormat(value.date_time),
+                        'duration': value.duration,
+                        'code': value.course.code,
+                        'course': value.course.name,
+                        'roomnumber': value.room.number,
+                        'department': value.course.department.name,
+                        'users_count': value.users_count,
+                        'users_limit': value.users_limit,
+                        'user_01': users[0],
+                        'user_02': users[1],
+                        'user_03': users[2],
+                        'user_04': users[3],
+                        'user_05': users[4],
+                    })
+                    users = []
+                })
         }
     },
     beforeMount() {
@@ -227,6 +320,11 @@ export default {
              return this.invs.filter(inv => {
                     return inv.date_time.match(this.date)
                 })
+        }
+    },
+    watch:{
+        filteredInvs: function(newVal, oldVal){
+            this.exportData()
         }
     }
 }

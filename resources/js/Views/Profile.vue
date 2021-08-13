@@ -22,8 +22,11 @@
             <v-col class="d-flex my-auto">
                 <h1 class="text-h1 font-weight-light">{{ invs.length }}<span class="text-overline">invs</span></h1>
             </v-col>
-            <v-col v-if="!loading && invs && invs.length > 0" class="d-flex flex-row-reverse my-auto">
-               <v-switch @click="switchView" :prepend-icon="switchIcon" inset v-model="switchToggle" :persistent-hint="true" :hint="switchHint"></v-switch>
+            <v-col v-if="!loading && invs && invs.length > 0" class="d-flex flex-row my-auto">
+                <export-excel name="invs.xls" :data="export_data" :fields="export_fields">
+                    <v-btn class="mt-6 mr-5" color="success" icon><v-icon>mdi-microsoft-excel</v-icon></v-btn>
+               </export-excel>
+               <v-switch class="mt-7" @click="switchView" :prepend-icon="switchIcon" inset v-model="switchToggle" :persistent-hint="true" :hint="switchHint"></v-switch>
            </v-col>
        </v-row>
        <v-divider></v-divider>
@@ -95,6 +98,7 @@
                <v-simple-table>
                    <thead>
                        <tr>
+                           <th>#</th>
                            <th>Date</th>
                            <th>Time</th>
                            <th v-if="settings[1].value">Room</th>
@@ -107,7 +111,8 @@
                        </tr>
                    </thead>
                    <tbody>
-                       <tr v-for="(inv) in invs" :key="inv.id">
+                       <tr v-for="(inv, i) in invs" :key="inv.id">
+                           <td>{{++i}}</td>
                            <td>{{inv.date_time | DateFormat}}</td>
                            <td>{{inv.date_time | TimeFormat}}</td>
                            <td v-if="settings[1].value">{{inv.room.number}}</td>
@@ -169,7 +174,19 @@ import Confirmation from '../components/Confirmation.vue'
                 switchIcon: 'mdi-table-eye',
                 view: 'grid',
 
-                settings: null
+                settings: null,
+                export_fields:{
+                    '#': 'index',
+                    'date': 'date',
+                    'time': 'time',
+                    'duration': 'duration',
+                    'code': 'code',
+                    'course': 'course',
+                    'room': 'roomnumber',
+                    'department': 'department',
+                    'inv name': 'inv_name'
+                },
+                export_data: [],
             }
         },
         mounted() {
@@ -194,6 +211,7 @@ import Confirmation from '../components/Confirmation.vue'
                 this.settings = this.$store.getters.getSettings
                 this.$emit('logged-in', true)
                 this.loading = false
+                this.setExportData()
             })
             .catch((error) => {
                 this.$router.push('/')
@@ -229,7 +247,9 @@ import Confirmation from '../components/Confirmation.vue'
                     this.alert = true
                 })
                 .catch((error) => {
-                    console.log(error.response)
+                    this.alert = true
+                    this.alertType = 'error'
+                    this.alertMessage = error.response.data.message
                 })
             },
             switchView(){
@@ -246,6 +266,34 @@ import Confirmation from '../components/Confirmation.vue'
                     this.view = 'table'
                 }
                 
+            },
+            setExportData(){
+                this.export_data = []
+                if(this.settings[1].value){
+                    $.each(this.invs, (index, value) => {
+                        this.export_data.push({
+                            'index': index+1,
+                            'date': this.$options.filters.DateFormat(value.date_time),
+                            'time': this.$options.filters.TimeFormat(value.date_time),
+                            'duration': value.duration? value.duration: 'no duration',
+                            'code': value.course.code,
+                            'course': value.course.name,
+                            'roomnumber': value.room.number,
+                            'department': value.course.department.name,
+                            'inv_name': this.user.name
+                        })
+                    })
+                }
+                else{
+                    $.each(this.invs, (index, value) => {
+                        this.export_data.push({
+                            'index': index+1,
+                            'date': this.$options.filters.DateFormat(value.date_time),
+                            'time': this.$options.filters.TimeFormat(value.date_time),
+                            'inv_name': this.user.name
+                        })
+                    })
+                }
             }
         },
         filters:{
