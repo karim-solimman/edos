@@ -56,7 +56,10 @@
                             <td>{{inv.course.code}}</td>
                             <td>{{inv.course.department.name}}</td>
                             <td>{{inv.pivot.created_at | ago}}</td>
-                            <td><v-btn @click="confirm(inv)" color="error" icon x-small><v-icon>mdi-delete</v-icon></v-btn></td>
+                            <td>
+                                <v-btn style="text-decoration: none" icon color="info" small :to="{name: 'invProfile', params: {id:  inv.id}}" ><v-icon small>mdi-calendar</v-icon></v-btn>
+                                <v-btn @click="confirm(inv)" color="error" icon><v-icon small>mdi-delete</v-icon></v-btn>
+                            </td>
                         </tr>
                     </tbody>
                 </template>
