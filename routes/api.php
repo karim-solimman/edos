@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/logout', [LoginController::class, 'logout']);
 
     Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users/import', [UserController::class, 'fileImport']);
     Route::get('/users/{id}', [UserController::class, 'userProfile']);
     Route::post('/users/create', [RegistrationController::class, 'create']);
     Route::get('/users/resetpassword/{id}', [UserController::class, 'resetPassword']);
