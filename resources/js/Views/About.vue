@@ -28,11 +28,18 @@
                     This app is specifically didcated to <strong>Pharos Univerity in Alexandria (PUA), Faculty of Engineering</strong> staff members, to help them finish the distribution task faster and in efficient way.
                 </p>
                 <p class="text-body-1">
-                    
+                    At (PUA) TAs and staff members have other duties and responsibilties to do dialy other than teaching and instructing students, these tasks and duties are time consuming tasks. I developed EDOS voluntarily to Faculty of Engineering to be example of what current technology can do to make tasks and duties much easier.
                 </p>
             </v-col>
             <v-col class="my-auto d-flex justify-center">
-                <v-img max-height="208" max-width="198" height="208"  src="/img/logo.png"></v-img>
+                <v-img max-height="150" max-width="140" src="/img/logo.png"></v-img>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-btn color="primary" icon><v-icon>mdi-facebook</v-icon></v-btn>
+                <v-btn color="info" class="ml-5" icon><v-icon>mdi-linkedin</v-icon></v-btn>
+                <v-btn color="deep-purple lighten-1" dark class="ml-5" icon><v-icon>mdi-instagram</v-icon></v-btn>
             </v-col>
         </v-row>
     </v-container>

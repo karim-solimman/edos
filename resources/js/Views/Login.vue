@@ -24,7 +24,7 @@
         </v-col>
     </v-row>
     <v-row style="margin-top: 5%;" justify="space-around" align="center">
-        <v-col cols="6" lg="3" md="3">
+        <v-col cols="12" lg="3" md="3">
             <div class="text-center">
                 <h1 class="text-h3 font-weight-light">{{date_time | getDay}} {{date_time | getMonth}}</h1>
                 <h5 class="text-h5 font-weight-light">{{date_time | getDayName}}</h5>
