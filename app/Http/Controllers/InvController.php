@@ -10,7 +10,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\In;
+use App\Exports\InvsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InvController extends Controller
 {

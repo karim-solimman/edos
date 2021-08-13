@@ -12,6 +12,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\In;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\UsersImport;
 
 class UserController extends Controller
 {
@@ -44,6 +46,24 @@ class UserController extends Controller
         else
         {
             return response(['message' => 'Unauthorized'], 402);
+        }
+    }
+
+    public function fileImport(Request $request)
+    {
+        $request->validate([
+            'file' => ['file', 'mimes:xls,xlsx']
+        ]);
+        $file = $request->file('file');
+        if($file)
+        {
+            $import = new UsersImport;
+            Excel::import($import , $request->file('file'));
+            return response(['message' => $import->getRowCount().' Users imported successfully'], 201);
+        }
+        else
+        {
+            return response(['message' => 'file error'], 402);
         }
     }
 
@@ -139,5 +159,18 @@ class UserController extends Controller
         $user = User::where('id', $user_id)->first();
         $user->roles()->detach($role->id);
         return response(['message' => $role->name.' Removed from '.$user->name.' Successfully'], 201);
+    }
+
+    public function updateDepartment(Request $request)
+    {
+        $request->validate([
+           'user_id' => ['required', 'integer', 'exists:users,id'],
+           'department_id' => ['required', 'integer', 'exists:departments,id']
+        ]);
+        $user = User::where('id', $request->input('id'))->first();
+        $department = Department::where('id', $request->input('department_id'))->first();
+        $user->department_id = $request->input('department_id');
+        $user->save();
+        return response(['message' => $user->name.' department updated to '.$department->name]);
     }
 }
