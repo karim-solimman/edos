@@ -56,6 +56,11 @@ const routes = [
         name: 'users'
     },
     {
+        path: '/admin/users/import',
+        component: require('./Views/Admin/UsersImport').default,
+        name: 'usersImport'
+    },
+    {
         path: '/admin/users/:id',
         component: require('./Views/Admin/UserProfile').default,
         name: 'userProfile'
@@ -156,6 +161,7 @@ const routes = [
 export default new VueRouter({
     mode: 'history',
     routes,
-    linkActiveClass: null,
-    linkExactActiveClass: 'active'
+    scrollBehavior(){
+        return {x:0, y:0}
+    }
 })
