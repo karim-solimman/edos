@@ -20,13 +20,15 @@
             <v-col cols="12" md=6 lg=6>
                 <v-card color="grey lighten-5">
                     <v-card-title class="text-h5 font-weight-light">Update Information</v-card-title>
+                    <v-form ref="info-form" @submit.prevent="updateInfo">
                     <v-card-text>
-                        <v-text-field label="Name" :value="user.name"></v-text-field>
-                        <v-text-field label="Email" :value="user.email"></v-text-field>
+                        <v-text-field v-model="user.name" :error-messages="errorMessages['name']" label="Name" :value="user.name"></v-text-field>
+                        <v-text-field v-model="user.email" :error-messages="errorMessages['email']" label="Email" :value="user.email"></v-text-field>
                     </v-card-text>
                      <v-card-actions>
-                        <v-btn color="primary" block><v-icon left>mdi-pencil</v-icon>update</v-btn>
+                        <v-btn type="submit" color="primary" :loading="infoBtnLoading" block><v-icon left>mdi-pencil</v-icon>update</v-btn>
                     </v-card-actions>
+                     </v-form>
                     <v-divider></v-divider>
                     <v-card-title class="text-h5 font-weight-light">Password Reset</v-card-title>
                     <v-card-text>
@@ -52,16 +54,18 @@
                     <v-card-title><h1 class="text-h5 font-weight-light">Change department</h1></v-card-title>
                     <v-card-text>
                         <v-select
+                        :error-messages="errorMessages['department']"
                         label="Department"
                         :items="departments"
                         item-text="name"
                         item-value="id"
                         :value="user.department.id"
+                        v-model="user.department.id"
                         >
                         </v-select>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="primary" block><v-icon left>mdi-pencil</v-icon>change</v-btn>
+                        <v-btn :loading="depBtnLoading" @click="updateDepartment" color="primary" block><v-icon left>mdi-pencil</v-icon>change</v-btn>
                     </v-card-actions>
                 </v-card>
                 <v-card class="mb-5" color="grey lighten-5">
@@ -75,7 +79,7 @@
                         </p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn block color="error"><v-icon left>mdi-delete-outline</v-icon>Delete user</v-btn>
+                        <v-btn @click="confirmDeleteUser" block color="error"><v-icon left>mdi-delete-outline</v-icon>Delete user</v-btn>
                     </v-card-actions>
                 </v-card>
                 <v-card color="grey lighten-5">
@@ -126,13 +130,24 @@ export default {
                 {text: 'room', value: 'room.number'},
                 {text: 'actions', value: 'actions'}
             ],
+
             alert: false,
             alertMessage: null,
             alertType: null,
+
             dialog: false,
             dialogData: null,
             dialogText: null,
-            dialogFunction: null
+            dialogFunction: null,
+
+            infoBtnLoading: false,
+            depBtnLoading: false,
+            errorMessages: [
+                {name: ''},
+                {email: ''},
+                {department: ''}
+            ],
+            countDown: 2
         }
     },
     mounted(){
@@ -154,6 +169,63 @@ export default {
         })
     },
     methods:{
+        updateInfo(){
+            this.infoBtnLoading = true
+            let formData = new FormData()
+            formData.append('user_id', this.user.id)
+            formData.append('user_name', this.user.name)
+            formData.append('user_email', this.user.email)
+            
+            axios({
+                method: 'post',
+                url: '/api/users/updateinformation',
+                data: formData,
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => { 
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+                this.infoBtnLoading = false
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+                this.errorMessages['name'] = error.response.data.errors['user_name']
+                this.errorMessages['email'] = error.response.data.errors['user_email']
+                this.infoBtnLoading = false
+            })
+            
+        },
+        updateDepartment(){
+            this.depBtnLoading = true
+            let formData = new FormData()
+            formData.append('user_id', this.user.id)
+            formData.append('department_id', this.user.department.id)
+            axios({
+                method: 'post',
+                url: '/api/users/updatedepartment',
+                data: formData,
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+                this.depBtnLoading = false
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+                this.depBtnLoading = false
+            })
+        },
         confirmRemoveInv(inv){
             this.dialog = true
             this.dialogData = inv.id
@@ -235,7 +307,38 @@ export default {
                 this.alertMessage = error.response.data.message
                 this.alertType = 'error'
             })
-        }
+        },
+        confirmDeleteUser(){
+            this.dialog = true
+            this.dialogText = 'Are you sure you want to delete ' + this.user.name + ' ?'
+            this.dialogData = this.user
+            this.dialogFunction = this.deleteUser
+        },
+        deleteUser(user){
+            let formData = new FormData()
+            formData.append('user_id', user.id)
+            axios({
+                method: 'post',
+                url: '/api/users/deleteuser',
+                data: formData,
+                headers: {
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message + " - Page will be redirected in " + this.countDown + " seconds."
+                setTimeout(() => {
+                    this.$router.push({name: 'users'})
+                }, this.countDown * 1000 )
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+            })
+        },
     },
     filters:{
             DateFormat(value)

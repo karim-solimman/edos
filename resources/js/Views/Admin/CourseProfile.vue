@@ -22,6 +22,11 @@
                     <template v-slot:[`item.users_count`]="{item}" >
                         {{item.users.length}}
                     </template>
+                    <template v-slot:[`item.users`]="{item}" >
+                        <v-chip-group column>
+                            <v-chip small v-for="user in item.users" :key="user.id">{{user.name}}</v-chip>
+                        </v-chip-group>
+                    </template>
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn small style="text-decoration: none" color="info" :to="{name: 'invProfile', params:{id: item.id}}" icon><v-icon small>mdi-table-eye</v-icon></v-btn>
                         <v-btn small class="ml-1" style="text-decoration: none" icon color="error" @click="confirmDeleteInv(item)"><v-icon small>mdi-delete</v-icon></v-btn>
@@ -52,7 +57,7 @@ export default {
             headers:[
                 {text: '#', value: 'index'},
                 {text: 'room', value: 'room.number'},
-                {text: 'users count', value: 'users_count'},
+                {text: 'users', value: 'users'},
                 {text: 'users limit', value: 'room.users_limit'},
                 {text: 'actions', value: 'actions'}
             ],
