@@ -48,6 +48,9 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/users/resetpassword/{id}', [UserController::class, 'resetPassword']);
     Route::post('/users/addinv', [UserController::class, 'addInv']);
     Route::post('/users/removeinv', [UserController::class, 'removeInv']);
+    Route::post('/users/updateinformation', [UserController::class, 'updateInformation']);
+    Route::post('/users/updatedepartment', [UserController::class, 'updateDepartment']);
+    Route::post('/users/deleteuser', [UserController::class, 'deleteUser']);
     Route::get('/users/deletealluserinvs/{id}', [UserController::class, 'removeAllUserInvs']);
 
     Route::get('/invs',[InvController::class,'index']);
