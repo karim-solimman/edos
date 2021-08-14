@@ -23,7 +23,7 @@ class UsersImport implements ToModel, WithValidation, WithHeadingRow
         $dep_name = $row['department'];
         $dep = DB::table('departments')->where('name', 'like', "%{$dep_name}%")->first();
         return new User([
-            'name' => $row['name'],
+            'name' => ucwords(strtolower($row['name'])),
             'email' => $row['email'],
             'department_id' => $dep->id,
         ]);
@@ -32,6 +32,7 @@ class UsersImport implements ToModel, WithValidation, WithHeadingRow
     public function rules(): array
     {
         return  [
+            'name' => ['required', 'string', 'regex:/^[aA-zZ]+\s[aA-zZ]+$/'],
             'email' => ['required', 'email', 'unique:users,email'],
         ];
     }

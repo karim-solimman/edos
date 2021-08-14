@@ -165,12 +165,12 @@ class UserController extends Controller
     {
         $request->validate([
             'user_id' => ['required', 'integer', 'exists:users,id'],
-            'user_name' => ['required', 'string', 'max:30', 'min:10'],
+            'user_name' => ['required', 'string', 'max:30', 'min:5', 'regex:/^[aA-zZ]+\s[aA-zZ]+$/'],
             'user_email' => ['required', 'email']
         ]);
-
+        $user_name = ucwords(strtolower($request->input('user_name')));
         $user = User::where('id', $request->input('user_id'))->first();
-        $user->name = $request->input('user_name');
+        $user->name = $user_name;
         $user->email = $request->input('user_email');
         $user->save();
 
@@ -184,9 +184,9 @@ class UserController extends Controller
            'user_id' => ['required', 'integer', 'exists:users,id'],
            'department_id' => ['required', 'integer', 'exists:departments,id']
         ]);
-        $user = User::where('id', $request->input('id'))->first();
+        $user = User::where('id', $request->input('user_id'))->first();
         $department = Department::where('id', $request->input('department_id'))->first();
-        $user->department_id = $request->input('department_id');
+        $user->department_id = $department->id;
         $user->save();
         return response(['message' => $user->name.' department updated to '.$department->name]);
     }
@@ -198,10 +198,17 @@ class UserController extends Controller
         ]);
 
         $user = User::where('id', $request->input('user_id'))->first();
+        foreach ($user->roles as $role)
+        {
+            if ($role->name == 'admin')
+            {
+                return response(['message' => $user->name." is Admin, can't delete admins"], 402);
+            }
+        }
         $tmp_user = $user;
         $user->roles()->detach();
-        $user->invs()->detach();
         $user->invs()->decrement('users_count', 1);
+        $user->invs()->detach();
         $user->delete();
 
         return response(['message' => $tmp_user->name.' removed successfully'], 201);
