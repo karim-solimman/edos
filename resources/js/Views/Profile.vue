@@ -23,10 +23,10 @@
                 <h1 class="text-h1 font-weight-light">{{ invs.length }}<span class="text-overline">invs</span></h1>
             </v-col>
             <v-col v-if="!loading && invs && invs.length > 0" class="d-flex flex-row my-auto">
-                <export-excel name="invs.xls" :data="export_data" :fields="export_fields">
+                <vue-excel-xlsx :filename="`${user.name} TimeTable`" :data="export_data" :columns="export_fields">
                     <v-btn class="mt-6 mr-5" color="success" icon><v-icon>mdi-microsoft-excel</v-icon></v-btn>
-               </export-excel>
-               <v-switch class="mt-7" @click="switchView" :prepend-icon="switchIcon" inset v-model="switchToggle" :persistent-hint="true" :hint="switchHint"></v-switch>
+                </vue-excel-xlsx>
+               <v-switch class="mt-11" @click="switchView" :prepend-icon="switchIcon" inset v-model="switchToggle" :persistent-hint="true" :hint="switchHint"></v-switch>
            </v-col>
        </v-row>
        <v-divider></v-divider>
@@ -175,17 +175,45 @@ import Confirmation from '../components/Confirmation.vue'
                 view: 'grid',
 
                 settings: null,
-                export_fields:{
-                    '#': 'index',
-                    'date': 'date',
-                    'time': 'time',
-                    'duration': 'duration',
-                    'code': 'code',
-                    'course': 'course',
-                    'room': 'roomnumber',
-                    'department': 'department',
-                    'inv name': 'inv_name'
-                },
+                export_fields:
+                [
+                    {
+                        label: "#",
+                        field: "index"
+                    },
+                    {
+                        label: "date",
+                        field: "date"
+                    },
+                    {
+                        label: "time",
+                        field: "time"
+                    },
+                    {
+                        label: "duration",
+                        field: "duration"
+                    },
+                    {
+                        label: "code",
+                        field: "code"
+                    },
+                    {
+                        label: "course",
+                        field: "course"
+                    },
+                    {
+                        label: "room",
+                        field: "roomnumber"
+                    },
+                    {
+                        label: "department",
+                        field: "department"
+                    },
+                    {
+                        label: "inv name",
+                        field: "inv_name"
+                    }
+                ],
                 export_data: [],
             }
         },

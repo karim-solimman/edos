@@ -33,9 +33,9 @@
                <v-btn icon @click="date = ''; search = ''" class="mt-6" text>
                    <v-icon>mdi-delete-outline</v-icon>
                </v-btn>
-                <export-excel name="invs.xls" :data="export_data" :fields="export_fields">
+                <vue-excel-xlsx filename="invs" :data="export_data" :columns="export_fields">
                     <v-btn class="mt-6 ml-3" color="success" icon><v-icon>mdi-microsoft-excel</v-icon></v-btn>
-               </export-excel>
+                </vue-excel-xlsx>
            </v-col>
            <v-col class="my-auto mt-5" cols="6" lg="2" md="2">
                <v-switch prepend-icon="mdi-account-group" v-model="toggleUsers" inset hint="Show Users" persistent-hint>
@@ -151,23 +151,70 @@ export default {
 
             toggleUsers: false,
 
-            export_fields:{
-                '#': 'index',
-                'date': 'date',
-                'time': 'time',
-                'duration': 'duration',
-                'code': 'code',
-                'course': 'course',
-                'room': 'roomnumber',
-                'department': 'department',
-                'users count': 'users_count',
-                'users limit': 'users_limit',
-                'inv 1': 'user_01',
-                'inv 2': 'user_02',
-                'inv 3': 'user_03',
-                'inv 4': 'user_04',
-                'inv 5': 'user_05'
-            },
+            export_fields:
+            [
+                {
+                    label: "#",
+                    field: "index"
+                },
+                {
+                    label: "date",
+                    field: "date"
+                },
+                {
+                    label: "time",
+                    field: "time"
+                },
+                {
+                    label: "duration",
+                    field: "duration"
+                },
+                {
+                    label: "code",
+                    field: "code"
+                },
+                {
+                    label: "course",
+                    field: "course"
+                },
+                {
+                    label: "room",
+                    field: "roomnumber"
+                },
+                {
+                    label: "department",
+                    field: "department"
+                },
+                {
+                    label: "users count",
+                    field: "users_count"
+                },
+                {
+                    label: "users limit",
+                    field: "users_limit"
+                },
+                {
+                    label: "inv 1",
+                    field: "user_01"
+                },
+                {
+                    label: "inv 2",
+                    field: "user_02"
+                },
+                {
+                    label: "inv 3",
+                    field: "user_03"
+                },
+                {
+                    label: "inv 4",
+                    field: "user_04"
+                },
+                {
+                    label: "inv 5",
+                    field: "user_05"
+                }
+            ]
+            ,
             export_data:[]
         }
     },
@@ -265,7 +312,7 @@ export default {
                         'index': index+1,
                         'date': this.$options.filters.DateFormat(value.date_time),
                         'time': this.$options.filters.TimeFormat(value.date_time),
-                        'duration': value.duration,
+                        'duration': value.duration? value.duration : "No Duration",
                         'code': value.course.code,
                         'course': value.course.name,
                         'roomnumber': value.room.number,
