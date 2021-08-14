@@ -161,6 +161,23 @@ class UserController extends Controller
         return response(['message' => $role->name.' Removed from '.$user->name.' Successfully'], 201);
     }
 
+    public function updateInformation(Request $request)
+    {
+        $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'user_name' => ['required', 'string', 'max:30', 'min:10'],
+            'user_email' => ['required', 'email']
+        ]);
+
+        $user = User::where('id', $request->input('user_id'))->first();
+        $user->name = $request->input('user_name');
+        $user->email = $request->input('user_email');
+        $user->save();
+
+        return response(['message' => $user->name.' information updated successfully', 'user' => $user],201);
+    }
+
+
     public function updateDepartment(Request $request)
     {
         $request->validate([
@@ -173,4 +190,22 @@ class UserController extends Controller
         $user->save();
         return response(['message' => $user->name.' department updated to '.$department->name]);
     }
+
+    public function deleteUser(Request $request)
+    {
+        $request->validate([
+            'user_id' => ['required', 'integer', 'exists:users,id']
+        ]);
+
+        $user = User::where('id', $request->input('user_id'))->first();
+        $tmp_user = $user;
+        $user->roles()->detach();
+        $user->invs()->detach();
+        $user->invs()->decrement('users_count', 1);
+        $user->delete();
+
+        return response(['message' => $tmp_user->name.' removed successfully'], 201);
+    }
+
+
 }
