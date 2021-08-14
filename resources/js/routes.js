@@ -41,6 +41,11 @@ const routes = [
         name: 'add-inv'
     },
     {
+        path: '/admin/invs/import',
+        component: require('./Views/Admin/ImportInvs').default,
+        name: 'invsImport'
+    },
+    {
         path: '/admin/invs/:id',
         component: require('./Views/Admin/InvProfile').default,
         name: 'invProfile'
@@ -57,7 +62,7 @@ const routes = [
     },
     {
         path: '/admin/users/import',
-        component: require('./Views/Admin/UsersImport').default,
+        component: require('./Views/Admin/ImportUsers').default,
         name: 'usersImport'
     },
     {

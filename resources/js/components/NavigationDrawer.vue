@@ -56,10 +56,10 @@
                             <v-list-item-title>Add new inv</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                    <v-list-item link color="primary" style="text-decoration:none" v-if="isAdmin">
+                    <v-list-item link color="primary" style="text-decoration:none" v-if="isAdmin" :to="{name: 'invsImport'}">
                         <v-list-item-icon><v-icon>mdi-upload</v-icon></v-list-item-icon>
                         <v-list-item-content>
-                            <v-list-item-title>Upload invs</v-list-item-title>
+                            <v-list-item-title>Import invs</v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
                 </v-list-group>
