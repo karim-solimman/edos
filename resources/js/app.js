@@ -7,15 +7,17 @@ import dataStore from './store/index'
 import vuetify from "./vuetify";
 import moment from "moment";
 import excel from "vue-excel-export";
-
+import VueExcelXlsx from "vue-excel-xlsx";
+ 
 
 window.Vue = require('vue').default;
 window.Vue = Vue;
 window.moment = moment;
 
 Vue.use(VueRouter);
-Vue.use(Vuex)
-Vue.use(excel)
+Vue.use(Vuex);
+Vue.use(excel);
+Vue.use(VueExcelXlsx);
 
 const store = new Vuex.Store(
     dataStore

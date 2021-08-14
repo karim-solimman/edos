@@ -52,7 +52,7 @@
             </v-hover>
         </v-col>
         <v-col cols="12" lg="4" md="4">
-            <h1 class="text-center text-h3 font-weight-thin">
+            <h1 class="text-center font-weight-thin text-h3">
                 Choose your invs
             </h1>
             <p class="text-body-1 text-center">
