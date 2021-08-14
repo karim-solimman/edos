@@ -33,7 +33,7 @@
                <v-btn icon @click="date = ''; search = ''" class="mt-6" text>
                    <v-icon>mdi-delete-outline</v-icon>
                </v-btn>
-                <vue-excel-xlsx filename="invs" :data="export_data" :columns="export_fields">
+                <vue-excel-xlsx filename="Admin Invs" :data="export_data" :columns="export_fields">
                     <v-btn class="mt-6 ml-3" color="success" icon><v-icon>mdi-microsoft-excel</v-icon></v-btn>
                 </vue-excel-xlsx>
            </v-col>
@@ -44,7 +44,7 @@
        </v-row>
        <v-row v-if="!loading && !toggleUsers">
            <v-col>
-               <v-data-table :headers="headers" :items="filteredInvs" :search="search" sort-by="date_time">
+               <v-data-table @current-items="exportData" :headers="headers" :items="filteredInvs" :search="search" sort-by="date_time">
                     <template v-slot:[`item.index`]="{index}">
                         {{index+1}}
                     </template> 
@@ -300,10 +300,10 @@ export default {
             this.userDialog = true
             this.inv = inv
         },
-        exportData(){
+        exportData(data){
             this.export_data = []
             let users = []
-            $.each(this.filteredInvs, (index, value) => {
+            $.each(data, (index, value) => {
                 users = []
                 $.each(value.users,(index, value) => {
                     users.push(value.name)
@@ -325,8 +325,10 @@ export default {
                         'user_04': users[3],
                         'user_05': users[4],
                     })
-                    users = []
                 })
+        },
+        test(values){
+            console.log(values);
         }
     },
     beforeMount() {
@@ -369,10 +371,5 @@ export default {
                 })
         }
     },
-    watch:{
-        filteredInvs: function(newVal, oldVal){
-            this.exportData()
-        }
-    }
 }
 </script>
