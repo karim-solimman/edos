@@ -31,7 +31,7 @@
                     <strong>Heading Rows</strong>, your excel file must contain heading row as shown in the figure. <strong>[#] [name] [email] [department]</strong> all lower case without any white spaces.
                 </p>
                 <p class="text-body-1">
-                    <strong>Department</strong>, for department column you may write the full name or part of the name of the department stored in EDOS, either lower or upper case it works, if EDOS failed to find the department the user won't be attached to any department until the admin update it.
+                    <strong>Department</strong>, for department column you may write full / part of the department name stored in EDOS, either lower or upper case it will work, if EDOS failed to find the department the user won't be attached to any department until the admin update it.
                 </p>
             </v-col>
             <v-col cols="12" lg="6" md="6">

@@ -4,41 +4,21 @@
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <v-row v-if="!loading">
             <v-col>
-                <h1 class="text-h4 font-weight-light">Random distribution</h1>
+                <h1 class="text-h5 font-weight-thin text-center">Random distribution</h1>
             </v-col>
         </v-row>
         <v-row justify="center" v-if="!loading && users && users.length > 0">
-            <v-col cols="6" lg="3" md="3">
-                <v-card elevation="3" color="green lighten-4">
-                    <v-card-title class="justify-center">
-                        <h1 class="font-weight-light"><v-icon left>mdi-chevron-triple-down</v-icon> Min count</h1>
-                    </v-card-title>
-                    <v-card-text>
-                        <h1 class="text-h2 text-center">{{minUser().invs_count}}</h1>
-                    </v-card-text>
-                </v-card> 
-            </v-col>
-            <v-col cols="6" lg="3" md="">
-                <v-card elevation="3" dark color="red darken-4">
-                    <v-card-title class="justify-center">
-                        <h1 class="font-weight-light"><v-icon left>mdi-chevron-triple-up</v-icon> Max count</h1>
-                    </v-card-title>
-                    <v-card-text>
-                        <h1 style="color: white" class="text-h2 text-center">{{maxUser().invs_count}}</h1>
-                    </v-card-text>
-                </v-card> 
-            </v-col>
-            <v-col cols="6" lg="3" md="">
-                <v-card elevation="3" dark color="blue darken-1">
-                    <v-card-title class="justify-center">
-                        <h1 class="font-weight-light"><v-icon x-large>mdi-math-integral</v-icon> Average</h1>
-                    </v-card-title>
-                    <v-card-text>
-                        <h1 style="color: white" class="text-h2 text-center">{{getAvg().toFixed(2)}}</h1>
-                    </v-card-text>
-                </v-card> 
-            </v-col>
+            <v-sheet class="d-flex justify-center align-center" color="green" elevation="5" height="50" rounded width="183" dark>
+                <span class="text-overline ml-2">{{minUser().invs_count}} Minimum</span>
+            </v-sheet>
+            <v-sheet class="ml-4 d-flex align-center justify-center" color="red" elevation="5" height="50" rounded width="183" dark>
+                <span class="text-overline ml-2">{{maxUser().invs_count}} Maximum</span>
+            </v-sheet>
+            <v-sheet class="ml-4 d-flex justify-center align-center" color="info" elevation="5" height="50" rounded width="183" dark>
+                <span class="ml-2 text-overline">{{getAvg().toFixed(2)}} Average</span>
+            </v-sheet>
         </v-row>
+        
         <v-row v-if="!loading && users" >
             <v-col>
                 <v-data-table :headers="headers" :items="users">
