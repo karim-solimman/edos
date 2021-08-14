@@ -129,7 +129,7 @@ import Confirmation from '../components/Confirmation.vue'
                   else {
                       this.alert = true
                       this.alertType = 'error'
-                      this.alertMessage = this.$options.filters.DateFormat(date_time) + " - " + this.$options.filters.TimeFormat(date_time) + ", is FULL can't be added." 
+                      this.alertMessage = this.$options.filters.DateFormat(date_time) + " - " + this.$options.filters.TimeFormat(date_time) + ", can't be added due to full capacity" 
                   }
               }
           },

@@ -30,12 +30,24 @@
             ></v-text-field>
            </v-col>
            <v-col class="text-center d-flex flex-row justify-center" cols="6" lg="2" md="2">
-               <v-btn icon @click="date = ''; search = ''" class="mt-6" text>
-                   <v-icon>mdi-delete-outline</v-icon>
-               </v-btn>
-                <vue-excel-xlsx filename="Admin Invs" :data="export_data" :columns="export_fields">
-                    <v-btn class="mt-6 ml-3" color="success" icon><v-icon>mdi-microsoft-excel</v-icon></v-btn>
-                </vue-excel-xlsx>
+               <v-tooltip bottom>
+                   <template v-slot:activator="{ on, attrs }">
+                       <v-btn v-bind="attrs" v-on="on" color="error" icon @click="date = ''; search = ''" class="mt-6" text>
+                            <v-icon>mdi-delete-outline</v-icon>
+                        </v-btn>
+                   </template>
+                   <span>Clear Search</span>
+               </v-tooltip>
+               
+               <v-tooltip bottom>
+                   <template v-slot:activator="{ on, attrs }">
+                       <vue-excel-xlsx filename="Admin Invs" :data="export_data" :columns="export_fields">
+                            <v-btn v-on="on" v-bind="attrs" class="mt-6 ml-3" color="success" icon><v-icon>mdi-microsoft-excel</v-icon></v-btn>
+                       </vue-excel-xlsx>
+                   </template>
+                   <span>Excel Download</span>
+               </v-tooltip>
+                
            </v-col>
            <v-col class="my-auto mt-5" cols="6" lg="2" md="2">
                <v-switch prepend-icon="mdi-account-group" v-model="toggleUsers" inset hint="Show Users" persistent-hint>
