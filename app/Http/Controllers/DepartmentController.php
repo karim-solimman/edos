@@ -25,7 +25,8 @@ class DepartmentController extends Controller
            'name' => ['string', 'min:10', 'required']
         ]);
         $department = new Department();
-        $department->name = $request->input('name');
+        $department_name = ucwords(strtolower($request->input('name')));
+        $department->name = $department_name;
         $department->save();
 
         return response(['message' => $department->name.' Created Successfully'], 201);

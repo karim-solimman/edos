@@ -123,8 +123,12 @@ class InvController extends Controller
     {
         if (Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first() != null)
         {
-            $inv = Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first();
             $user = User::where('id', $request->input('user_id'))->first();
+            if($user->invs()->count() >= $user->invs_limit)
+            {
+                return response(['message' => $user->name.' reached invs limit'],402);
+            }
+            $inv = Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first();
             $user->invs()->attach($inv->id, ['created_at' => now(), 'updated_at' => now()]);
             $inv->users_count += 1;
             $inv->save();
