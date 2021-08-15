@@ -35,10 +35,16 @@
                     <strong><v-icon>mdi-calendar</v-icon> Date Format</strong>, Please make sure that your dates following this format <strong> Month/Day/Year</strong>, if only one row not follow this format the upload process will fail.
                 </p>
                 <p class="text-body-1">
-                    <strong><v-icon>mdi-timer</v-icon> Time Format</strong>, Your inv time must be in <strong> 24 Hours format</strong>, for example if inv at 9:00 am in the morning your time should be <strong>9:00</strong> if it's 3:00 PM afternoon your time should be <strong>15:00</strong>, and if it's 12:00 pm at noon the time should be <strong>12:00</strong>.
+                    <strong><v-icon>mdi-clock</v-icon> Time Format</strong>, Your inv time must be in <strong> 24 Hours format</strong>, for example if inv at 9:00 am in the morning your time should be <strong>9:00</strong> if it's 3:00 PM afternoon your time should be <strong>15:00</strong>, and if it's 12:00 pm at noon the time should be <strong>12:00</strong>.
                 </p>
                 <p class="text-body-1">
-                    <strong>Date Format</strong>, Please make sure that your dates following this format <strong> Month/Day/Year</strong>, if only one row not follow this format the upload process will fail.
+                    <strong><v-icon>mdi-timer</v-icon> Duration</strong>, Duration is not required, if the cell is empty the application will set the value to 0. <strong> Month/Day/Year</strong>, if only one row not follow this format the upload process will fail.
+                </p>
+                <p class="text-body-1">
+                    <strong><v-icon>mdi-book</v-icon> Course</strong>, The course code only required <strong>[Letter Case Insensitive]</strong> and must match one of the course codes stored in the database, without course code there is no inv.<strong> So, please make sure it's matching.</strong>
+                </p>
+                <p class="text-body-1">
+                    <strong><v-icon>mdi-door</v-icon> Room</strong>, Room number is required and must match one of the rooms in the database. <strong> [Case Insensitive]</strong>, If there is no match to only one of the rooms the upload process will fail.
                 </p>
             </v-col>
             <v-col cols="12" lg="6" md="6">
