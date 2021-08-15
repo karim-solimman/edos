@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/users/import', [UserController::class, 'fileImport']);
     Route::get('/users/{id}', [UserController::class, 'userProfile']);
     Route::post('/users/create', [RegistrationController::class, 'create']);
+    Route::post('/users/setinvslimit', [UserController::class, 'setUsersLimit']);
     Route::get('/users/resetpassword/{id}', [UserController::class, 'resetPassword']);
     Route::post('/users/addinv', [UserController::class, 'addInv']);
     Route::post('/users/removeinv', [UserController::class, 'removeInv']);

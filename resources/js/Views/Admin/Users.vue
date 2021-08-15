@@ -30,13 +30,13 @@
                         {{index+1}}
                     </template>
                     <template v-slot:[`item.roles.admin`]="{item}">
-                        <v-switch color="red darken-3" @click="changeRole(item.id, 'admin')" v-model="switchButtons" :value="item.id+':admin'"></v-switch>
+                        <v-switch inset dense color="red darken-3" @click="changeRole(item.id, 'admin')" v-model="switchButtons" :value="item.id+':admin'"></v-switch>
                     </template>
                      <template v-slot:[`item.roles.user`]="{item}">
-                        <v-switch color="green" @click="changeRole(item.id, 'user')" v-model="switchButtons" :value="item.id+':user'"></v-switch>
+                        <v-switch inset dense color="green" @click="changeRole(item.id, 'user')" v-model="switchButtons" :value="item.id+':user'"></v-switch>
                     </template>
                      <template v-slot:[`item.roles.dataEntery`]="{item}">
-                        <v-switch color="info" @click="changeRole(item.id,'dataEntery')" v-model="switchButtons" :value="item.id+':dataEntery'"></v-switch>
+                        <v-switch inset dense color="info" @click="changeRole(item.id,'de')" v-model="switchButtons" :value="item.id+':de'"></v-switch>
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn color="info" style="text-decoration: none" icon small :to="{name: 'userProfile', params:{id: item.id}}"><v-icon small>mdi-account</v-icon></v-btn>
