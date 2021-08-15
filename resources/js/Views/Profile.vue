@@ -10,8 +10,8 @@
          :dialog="dialog" 
          />
        <v-row v-if="!loading">
-           <v-col cols="12" lg="6" md="6">
-                <h1 class="text-h2">{{ user.name }}</h1>
+           <v-col cols="12" lg="5" md="4">
+                <h1 class="text-h3 font-weight-light">{{ user.name }}</h1>
                 <h2 class="text-overline">{{ user.email }}</h2>
                 <v-chip small color="primary" class="text-overline mr-2" v-for="role in roles" :key="role.id"><v-icon small left>mdi-account</v-icon>{{role}}</v-chip>
                 <v-chip small outlined class="text-overline"><v-icon small left>mdi-folder</v-icon>
@@ -20,7 +20,7 @@
                 </v-chip>
             </v-col>
             <v-col class="d-flex my-auto">
-                <h1 class="text-h1 font-weight-light">{{ invs.length }}<span class="text-overline">invs</span></h1>
+                <h1 class="text-h1 font-weight-light">{{ invs.length }} <span v-if="settings[0].value"> / {{user.invs_limit}}</span> <span class="text-overline">invs</span></h1>
             </v-col>
             <v-col v-if="!loading && invs && invs.length > 0" class="d-flex flex-row my-auto">
                 <vue-excel-xlsx :filename="`${user.name} TimeTable`" :data="export_data" :columns="export_fields">

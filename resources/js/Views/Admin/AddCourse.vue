@@ -66,7 +66,7 @@ export default {
             courseCode: '',
             courseCodeRules: [
                 v => !!v || 'Course code is required',
-                v => (v && v.length >= 4) || 'Course code must be at least 4 characters ',
+                v => (v && v.length >= 4 && v.length <= 10) || 'Course code must be between 4 and 10 characters',
             ],
             courseName: '',
             courseNameRules: [
