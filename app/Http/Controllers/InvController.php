@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\InvsImport;
 use App\Models\Course;
 use App\Models\Inv;
 use App\Models\Role;
@@ -10,7 +11,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Exports\InvsExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class InvController extends Controller
@@ -121,6 +121,11 @@ class InvController extends Controller
 
     public function addUser(Request $request)
     {
+        $settings = DB::table('settings')->where('name', '=', 'manual_selection')->first();
+        if (!$settings->value && auth()->user()->tokenCan('user'))
+        {
+            return response(['message' => 'Manual selection is disabled'],402);
+        }
         if (Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first() != null)
         {
             $user = User::where('id', $request->input('user_id'))->first();
@@ -264,6 +269,8 @@ class InvController extends Controller
         }
         return response(['message' => 'All invs detached successfully'], 201);
     }
+
+
     public function flushInvs()
     {
         $invs = Inv::all();
@@ -273,5 +280,38 @@ class InvController extends Controller
         }
         DB::table('invs')->delete();
         return response(['message' => 'All invs deleted successfully'], 201);
+    }
+
+    public function fileImport(Request $request)
+    {
+        $request->validate([
+            'file' => ['file', 'mimes:xls,xlsx']
+        ]);
+        $file = $request->file('file');
+        if($file)
+        {
+            $import = new InvsImport;
+            $array = Excel::toArray($import, $request->file('file'));
+            foreach ($array[0] as $index => $row)
+            {
+                $course_code = $row['course'];
+                $date = $row['date'];
+                $time = $row['time'];
+                for ($i = 1; $i < count($array[0]); $i++)
+                {
+                    if($array[0][$i]['course']==$course_code)
+                    {
+                        if($array[0][$i]['date'] != $date || $array[0][$i]['time']!= $time)
+                            return response(['message' => strtoupper($course_code).' course date or time are not similar'],402);
+                    }
+                }
+            }
+            Excel::import($import , $request->file('file'));
+            return response(['message' => $import->getRowCount().' Invs imported successfully'], 201);
+        }
+        else
+        {
+            return response(['message' => 'file upload failed'], 402);
+        }
     }
 }

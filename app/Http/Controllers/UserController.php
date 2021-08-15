@@ -11,7 +11,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\In;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\UsersImport;
 
@@ -97,9 +96,8 @@ class UserController extends Controller
         $inv_id = $request->input('inv_id');
         $user = User::where('id', $user_id)->first();
         $inv = Inv::where('id', $inv_id)->first();
-        if($user->invs()->count() < $user->invs_limit && $user->invs()->attach($inv_id, ['created_at' => now(), 'updated_at' => now()]))
-        {
-            $inv->users_count +=1;
+        if ($user->invs()->count() < $user->invs_limit && $user->invs()->attach($inv_id, ['created_at' => now(), 'updated_at' => now()])) {
+            $inv->users_count += 1;
         }
         $inv->save();
         $invs = $user->invs()->get();
@@ -108,10 +106,15 @@ class UserController extends Controller
 
     public function removeInv(Request $request)
     {
+        $settings = DB::table('settings')->where('name','=','manual_selection')->first();
+        if($settings->value) {
+            return response(['message' => 'Manual selection is disabled.'],402);
+        }
         $user_id = $request->input('user_id');
         $inv_id = $request->input('inv_id');
         $inv = Inv::where('id', $inv_id)->first();
         $user = User::where('id', $user_id)->first();
+
         if($user->invs()->detach($inv_id))
         {
             $inv->users_count -=1;
