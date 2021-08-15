@@ -39,6 +39,7 @@ export default {
             nameRules: [
                 v => !!v || 'Name is required',
                 v => (v && v.length >= 10) || 'Name must be at least 10 characters',
+                v => /^[aA-zZ]+\s[aA-zZ]+$/.test(v) || 'Only two names are required for each Department',
             ],
             formValid: false,
             btnLoading: false,
@@ -52,6 +53,9 @@ export default {
         addDepartment(){
             this.btnLoading = true
             let formData = new FormData()
+            this.department_name = this.department_name.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+                return letter.toUpperCase()
+            })
             formData.append('name', this.department_name)
             axios({
                 method: 'post',

@@ -40,6 +40,8 @@
                                     </v-autocomplete>
                                     <v-text-field
                                     label="Duration"
+                                    hint="Optional"
+                                    persistent-hint
                                     v-model="duration"
                                     :rules="durationRules"
                                     :error-messages="errorMessages['duration']"
@@ -100,7 +102,7 @@ export default {
             selectedRoomsRules: [
                 v => this.selectedRooms.length > 0 || 'At lease one room is required',
             ],
-            duration: '',
+            duration: null,
             durationRules: [
                 v => /^\d+$/.test(v) || 'Duration must be digits ',
                 v => (v > 0 && v <= 5) || 'Duration period is not acceptable'
@@ -159,7 +161,7 @@ export default {
             formData.append('rooms', Array(this.selectedRooms))
             formData.append('date', this.date)
             formData.append('time', this.time)
-            formData.append('duration', this.duration)
+            formData.append('duration', this.duration ? this.duration : 0 )
             axios({
                 method: 'post',
                 url: '/api/invs/create',
