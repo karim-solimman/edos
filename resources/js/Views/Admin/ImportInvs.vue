@@ -1,5 +1,6 @@
 <template>
     <v-container>
+        <Alert @alert-closed="alert=false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <v-row>
             <v-col>
                 <h1 class="text-h4 font-weight-light">Import invs time table</h1>
@@ -7,9 +8,10 @@
         </v-row>
         <v-row>
             <v-col cols="12" lg="6" md="6">
-                <v-form @submit.prevent="" ref="form">
+                <v-form @submit.prevent="uploadFile" ref="form">
                     <v-file-input
                     label="Select File"
+                    @focus="errorMsg = null"
                     show-size
                     chips
                     clearable
@@ -19,19 +21,79 @@
                     v-model="file"
                     >
                     </v-file-input>
-                    <v-btn><v-icon left>mdi-upload</v-icon>upload file</v-btn>
+                    <v-btn class="mt-2" :loading="btnLoading" type="submit"><v-icon left>mdi-upload</v-icon>upload file</v-btn>
                 </v-form>
+                <v-divider class="mt-6"></v-divider>
+                <h1 class="text-h4 font-weight-light">Important notes</h1>
+                <p class="text-body-1">
+                    <strong>Make sure</strong> that your excel file extension is either <strong>.xls</strong> or <strong>.xlsx</strong> otherwise your file will be ignored and importing process won't complete.
+                </p>
+                <p class="text-body-1">
+                    <strong>Heading Rows</strong>, your excel file must contain heading row as shown in the figure. <strong>[#] [date] [time] [duration] [course] [room]</strong> all lower case without any white spaces.
+                </p>
+                <p class="text-body-1">
+                    <strong><v-icon>mdi-calendar</v-icon> Date Format</strong>, Please make sure that your dates following this format <strong> Month/Day/Year</strong>, if only one row not follow this format the upload process will fail.
+                </p>
+                <p class="text-body-1">
+                    <strong><v-icon>mdi-timer</v-icon> Time Format</strong>, Your inv time must be in <strong> 24 Hours format</strong>, for example if inv at 9:00 am in the morning your time should be <strong>9:00</strong> if it's 3:00 PM afternoon your time should be <strong>15:00</strong>, and if it's 12:00 pm at noon the time should be <strong>12:00</strong>.
+                </p>
+                <p class="text-body-1">
+                    <strong>Date Format</strong>, Please make sure that your dates following this format <strong> Month/Day/Year</strong>, if only one row not follow this format the upload process will fail.
+                </p>
+            </v-col>
+            <v-col cols="12" lg="6" md="6">
+                <v-img src="/img/invs_excel.png"></v-img>
             </v-col>
         </v-row>
     </v-container>    
 </template>
 
 <script>
+import Alert from '../../components/Alert.vue'
 export default {
+    components:{
+        Alert
+    },
     data(){
         return{
             file: null,
+            btnLoading: false,
+            errorMsg: null,
+
+            alert: false,
+            alertType: null,
+            alertMessage: null,
         }
+    },
+    methods:{
+        uploadFile(){
+            this.btnLoading = true
+            let formData = new FormData()
+            formData.append('file', this.file)
+            axios({
+                method: 'post',
+                url: '/api/invs/import',
+                data: formData,
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`,
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            .then((response) => {
+                this.btnLoading = false
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+            })
+            .catch((error) => {
+                this.btnLoading = false
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message + (error.response.data.errors? ' - ' + error.response.data.errors : '') 
+                this.errorMsg = error.response.data.errors['file']
+            })
+            this.$refs.form.reset()
+        },
     }
 }
 </script>

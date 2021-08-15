@@ -20,12 +20,17 @@
                 </v-chip>
             </v-col>
             <v-col class="d-flex my-auto">
-                <h1 class="text-h1 font-weight-light">{{ invs.length }} <span v-if="settings[0].value"> / {{user.invs_limit}}</span> <span class="text-overline">invs</span></h1>
+                <h1 class="text-h1 font-weight-light">{{ invs.length }}<span v-if="settings[0].value" class="text-body-1"> of ({{user.invs_limit}})</span> <span class="text-overline">invs</span></h1>
             </v-col>
             <v-col v-if="!loading && invs && invs.length > 0" class="d-flex flex-row my-auto">
-                <vue-excel-xlsx :filename="`${user.name} TimeTable`" :data="export_data" :columns="export_fields">
-                    <v-btn class="mt-6 mr-5" color="success" icon><v-icon>mdi-microsoft-excel</v-icon></v-btn>
-                </vue-excel-xlsx>
+                <v-tooltip bottom>
+                   <template v-slot:activator="{ on, attrs }">
+                        <vue-excel-xlsx :filename="`${user.name} TimeTable`" :data="export_data" :columns="export_fields">
+                            <v-btn v-on="on" v-bind="attrs" class="mt-6 mr-5" color="success" icon><v-icon>mdi-microsoft-excel</v-icon></v-btn>
+                        </vue-excel-xlsx>
+                   </template>
+                   <span>Excel Download</span>
+                </v-tooltip>
                <v-switch class="mt-11" @click="switchView" :prepend-icon="switchIcon" inset v-model="switchToggle" :persistent-hint="true" :hint="switchHint"></v-switch>
            </v-col>
        </v-row>
@@ -50,7 +55,7 @@
                </v-alert>
            </v-col>
        </v-row>
-       <v-row v-if="!loading && invs.length > 0 && view == 'grid'">
+       <v-row v-if="!loading && settings[0].value && invs.length > 0 && view == 'grid'">
            <v-col lg=4 md=4 cols=6 v-for="inv in invs" :key="inv.id">
                <v-hover v-slot="{hover}">
                     <v-card color="grey lighten-5" hover @click="confirm(inv)">
@@ -93,6 +98,38 @@
                </v-hover>
            </v-col>
        </v-row>
+       <v-row v-if="!loading && !settings[0].value && invs.length > 0 && view == 'grid'">
+           <v-col lg=4 md=4 cols=6 v-for="inv in invs" :key="inv.id">
+                <v-card color="grey lighten-5" hover>
+                    <v-card-title>
+                            <h1 class="text-h5 font-weight-light">{{inv.date_time | DateFormat}}</h1>
+                            </v-card-title>
+                        <v-card-subtitle>Time: {{inv.date_time | TimeFormat}}</v-card-subtitle>
+                        <v-card-text>
+                            <v-chip-group active-class="primary--text" column>
+                                <v-chip dark small :color="inv.users_count < inv.room.users_limit? 'green darken-2' : 'red darken-2' ">
+                                    <v-icon small left>mdi-account-group</v-icon>{{inv.users_count}} / {{inv.room.users_limit}}
+                                </v-chip>
+                                <v-chip small color="info" outlined>
+                                    <v-icon small left>mdi-clock-outline</v-icon>{{inv.pivot.created_at | ago}}
+                                </v-chip>
+                                <v-chip v-if="settings[1].value" small color="primary">
+                                    <v-icon small left>mdi-door</v-icon>{{inv.room.number}}
+                                </v-chip>
+                                <v-chip v-if="settings[1].value" small color="warning">
+                                    <v-icon small left>mdi-book</v-icon>{{inv.course.code}}
+                                </v-chip>
+                                <v-chip v-if="settings[1].value" small outlined color="info">
+                                    <v-icon small left>mdi-folder</v-icon>{{inv.course.department.name}}
+                                </v-chip>
+                                <v-chip v-if="settings[1].value" small outlined color="teal lighten-3">
+                                    <v-icon small left>mdi-alarm</v-icon>{{inv.duration? inv.duration+' hours' : 'no duration'}}
+                                </v-chip>
+                            </v-chip-group>
+                        </v-card-text>
+                </v-card>
+           </v-col>
+       </v-row>
        <v-row v-if="!loading && invs.length > 0 && view == 'table'">
            <v-col>
                <v-simple-table>
@@ -107,7 +144,7 @@
                            <th v-if="settings[1].value">Dur</th>
                            <th>Users</th>
                            <th>Enrolled</th>
-                           <th>Actions</th>
+                           <th v-if="settings[0].value">Actions</th>
                        </tr>
                    </thead>
                    <tbody>
@@ -125,7 +162,7 @@
                                 </v-chip>
                            </td>
                            <td>{{inv.pivot.created_at | ago}}</td>
-                           <td>
+                           <td v-if="settings[0].value">
                                <v-btn style="text-decoration: none" @click="confirm(inv)" icon small color="error"><v-icon small>mdi-delete</v-icon></v-btn>
                            </td>
                        </tr>
