@@ -225,6 +225,7 @@ import Confirmation from '../components/Confirmation.vue'
             .then((response) => {
                 this.invs = response.data.invs
                 this.$store.dispatch('updateSettings', response?.data?.settings)
+                this.settings = this.$store.getters.getSettings
                 this.loading = false
             })
             .catch((error) => {

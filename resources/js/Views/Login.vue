@@ -16,7 +16,7 @@
                         EDOS
                         </h1>
                         <h4 class="text-overline">
-                            Distribute, Swap, Monitor, and edit, it's all here!
+                            Distribute, Swap, Monitor, and edit, With one click!
                         </h4>
                     </v-col>
                 </v-row>
@@ -98,6 +98,34 @@
                     </v-expand-transition>
                 </v-card>
             </v-hover>
+        </v-col>
+    </v-row>
+    <v-row style="margin-top: 3%" justify="center">
+        <v-col cols="10" lg="5" md="5" class="d-flex justify-center align-center" v-if="view == 'grid'">
+            <v-sheet class="d-flex justify-center align-center" color="green" elevation="5" height="50" rounded width="183" dark>
+                <span class="text-overline ml-2">Item 1</span>
+            </v-sheet>
+            <v-sheet class="ml-4 d-flex align-center justify-center" color="red" elevation="5" height="50" rounded width="183" dark>
+                <span class="text-overline ml-2">Item 2</span>
+            </v-sheet>
+            <v-sheet class="ml-4 d-flex justify-center align-center" color="info" elevation="5" height="50" rounded width="183" dark>
+                <span class="ml-2 text-overline">Item 3</span>
+            </v-sheet>
+        </v-col>
+         <v-col cols="10" lg="5" md="5" class="d-flex justify-center align-center" v-if="view == 'table'">
+            <v-data-table :headers="headers" :items="data">
+            </v-data-table>
+        </v-col>
+        <v-col cols="2" lg="1" md="1">
+            <v-switch class="mt-11" @click="switchView" :prepend-icon="switchIcon" inset v-model="switchToggle" :persistent-hint="true" :hint="switchHint"></v-switch>
+        </v-col>
+        <v-col cols="12" lg="6" md="6">
+            <h1 class="text-center text-h3 font-weight-thin">
+                With favourite layout
+            </h1>
+            <p class="text-body-1 text-center">
+                Using EDOS make it easier to swap and switch between Grid mode or Table mode which you cans switch with a single click and choose your favourite layout of the information.
+            </p>
         </v-col>
     </v-row>
     <v-row style="margin-top: 5%" align="center" justify="space-around">
@@ -187,6 +215,38 @@ import Loading from '../components/Loading.vue'
                loading: true,
                date_time: '2021-07-29 09:00:00',
 
+               switchToggle: false,
+               switchHint: 'Table view',
+               switchIcon: 'mdi-table-eye',
+               view: 'grid',
+
+               headers:[
+                   {text: '#', value: 'index'},
+                   {text: 'date', value: 'date'},
+                   {text: 'time', value: 'time'},
+                   {text: 'room', value: 'room'}
+               ],
+               data:[
+                   {
+                       index: 1,
+                       date: this.$options.filters.DateFormat('2021-9-14'),
+                       time: this.$options.filters.TimeFormat('2021-9-14 09:00'),
+                       room: 'E318' 
+                   },
+                    {
+                       index: 2,
+                       date: this.$options.filters.DateFormat('2021-9-16'),
+                       time: this.$options.filters.TimeFormat('2021-9-16 12:00'),
+                       room: 'E018' 
+                   },
+                    {
+                       index: 3,
+                       date: this.$options.filters.DateFormat('2021-9-17'),
+                       time: this.$options.filters.TimeFormat('2021-9-14 15:00'),
+                       room: 'E127' 
+                   },
+                   
+               ]
            }
        },
        mounted(){
@@ -224,6 +284,20 @@ import Loading from '../components/Loading.vue'
                        })
                    })
            },
+           switchView(){
+               if(!this.switchToggle)
+               {
+                   this.switchHint = "Table View"
+                   this.switchIcon = "mdi-table-eye"
+                   this.view = 'grid'
+               }
+               else
+               {
+                   this.switchHint = "Grid View"
+                   this.switchIcon = "mdi-view-grid"
+                   this.view = 'table'
+               }
+            },
        },
         filters:{
             DateFormat(value)
