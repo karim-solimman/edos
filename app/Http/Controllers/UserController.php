@@ -107,7 +107,7 @@ class UserController extends Controller
     public function removeInv(Request $request)
     {
         $settings = DB::table('settings')->where('name','=','manual_selection')->first();
-        if($settings->value) {
+        if(!$settings->value && !auth()->user()->tokenCan('admin') ) {
             return response(['message' => 'Manual selection is disabled.'],402);
         }
         $user_id = $request->input('user_id');

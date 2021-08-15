@@ -122,7 +122,7 @@ class InvController extends Controller
     public function addUser(Request $request)
     {
         $settings = DB::table('settings')->where('name', '=', 'manual_selection')->first();
-        if (!$settings->value && auth()->user()->tokenCan('user'))
+        if (!$settings->value && !auth()->user()->tokenCan('admin'))
         {
             return response(['message' => 'Manual selection is disabled'],402);
         }
@@ -149,6 +149,11 @@ class InvController extends Controller
 
     public function removeUserByDate(Request $request)
     {
+        $settings = DB::table('settings')->where('name', '=', 'manual_selection')->first();
+        if (!$settings->value && !auth()->user()->tokenCan('admin'))
+        {
+            return response(['message' => 'Manual selection is disabled'],402);
+        }
         $user = User::where('id', $request->input('user_id'))->first();
         $inv = $user->invs()->where('date_time', $request->input('date_time'))->first();
         $user->invs()->detach($inv->id);
