@@ -20,7 +20,7 @@
         </v-card-text>
 
         <v-card-text>
-        <div class="text-h4 text-center font-weight-thin">
+        <div class="text-h5 text-center font-weight-thin">
             Departments Courses
         </div>
         </v-card-text>
