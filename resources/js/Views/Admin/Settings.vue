@@ -270,6 +270,35 @@ export default {
 
                 this.$store.dispatch('updateSettings', response?.data?.settings)
                 this.settings = response?.data?.settings
+
+                if(this.settings[0].value)
+                {
+                    setTimeout(() => {
+                        this.setUsersInvsLimit()
+                    }, 1000)
+                    
+                }
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+            })
+
+        },
+        setUsersInvsLimit()
+        {
+            axios({
+                method: 'post',
+                url: '/api/users/setinvslimit',
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
             })
             .catch((error) => {
                 this.alert = true

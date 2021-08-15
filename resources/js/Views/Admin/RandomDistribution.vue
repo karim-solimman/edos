@@ -8,13 +8,13 @@
             </v-col>
         </v-row>
         <v-row justify="center" v-if="!loading && users && users.length > 0">
-            <v-sheet class="d-flex justify-center align-center" color="green" elevation="5" height="50" rounded width="183" dark>
+            <v-sheet class="d-flex justify-center align-center mt-1" color="green" elevation="5" height="50" rounded width="183" dark>
                 <span class="text-overline ml-2">{{minUser().invs_count}} Minimum</span>
             </v-sheet>
-            <v-sheet class="ml-4 d-flex align-center justify-center" color="red" elevation="5" height="50" rounded width="183" dark>
+            <v-sheet class="ml-4 d-flex align-center justify-center mt-1" color="red" elevation="5" height="50" rounded width="183" dark>
                 <span class="text-overline ml-2">{{maxUser().invs_count}} Maximum</span>
             </v-sheet>
-            <v-sheet class="ml-4 d-flex justify-center align-center" color="info" elevation="5" height="50" rounded width="183" dark>
+            <v-sheet class="ml-4 d-flex justify-center align-center mt-1" color="info" elevation="5" height="50" rounded width="183" dark>
                 <span class="ml-2 text-overline">{{getAvg().toFixed(2)}} Average</span>
             </v-sheet>
         </v-row>
