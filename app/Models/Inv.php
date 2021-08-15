@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Inv extends Model
 {
     use HasFactory;
-    protected $fillable = ['date', 'time', 'room_id', 'course_id'];
+    protected $fillable = ['date_time', 'duration', 'users_count', 'users_limit' , 'room_id', 'course_id'];
 
     public function users()
     {
