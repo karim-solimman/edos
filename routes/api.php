@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/users/deletealluserinvs/{id}', [UserController::class, 'removeAllUserInvs']);
 
     Route::get('/invs',[InvController::class,'index']);
+    Route::post('/invs/import',[InvController::class, 'fileImport']);
     Route::get('/invforusers', [InvController::class, 'index_groupBy']);
     Route::post('/invs/adduser', [InvController::class, 'addUser']);
     Route::post('/invs/removeuserbydate', [InvController::class, 'removeUserByDate']);

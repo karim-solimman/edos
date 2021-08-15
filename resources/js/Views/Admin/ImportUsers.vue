@@ -81,7 +81,7 @@ export default {
             .catch((error) => {
                 this.alert = true
                 this.alertType = 'error'
-                this.alertMessage = error.response.data.message + ' - ' + error.response.data.errors
+                this.alertMessage = error.response.data.message + (error.response.data.errors? ' - ' + error.response.data.errors : '')
                 this.errorMsg = error.response.data.errors['file']
                 this.btnLoading = false
             })
