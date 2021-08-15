@@ -97,7 +97,7 @@ class UserController extends Controller
         $inv_id = $request->input('inv_id');
         $user = User::where('id', $user_id)->first();
         $inv = Inv::where('id', $inv_id)->first();
-        if($user->invs()->attach($inv_id, ['created_at' => now(), 'updated_at' => now()]))
+        if($user->invs()->count() < $user->invs_limit && $user->invs()->attach($inv_id, ['created_at' => now(), 'updated_at' => now()]))
         {
             $inv->users_count +=1;
         }
@@ -131,6 +131,26 @@ class UserController extends Controller
         $user->invs()->decrement('users_count', 1);
         $user->invs()->detach();
         return response(['message' => 'All invs for '.$user->name.' deleted successfully'],201);
+    }
+
+    public function setUsersLimit()
+    {
+        DB::table('users')->update(['invs_limit' => 0]);
+        $users = Role::where('name', 'user')->first()->users()->get()->shuffle();
+        $user_index = 0;
+        $invs = Inv::all();
+        foreach ($invs as $inv)
+        {
+            for ($i=0; $i<$inv->users_limit; $i++)
+            {
+                $users[$user_index]->invs_limit += 1;
+                $users[$user_index]->save();
+                $user_index += 1;
+                if($user_index == count($users))
+                    $user_index = 0;
+            }
+        }
+        return response([ 'message' => 'Users invs limit set'], 201);
     }
 
     public function resetPassword($id)
