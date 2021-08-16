@@ -40,10 +40,14 @@ class CourseController extends Controller
 
     public function delete($id)
     {
-        $course = Course::where('id', $id)->first();
-        if($course->invs()->count() > 0)
+        $course = Course::with(['invs'])->where('id', $id)->firstOrFail();
+        if(count($course->invs) > 0)
         {
-            return response(['message' => 'Cannot delete the course there are invs attached to it.'],402);
+            foreach ($course->invs as $inv)
+            {
+                $inv->users()->detach();
+                $inv->delete();
+            }
         }
         Course::destroy($id);
         return response(['message' => $course->code.' - '.$course->name.' Removed successfully']);
