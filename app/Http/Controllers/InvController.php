@@ -290,33 +290,66 @@ class InvController extends Controller
     public function fileImport(Request $request)
     {
         $request->validate([
-            'file' => ['file', 'mimes:xls,xlsx']
+            'file' => ['required', 'file', 'mimes:xls,xlsx']
         ]);
+        $invs_conflicts = [];
         $file = $request->file('file');
-        if($file)
-        {
-            $import = new InvsImport;
-            $array = Excel::toArray($import, $request->file('file'));
-            foreach ($array[0] as $index => $row)
-            {
-                $course_code = $row['course'];
-                $date = $row['date'];
-                $time = $row['time'];
-                for ($i = 1; $i < count($array[0]); $i++)
-                {
-                    if($array[0][$i]['course']==$course_code)
+        $import = new InvsImport;
+        $array = Excel::toArray($import, $file);
+        foreach ($array[0] as $row) {
+            $course_code = $row['course'];
+            $date = $row['date'];
+            $time = $row['time'];
+            for ($i = 0; $i < count($array[0]); $i++) {
+                if ($array[0][$i]['course'] == $course_code) {
+                    if ($array[0][$i]['date'] != $date || $array[0][$i]['time'] != $time)
                     {
-                        if($array[0][$i]['date'] != $date || $array[0][$i]['time']!= $time)
-                            return response(['message' => strtoupper($course_code).' course date or time are not similar'],402);
+                        $i+=2;
+                        return response(['message' => strtoupper($course_code) . ' course date or time are not similar at row '.$i], 402);
                     }
                 }
             }
-            Excel::import($import , $request->file('file'));
-            return response(['message' => $import->getRowCount().' Invs imported successfully'], 201);
         }
-        else
+        Excel::import($import , $request->file('file'));
+        $rooms = Room::all();
+        foreach ($rooms as $room)
         {
-            return response(['message' => 'file upload failed'], 402);
+            $room_invs = $room->invs()->get()->groupBy('date_time');
+            foreach ($room_invs as $key => $invs)
+            {
+                if (count($invs) > 1)
+                    array_push($invs_conflicts, $room->number.' at '.$key);
+                foreach ($invs as $inv)
+                {
+                    if ($inv->duration > 0)
+                    {
+                        for ($i=1; $i<$inv->duration; $i++)
+                        {
+                            $tmp_date_time = Carbon::parse($inv->date_time)->addHours($i)->toDateTimeString();
+                            if ($room->invs()->get()->where('date_time',$tmp_date_time)->count() > 0)
+                                array_push($invs_conflicts, $room->number.' at '.$tmp_date_time);
+                        }
+                    }
+                }
+            }
         }
+        $courses =  Course::has('invs')->get();
+        foreach ($courses as $course)
+        {
+            $old_date = $course->invs()->first()->date_time;
+            foreach ($course->invs()->get() as $inv)
+            {
+                if ($old_date != $inv->date_time)
+                {
+                    array_push($invs_conflicts, $course->code.' dates and time are not similar');
+                }
+                $old_date = $inv->date_time;
+            }
+        }
+        if (count($invs_conflicts)>0)
+        {
+            return response(['message' => $import->getRowCount().' Invs imported successfully but with overlaps in ', 'type' => 'warning', 'invs_conflicts' => array_unique($invs_conflicts)], 201);
+        }
+        return response(['message' => $import->getRowCount().' Invs imported successfully', 'type' => 'success'], 201);
     }
 }
