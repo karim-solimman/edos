@@ -3,74 +3,122 @@
         <Loading :loading="loading" />
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
         <v-row justify="space-around" v-if="!loading">
-            <v-col cols="12" lg="12" md="12">
+            <v-col cols="12" lg="6" md="6">
                 <v-card color="grey lighten-5">
                     <v-card-title>
                         <h1 class="text-h4 font-weight-light">Add new inv/s</h1>
                     </v-card-title>
                     <v-card-text>
                         <v-form @submit.prevent="addInvs" ref="form">
-                            <v-row>
-                                <v-col cols="12" lg="6" md="6">
-                                    <v-autocomplete 
-                                    item-value="id" 
-                                    v-model="courseId"
-                                    ref="course"
-                                    :rules="courseIdRules"
-                                    :error-messages="errorMessages['course']" 
-                                    :items="courses"
-                                    :item-text="item => item.code + ' - ' + item.name"
-                                    label="Course">
-                                    </v-autocomplete>
-                                    <v-autocomplete
-                                    chips
-                                    clearable
-                                    deletable-chips
-                                    ref="rooms"
-                                    multiple 
-                                    item-value="id" 
-                                    v-model="selectedRooms"
-                                    :rules="selectedRoomsRules"
-                                    :items="rooms"
-                                    hide-selected
-                                    no-data-text="No other rooms to be displayed"
-                                    :error-messages="errorMessages['rooms']"
-                                    item-text="number"
-                                    label="Rooms">
-                                    </v-autocomplete>
-                                    <v-text-field
-                                    label="Duration"
-                                    hint="Optional"
-                                    persistent-hint
-                                    v-model="duration"
-                                    :rules="durationRules"
-                                    :error-messages="errorMessages['duration']"
-                                    type="number"
-                                    >
-                                    </v-text-field>
-                                    <v-time-picker
-                                    class="my-3"
+                            <v-autocomplete 
+                            item-value="id" 
+                            v-model="courseId"
+                            prepend-icon="mdi-book"
+                            ref="course"
+                            :rules="courseIdRules"
+                            :error-messages="errorMessages['course']" 
+                            :items="courses"
+                            :item-text="item => item.code + ' - ' + item.name"
+                            label="Course">
+                            </v-autocomplete>
+                            <v-autocomplete
+                            chips
+                            clearable
+                            deletable-chips
+                            ref="rooms"
+                            multiple 
+                            prepend-icon="mdi-door"
+                            item-value="id" 
+                            v-model="selectedRooms"
+                            :rules="selectedRoomsRules"
+                            :items="rooms"
+                            hide-selected
+                            no-data-text="No other rooms to be displayed"
+                            :error-messages="errorMessages['rooms']"
+                            item-text="number"
+                            label="Rooms">
+                            </v-autocomplete>
+                            <v-text-field
+                            label="Duration"
+                            hint="Optional"
+                            persistent-hint
+                            prepend-icon="mdi-timer"
+                            v-model="duration"
+                            :rules="durationRules"
+                            :error-messages="errorMessages['duration']"
+                            type="number"
+                            >
+                            </v-text-field>
+
+                            <v-menu
+                            ref="time"
+                            v-model="timeMenu"
+                            :close-on-content-click="false"
+                            :return-value.sync="time"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="auto"
+                            >
+                            <template v-slot:activator="{ on, attrs }">
+                                <v-text-field
                                     v-model="time"
-                                    ampm-in-title
-                                    format="ampm"
-                                    full-width
-                                    :landscape="!$vuetify.breakpoint.mobile"
-                                    :allowed-minutes="allowedMinutes"
-                                    scrollable
-                                    required
-                                    ></v-time-picker>
-                                </v-col>
-                                <v-col cols="12" lg="6" md="6">
-                                    <v-date-picker
-                                    class="my-3"
-                                    v-model="date"
-                                    full-width
-                                    required
-                                    ></v-date-picker>
-                                    <v-btn type="submit" block color="success"><v-icon left>mdi-plus</v-icon>Add new invs</v-btn>
-                                </v-col>
-                            </v-row>
-                            </v-form>
+                                    label="Time"
+                                    prepend-icon="mdi-clock"
+                                    readonly
+                                    v-bind="attrs"
+                                    v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-time-picker
+                            v-model="time"
+                            ampm-in-title
+                            format="ampm"
+                            landscape
+                            :allowed-minutes="allowedMinutes"
+                            scrollable
+                            >
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                text
+                                color="primary"
+                                @click="timeMenu = false"
+                            >
+                                Cancel
+                            </v-btn>
+                            <v-btn
+                                text
+                                color="primary"
+                                @click="$refs.time.save(time)"
+                            >
+                                OK
+                            </v-btn>
+                            </v-time-picker>
+                            </v-menu>
+                            <v-menu
+                            v-model="dateMenu"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="auto"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                        v-model="date"
+                                        label="Date"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    ></v-text-field>
+                                </template>
+                                <v-date-picker
+                                v-model="date"
+                                @input="dateMenu = false"
+                                ></v-date-picker>
+                            </v-menu>
+                            <v-btn type="submit" block color="success"><v-icon left>mdi-plus</v-icon>Add new invs</v-btn>
+                        </v-form>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -115,6 +163,9 @@ export default {
                 {rooms: ''},
                 {duration: ''}
             ],
+
+            dateMenu: false,
+            timeMenu: false,
         }
     },
     mounted(){
