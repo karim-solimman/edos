@@ -70,6 +70,10 @@
                         <span v-if="item.duration">{{item.duration}}</span>
                         <span style="color: red" v-else> 0 </span>
                     </template>
+                    <template v-slot:[`item.department`]="{ item }">
+                        <span v-if="item.course.department">{{item.course.department.name}}</span>
+                        <span style="color: red" v-else> No department </span>
+                    </template>
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn style="text-decoration: none" color="primary" icon small><v-icon small @click="showInvUsers(item)">mdi-account-group</v-icon></v-btn>
                         <v-btn style="text-decoration: none" class="ml-1" color="info" icon small :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small >mdi-calendar-outline</v-icon></v-btn>
@@ -91,6 +95,10 @@
                     </template>
                     <template v-slot:[`item.time`]="{ item }">
                         {{item.date_time | TimeFormat}}
+                    </template>
+                     <template v-slot:[`item.department`]="{ item }">
+                        <span v-if="item.course.department">{{item.course.department.name}}</span>
+                        <span style="color: red" v-else> No department </span>
                     </template>
                      <template v-slot:[`item.users`]="{ item }">
                          <v-chip-group column>
@@ -131,7 +139,7 @@ export default {
                 {text: 'dur', value: 'duration'},
                 {text: 'course', value: 'course.code'},
                 {text: 'room', value: 'room.number'},
-                {text: 'department', value:'course.department.name'},
+                {text: 'department', value: 'course.department.name'},
                 {text: 'users count', value: 'users_count'},
                 {text: 'users limit', value: 'users_limit'},
                 {text: 'actions', value:'actions', sortable: false}
@@ -282,7 +290,7 @@ export default {
         {
             this.dialogData = inv.id
             this.dialog = true
-            this.dialogText = `Are you sure you want to delete inv on\n${this.$options.filters.DateFormat(inv.date_time)} at ${this.$options.filters.TimeFormat(inv.date_time)}\n${inv.course.code} - ${inv.course.name}`
+            this.dialogText = `Are you sure you want to delete inv on\n${this.$options.filters.DateFormat(inv.date_time)} at ${this.$options.filters.TimeFormat(inv.date_time)} for ${inv.course.code} - ${inv.course.name}`
         },
         removeInv(invId) {
             this.dialog = false
@@ -328,7 +336,7 @@ export default {
                         'code': value.course.code,
                         'course': value.course.name,
                         'roomnumber': value.room.number,
-                        'department': value.course.department.name,
+                        'department': value.course.department? value.course.department.name: 'No department',
                         'users_count': value.users_count,
                         'users_limit': value.users_limit,
                         'user_01': users[0],
@@ -339,9 +347,6 @@ export default {
                     })
                 })
         },
-        test(values){
-            console.log(values);
-        }
     },
     beforeMount() {
         axios({
