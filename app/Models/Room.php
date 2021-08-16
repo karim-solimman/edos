@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     use HasFactory;
-    protected $fillable = ['number'];
+    protected $fillable = ['number', 'users_limit'];
 
     public function invs()
     {

@@ -23,7 +23,7 @@ class InvController extends Controller
     public function index_groupBy()
     {
         $data = array();
-        $invs = Inv::select('id', 'date_time', 'updated_at', 'room_id')->with('room')->withCount('users')->orderBy('date_time')->get()->groupBy(function ($item) {
+        $invs = Inv::select('id', 'date_time', 'updated_at', 'room_id', 'users_limit',)->with('room')->withCount('users')->orderBy('date_time')->get()->groupBy(function ($item) {
             return Carbon::createFromFormat('Y-m-d H:i:s',$item->date_time)->toDateString();
         });
         foreach ($invs as $key => $inv)
@@ -42,7 +42,7 @@ class InvController extends Controller
             foreach ($inv as $item)
             {
                 $data[$key][$item->date_time]['users_count'] += $item->users_count;
-                $data[$key][$item->date_time]['users_limit'] += $item->room->users_limit;
+                $data[$key][$item->date_time]['users_limit'] += $item->users_limit;
                 if($data[$key][$item->date_time]['updated_at'] < $item->updated_at)
                     $data[$key][$item->date_time]['updated_at'] = $item->updated_at;
             }
@@ -104,19 +104,47 @@ class InvController extends Controller
         ]);
         $id = $request->input('id');
         $inv = Inv::where('id', $id)->first();
-        if ($inv->users()->count() > 0 )
-        {
-            return response(['message' => 'There are users attached to this inv. Remove them first'], 402);
-        }
-        else
-        {
-            $course = Course::where('id', $inv->course_id)->first();
-            $inv->delete();
-            $invs = $this->index();
-            return response([
-                'message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', Course: '.$course->code.' - '.$course->name.' Deleted successfully.',
-                'invs' => $invs ], 201);
-        }
+        $inv->users()->detach();
+        $course = Course::where('id', $inv->course_id)->first();
+        $inv->delete();
+        $invs = $this->index();
+        return response([
+            'message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', Course: '.$course->code.' - '.$course->name.' Deleted successfully.',
+            'invs' => $invs ], 201);
+    }
+
+    public function editInfo(Request $request)
+    {
+        $request->validate([
+           'inv_id' => ['required', 'integer', 'exists:invs,id'],
+            'course_id' => ['required', 'integer', 'exists:courses,id'],
+            'room_id' => ['required', 'integer', 'exists:rooms,id'],
+            'users_limit' => ['required', 'integer'],
+            'duration' => ['required', 'integer']
+        ]);
+        $inv = Inv::with(['users.department', 'course.department', 'room'])->where('id', $request->input('inv_id'))->first();
+        $inv->course_id = $request->input('course_id');
+        $inv->duration = $request->input('duration');
+        $inv->users_limit = $request->input('users_limit');
+        $inv->room_id = $request->input('room_id');
+        $inv->save();
+
+        return response(['message' => 'Inv updated successfully', 'inv' => $inv ],201);
+    }
+
+    public function editDateAndTime(Request $request)
+    {
+        $request->validate([
+           'inv_id' => ['required', 'integer', 'exists:invs,id'],
+            'date' => ['required', 'date_format:Y-m-d'],
+            'time' => ['required', 'date_format:H:i']
+        ]);
+        $date_time = $request->input('date').' '.$request->input('time');
+        $inv = Inv::where('id', $request->input('inv_id'))->first();
+        $inv->date_time = $date_time;
+        $inv->save();
+
+        return response(['message' => 'date received '.$date_time],201);
     }
 
     public function addUser(Request $request)
@@ -318,7 +346,7 @@ class InvController extends Controller
             foreach ($room_invs as $key => $invs)
             {
                 if (count($invs) > 1)
-                    array_push($invs_conflicts, $room->number.' at '.$key);
+                    array_push($invs_conflicts, $room->number.' has more than inv at same slot '.$key);
                 foreach ($invs as $inv)
                 {
                     if ($inv->duration > 0)
@@ -327,7 +355,7 @@ class InvController extends Controller
                         {
                             $tmp_date_time = Carbon::parse($inv->date_time)->addHours($i)->toDateTimeString();
                             if ($room->invs()->get()->where('date_time',$tmp_date_time)->count() > 0)
-                                array_push($invs_conflicts, $room->number.' at '.$tmp_date_time);
+                                array_push($invs_conflicts, $room->number.' has overlap invs at slot '.$tmp_date_time);
                         }
                     }
                 }
@@ -348,7 +376,7 @@ class InvController extends Controller
         }
         if (count($invs_conflicts)>0)
         {
-            return response(['message' => $import->getRowCount().' Invs imported successfully but with overlaps in ', 'type' => 'warning', 'invs_conflicts' => array_unique($invs_conflicts)], 201);
+            return response(['message' => $import->getRowCount().' Invs imported successfully but with some warnings.', 'type' => 'warning', 'invs_conflicts' => array_unique($invs_conflicts)], 201);
         }
         return response(['message' => $import->getRowCount().' Invs imported successfully', 'type' => 'success'], 201);
     }
