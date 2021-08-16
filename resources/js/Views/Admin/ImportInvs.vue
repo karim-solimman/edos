@@ -88,8 +88,16 @@ export default {
             .then((response) => {
                 this.btnLoading = false
                 this.alert = true
-                this.alertType = 'success'
-                this.alertMessage = response.data.message
+                this.alertType = response.data.type
+                let invs_conflicts = ''
+                console.log(response.data.invs_conflicts);
+                if(response.data?.invs_conflicts)
+                {
+                    $.each(response.data.invs_conflicts, function (index, value) {
+                        invs_conflicts += `${value}, `
+                    });
+                }
+                this.alertMessage = response.data.message + (response.data.invs_conflicts? " - " + invs_conflicts.slice(0,-2) : '')
             })
             .catch((error) => {
                 this.btnLoading = false

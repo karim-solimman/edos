@@ -54,6 +54,7 @@ export default {
                 {text: '#', value: 'index'},
                 {text: 'date', value: 'date'},
                 {text: 'time', value: 'time'},
+                {text: 'duration', value: 'duration'},
                 {text: 'users count', value: 'users_count'},
                 {text: 'users limit', value: 'users_limit'},
                 {text: 'course', value: 'course.code'},
