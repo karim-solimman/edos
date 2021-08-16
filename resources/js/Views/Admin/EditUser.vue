@@ -26,7 +26,7 @@
                         <v-text-field v-model="user.email" :error-messages="errorMessages['email']" label="Email" :value="user.email"></v-text-field>
                     </v-card-text>
                      <v-card-actions>
-                        <v-btn type="submit" color="primary" :loading="infoBtnLoading" block><v-icon left>mdi-pencil</v-icon>update</v-btn>
+                        <v-btn type="submit" color="primary" :loading="infoBtnLoading" block text><v-icon left>mdi-pencil</v-icon>update</v-btn>
                     </v-card-actions>
                      </v-form>
                     <v-divider></v-divider>
@@ -36,7 +36,7 @@
                         <strong>, user data and invs won't be removed</strong></p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn @click="confirmResetPassword" color="error" block><v-icon left>mdi-lock-reset</v-icon>reset</v-btn>
+                        <v-btn @click="confirmResetPassword" color="error" block text><v-icon left>mdi-lock-reset</v-icon>reset</v-btn>
                     </v-card-actions>
                     <v-divider></v-divider>
                     <v-card-title class="text-h5 font-weight-light">Remove all users invs</v-card-title>
@@ -45,7 +45,7 @@
                         <strong>, User name, department, email and password will still the same!</strong></p>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn @click="confirmRemoveAllInvs" color="error" block><v-icon left>mdi-delete-forever</v-icon>remove all invs</v-btn>
+                        <v-btn @click="confirmRemoveAllInvs" color="error" block text><v-icon left>mdi-delete-forever</v-icon>remove all invs</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -65,7 +65,7 @@
                         </v-select>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn :loading="depBtnLoading" @click="updateDepartment" color="primary" block><v-icon left>mdi-pencil</v-icon>change</v-btn>
+                        <v-btn :loading="depBtnLoading" @click="updateDepartment" color="primary" block text><v-icon left>mdi-pencil</v-icon>change</v-btn>
                     </v-card-actions>
                 </v-card>
                 <v-card class="mb-5" color="grey lighten-5">

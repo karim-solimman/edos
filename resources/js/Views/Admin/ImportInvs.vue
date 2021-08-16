@@ -10,6 +10,7 @@
             <v-col cols="12" lg="6" md="6">
                 <v-form @submit.prevent="uploadFile" ref="form">
                     <v-file-input
+                    color="info"
                     label="Select File"
                     @focus="errorMsg = null"
                     show-size
@@ -48,7 +49,15 @@
                 </p>
             </v-col>
             <v-col cols="12" lg="6" md="6">
-                <v-img src="/img/invs_excel.png"></v-img>
+                <v-card dark :color="reportType" v-if="report">
+                    <v-card-title>
+                        <h5 class="text-h6 font-weight-light">Uploading report</h5>
+                    </v-card-title>
+                    <v-card-text>
+                        <p class="text-body-1 white--text" v-for="(msg, i) in reportMessages" :key="msg.id">{{++i}} - {{msg}}</p>
+                    </v-card-text>
+                </v-card>
+                <v-img class="mt-5" src="/img/invs_excel.png"></v-img>
             </v-col>
         </v-row>
     </v-container>    
@@ -69,6 +78,10 @@ export default {
             alert: false,
             alertType: null,
             alertMessage: null,
+
+            report: false,
+            reportType: null,
+            reportMessages: []
         }
     },
     methods:{
@@ -96,8 +109,13 @@ export default {
                     $.each(response.data.invs_conflicts, function (index, value) {
                         invs_conflicts += `${value}, `
                     });
+                    this.report = true
+                    this.reportType = response.data.type
+                    this.reportMessages = response.data.invs_conflicts
                 }
-                this.alertMessage = response.data.message + (response.data.invs_conflicts? " - " + invs_conflicts.slice(0,-2) : '')
+                this.alertMessage = response.data.message
+
+               
             })
             .catch((error) => {
                 this.btnLoading = false
