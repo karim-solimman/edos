@@ -67,6 +67,8 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/invs/statistics', [InvController::class, 'invStatistics']);
     Route::get('/invs/flush', [InvController::class, 'flushInvs']);
     Route::get('/invs/{id}',[InvController::class, 'profile']);
+    Route::post('/invs/editinfo', [InvController::class, 'editInfo']);
+    Route::post('/invs/editdateandtime', [InvController::class, 'editDateAndTime']);
 
     Route::get('/roles',[RoleController::class, 'index']);
     Route::post('/roles/add',[UserController::class, 'attachRole']);
@@ -75,10 +77,16 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/departments',[DepartmentController::class, 'index']);
     Route::get('/departments/{id}', [DepartmentController::class, 'profile']);
     Route::post('/departments/create', [DepartmentController::class, 'create']);
+    Route::post('/department/delete', [DepartmentController::class, 'delete']);
+    Route::post('/department/updatename', [DepartmentController::class, 'updateName']);
+    Route::post('/department/flushallinvs', [DepartmentController::class, 'flushAllInvs']);
 
     Route::post('/rooms/create',[RoomController::class,'create']);
     Route::get('/rooms',[RoomController::class, 'index']);
     Route::get('/rooms/{id}',[RoomController::class, 'profile']);
+    Route::post('/rooms/delete',[RoomController::class, 'delete']);
+    Route::post('/rooms/edit', [RoomController::class, 'edit']);
+    Route::post('/rooms/deleteallinvs', [RoomController::class, 'removeInvs']);
 
     Route::get('/courses',[CourseController::class,'index']);
     Route::post('/courses/create',[CourseController::class, 'create']);
