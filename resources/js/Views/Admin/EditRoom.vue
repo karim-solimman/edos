@@ -2,6 +2,12 @@
     <v-container>
         <Loading :loading="loading" />
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
+        <Confirmation
+        @dialog-closed="dialog=false"
+        :dialog="dialog"
+        :dialogData="dialogData"
+        :confirmationText="dialogText"
+        :onDeleteFunction="dialogFunction" />
         <v-row v-if="!loading && room">
             <v-col>
                 <h1 class="text-h4 font-weight-light">{{ room.number }} <v-chip x-small>edit</v-chip></h1>
@@ -16,23 +22,27 @@
                             label="Room number"
                             v-model="room.number"
                             :rules="room_numberRules"
+                            :error-messages="errorMessages['number']"
                             ></v-text-field>
                             <v-text-field
                             label="Users limit"
                             v-model="room.users_limit"
                             :rules="users_limitRules"
+                            :error-messages="errorMessages['users_limit']"
                             ></v-text-field>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn block text color="info"><v-icon left>mdi-pencil</v-icon>Update room number</v-btn>
+                        <v-btn @click="updateInfo" :loading="btnLoading" block text color="info"><v-icon left>mdi-pencil</v-icon>Update room information</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
             <v-col>
                 <v-card color="grey lighten-4">
-                    <v-card-title><h1 class="text-h5 font-weight-light">Undetach all invs</h1></v-card-title>
-                    <v-card-text><strong>Warning</strong>, by Undetach invs from {{room.number}}, all invs will be available but not linked to a room. This action can't be undo.</v-card-text>
-                    <v-card-actions><v-btn block color="error" dark><v-icon left>mdi-close</v-icon>undetach all invs</v-btn></v-card-actions>
+                    <v-card-title><h1 class="text-h5 font-weight-light">Remove all room invs</h1></v-card-title>
+                    <v-card-text><strong>Warning</strong>, by removing invs from {{room.number}}, all invs will be permentantly removed and all users will unlinked to these invs This action can't be undo.</v-card-text>
+                    <v-card-actions>
+                        <v-btn @click="confirmDeletAllInvs" block color="error" dark><v-icon left>mdi-close</v-icon>remove all invs</v-btn>
+                    </v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
@@ -52,8 +62,8 @@
                         {{item.users.length}} / {{room.users_limit}}
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
-                        <v-btn style="text-decoration: none" :to="{name: 'invProfile', params:{id: item.id}}" icon x-small><v-icon>mdi-pencil</v-icon></v-btn>
-                        <v-btn style="text-decoration: none" icon x-small color="error"><v-icon>mdi-close</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" :to="{name: 'invProfile', params:{id: item.id}}" icon small><v-icon small>mdi-pencil</v-icon></v-btn>
+                        <v-btn @click="confirmDeletInv(item)" style="text-decoration: none" icon small color="error"><v-icon small>mdi-delete</v-icon></v-btn>
                     </template>
                 </v-data-table>
             </v-col>
@@ -69,14 +79,16 @@
 <script>
 import Loading from '../../components/Loading.vue'
 import Alert from '../../components/Alert.vue'
+import Confirmation from '../../components/Confirmation.vue'
 export default {
     components: {
-        Loading, Alert
+        Loading, Alert, Confirmation
     },
     data(){
         return{
             room: Object,
             loading: true,
+            btnLoading: false,
             headers:[
                 {text: '#', value: 'index'},
                 {text: 'date', value: 'date'},
@@ -97,7 +109,17 @@ export default {
             ],
             alert: false,
             alertType: null,
-            alertMessage: null
+            alertMessage: null,
+
+            errorMessages:[
+                {number: ''},
+                {users_limit: ''}
+            ],
+
+            dialog: false,
+            dialogData: null,
+            dialogText: null,
+            dialogFunction: null,
         }
     },
     mounted(){
@@ -119,6 +141,103 @@ export default {
             this.alertMessage = error.response.data.message
         })
 
+    },
+    methods:{
+        updateInfo(){
+            this.btnLoading = true
+            let formData = new FormData()
+            formData.append('room_id', this.room.id)
+            formData.append('room_number', this.room.number.toUpperCase())
+            formData.append('users_limit', this.room.users_limit)
+
+            axios({
+                method: 'post',
+                url: '/api/rooms/edit',
+                data: formData,
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.btnLoading = false
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+            })
+            .catch((error) => {
+                this.btnLoading = false
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+                this.errorMessages['number'] = error.response.data.errors['room_number']
+                this.errorMessages['users_limit'] = error.response.data.errors['users_limit']
+            })
+        },
+        confirmDeletInv(inv)
+        {
+            this.dialog = true
+            this.dialogData = inv.id
+            this.dialogText = `Are you sure you want to delete on ${this.$options.filters.DateFormat(inv.date_time)} at ${this.$options.filters.TimeFormat(inv.date_time)} ?`
+            this.dialogFunction = this.deleteInv
+        },
+        deleteInv(invId){
+            this.dialog = false
+            let formData = new FormData()
+            formData.append('id', invId)
+            axios({
+                method: 'post',
+                url: '/api/invs/delete',
+                data: formData,
+                headers: {
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+                this.room.invs = this.room.invs.filter((item) => {
+                    return item.id != invId
+                })
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+            })
+        },
+        confirmDeletAllInvs()
+        {
+            this.dialog = true
+            this.dialogData = this.room.id
+            this.dialogText = `Are you sure you want to delete on all invs from ${this.room.number} ?`
+            this.dialogFunction = this.deletAllInvs
+        },
+        deletAllInvs()
+        {
+            this.dialog = false
+            let formData = new FormData()
+            formData.append('room_id', this.room.id)
+            axios({
+                method: 'post',
+                url: '/api/rooms/deleteallinvs',
+                data: formData,
+                headers: {
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+                this.room.invs = []
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+            })   
+        }
     },
     filters:{
             DateFormat(value)
