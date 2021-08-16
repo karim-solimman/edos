@@ -1,11 +1,6 @@
 <template>
     <v-container>
         <Loading :loading="loading" />
-        <v-row v-if="!loading">
-            <v-col>
-                <h1 class="text-h4 font-weight-light">Dashboard</h1>
-            </v-col>
-        </v-row>
         <v-row justify="center" v-if="!loading && roles">
             <!-- <v-col lg=2 md=2 cols=6>
                 <v-hover v-slot="{hover}">
