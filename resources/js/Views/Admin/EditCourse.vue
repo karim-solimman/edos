@@ -20,9 +20,9 @@
                             :items="departments"
                             item-value="id"
                             item-text="name"
-                            :value="course.department.id"
+                            :value="course.department? course.department.id: 1"
                             ></v-select>
-                            <v-btn color="primary" block><v-icon left>mdi-plus</v-icon>Update</v-btn>
+                            <v-btn color="primary" block text><v-icon left>mdi-plus</v-icon>Update</v-btn>
                         </v-form>
                     </v-card-text>
                 </v-card>
