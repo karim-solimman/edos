@@ -10,7 +10,7 @@
                 <v-chip class="text-overline" outlined v-if="course && course.invs.length > 0 "><v-icon left>mdi-alarm</v-icon>{{course.invs[0].date_time | TimeFormat}}</v-chip>
                 <v-chip class="text-overline" outlined v-if="course && course.invs.length > 0 "><v-icon left>mdi-clock</v-icon>{{course.invs[0].duration}} Hours</v-chip>
                 <v-chip class="text-overline" outlined v-else>No invs</v-chip>
-                <v-chip class="text-overline my-1" outlined><v-icon left>mdi-folder</v-icon>{{course.department.name}} / {{course.credit_hours}} credit hours</v-chip>
+                <v-chip class="text-overline my-1" outlined><v-icon left>mdi-folder</v-icon>{{course.department? course.department.name: 'No department'}} / {{course.credit_hours}} credit hours</v-chip>
             </v-col>
         </v-row>
         <v-row>
