@@ -29,6 +29,7 @@
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn small style="text-decoration: none" color="info" :to="{name: 'invProfile', params:{id: item.id}}" icon><v-icon small>mdi-table-eye</v-icon></v-btn>
+                        <v-btn small style="text-decoration: none" :to="{name: 'edit-inv', params:{id: item.id}}" icon><v-icon small>mdi-pencil</v-icon></v-btn>
                         <v-btn small class="ml-1" style="text-decoration: none" icon color="error" @click="confirmDeleteInv(item)"><v-icon small>mdi-delete</v-icon></v-btn>
                     </template>
                 </v-data-table>
@@ -72,25 +73,25 @@ export default {
         this.getCourseInfo()
     },
     methods:{
-        getCourseInfo(){
-            let courseId = this.$route.params.id
-            axios({
-                method: 'get',
-                url: `/api/courses/${courseId}`,
-                headers: {
-                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
-                }
-            })
-            .then((response) => {
-                this.course = response.data.course
-                this.loading = false
-            })
-            .catch((error) => {
-                this.alert = true
-                this.alertType = 'error'
-                this.alertMessage = error.response.data.message
-                this.loading = false
-            })
+            getCourseInfo(){
+                let courseId = this.$route.params.id
+                axios({
+                    method: 'get',
+                    url: `/api/courses/${courseId}`,
+                    headers: {
+                        Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                    }
+                })
+                .then((response) => {
+                    this.course = response.data.course
+                    this.loading = false
+                })
+                .catch((error) => {
+                    this.alert = true
+                    this.alertType = 'error'
+                    this.alertMessage = error.response.data.message
+                    this.loading = false
+                })
         },
         confirmDeleteInv(inv){
             this.dialog = true
