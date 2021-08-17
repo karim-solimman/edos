@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/users/deletealluserinvs/{id}', [UserController::class, 'removeAllUserInvs']);
 
     Route::get('/invs',[InvController::class,'index']);
+    Route::post('/invs/getbydepartment', [InvController::class, 'index_by_department']);
     Route::post('/invs/import',[InvController::class, 'fileImport']);
     Route::get('/invforusers', [InvController::class, 'index_groupBy']);
     Route::post('/invs/adduser', [InvController::class, 'addUser']);
@@ -89,6 +90,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/rooms/deleteallinvs', [RoomController::class, 'removeInvs']);
 
     Route::get('/courses',[CourseController::class,'index']);
+    Route::post('/courses/bydepartment', [CourseController::class, 'getByDepartment']);
     Route::post('/courses/create',[CourseController::class, 'create']);
     Route::get('/courses/{id}',[CourseController::class, 'profile']);
     Route::get('/courses/{id}/remove',[CourseController::class,'delete']);
