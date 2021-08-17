@@ -59,7 +59,7 @@
                         {{item.date_time | TimeFormat }}
                     </template>
                     <template v-slot:[`item.users_count`]="{item}">
-                        {{item.users.length}} / {{room.users_limit}}
+                        {{item.users.length}} / {{item.users_limit}}
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn style="text-decoration: none" :to="{name: 'invProfile', params:{id: item.id}}" icon small><v-icon small>mdi-pencil</v-icon></v-btn>

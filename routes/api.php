@@ -92,6 +92,9 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/courses/create',[CourseController::class, 'create']);
     Route::get('/courses/{id}',[CourseController::class, 'profile']);
     Route::get('/courses/{id}/remove',[CourseController::class,'delete']);
+    Route::post('/courses/updateinfo',[CourseController::class, 'editInformation']);
+    Route::post('/courses/removeallinvs',[CourseController::class, 'removeAllInvs']);
+    Route::post('/courses/updatedatetime', [CourseController::class, 'updateDataTime']);
 
     Route::post('/settings/update', [SettingsController::class, 'updateSettings']);
 });
