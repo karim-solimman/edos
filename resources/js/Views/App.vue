@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <navigation-drawer @drawer-close="drawerToggle = false" :drawerToggle="this.drawerToggle" :isAdmin="isAdmin" :isUser="isUser" :status="this.status" ></navigation-drawer>
+        <navigation-drawer @drawer-close="drawerToggle = false" :drawerToggle="drawerToggle" :isAdmin="isAdmin" :isUser="isUser" :isDataEntery="isDataEntery" :status="status" :isManualSelection="isManualSelection"></navigation-drawer>
         <nav-bar @drawer-toggle="drawerToggle = !drawerToggle" @logged-out="loggedOut" :status="this.status"></nav-bar>
         <v-main>
             <v-container class="mb-12" fluid>
@@ -25,13 +25,17 @@ import Loading from '../components/Loading.vue'
                 token: localStorage.getItem('token'),
                 status: false,
                 drawerToggle: false,
+
                 isAdmin: false,
                 isUser: false,
+                isDataEntery: false,
+                isManualSelection: false,
 
                 loading: true,
                 invs: [],
                 roles: [],
                 user: JSON.parse(localStorage.getItem('user')),
+                settings: []
             }
         },
         mounted() {
@@ -51,9 +55,11 @@ import Loading from '../components/Loading.vue'
                     this.invs = response?.data?.invs
                     this.$store.dispatch('updateInvs', this.invs)
                     $.each(response.data.roles, (index, value) => {
-                        this.roles.push(response.data.roles[index]['slug'])
+                        this.roles.push(value.slug)
                     })
                     this.$store.dispatch('updateRoles', this.roles)
+                    this.$store.dispatch('updateSettings', response.data.settings)
+                    this.settings = this.$store.getters.getSettings
                     this.loggedIn()
                     this.loading = false
                 })
@@ -77,22 +83,32 @@ import Loading from '../components/Loading.vue'
                 this.drawerToggle = false
                 this.isAdmin = false
                 this.isUser = false
+                this.isDataEntery = false
             },
             loggedIn(){
                 let roles = this.$store.getters.getRoles
+                let settings = this.$store.getters.getSettings
                 this.status = true
                 this.drawerToggle = true
                 if(roles.includes('admin')){
                     this.isAdmin = true
-                    this.$router.push({name: 'dashboard'}).catch((error)=>{})
                 }
-                else if(roles.includes('user')){
+                if(roles.includes('user')){
                     this.isUser = true
-                    this.$router.push({name: 'profile'}).catch((error)=>{})
+                }
+                if(roles.includes('de')){
+                    this.isDataEntery = true
+                }
+                if(settings[0].value){
+                    this.isManualSelection = true
+                }
+                if(this.isAdmin){
+                    this.$router.push({name: 'dashboard'}).catch((error)=>{})
                 }
                 else{
                     this.$router.push({name: 'profile'}).catch((error)=>{})
                 }
+                
 
             },
         }

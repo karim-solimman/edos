@@ -136,9 +136,18 @@
                     <v-list-item-icon><v-icon>mdi-account</v-icon></v-list-item-icon>
                     <v-list-item-content><v-list-item-title>Profile</v-list-item-title></v-list-item-content>
                 </v-list-item>
-                <v-list-item color="primary" style="text-decoration:none" v-if="isUser" link :to="{name: 'invs'}">
+                <v-list-item color="primary" style="text-decoration:none" v-if="isUser && isManualSelection" link :to="{name: 'invs'}">
                     <v-list-item-icon><v-icon>mdi-table-eye</v-icon></v-list-item-icon>
                     <v-list-item-content><v-list-item-title>Invs</v-list-item-title></v-list-item-content>
+                </v-list-item>
+
+                <v-list-item color="primary" style="text-decoration:none" link v-if="isDataEntery" :to="{name: 'de-add-inv'}">
+                    <v-list-item-icon><v-icon>mdi-calendar-plus</v-icon></v-list-item-icon>
+                    <v-list-item-content><v-list-item-title>Add new inv</v-list-item-title></v-list-item-content>
+                </v-list-item>
+                <v-list-item color="primary" style="text-decoration:none" v-if="isDataEntery" link :to="{name: 'de-timetable'}">
+                    <v-list-item-icon><v-icon>mdi-table</v-icon></v-list-item-icon>
+                    <v-list-item-content><v-list-item-title>Timetable</v-list-item-title></v-list-item-content>
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
@@ -155,7 +164,9 @@ export default {
    props: {
        drawerToggle: Boolean,
        isAdmin: Boolean,
-       isUser: Boolean
+       isUser: Boolean,
+       isDataEntery: Boolean,
+       isManualSelection: Boolean,
    },
    watch:{
        drawerToggle: function(newVal, oldVal) {this.drawer = newVal},
