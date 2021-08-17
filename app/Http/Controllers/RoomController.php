@@ -11,7 +11,7 @@ class RoomController extends Controller
 
     public function index()
     {
-        $rooms = Room::with('invs')->withCount('invs')->get();
+        $rooms = Room::with('invs')->withCount('invs')->orderBy('number')->get();
         return response(['rooms' => $rooms], 201);
     }
 
