@@ -13,7 +13,7 @@
            <v-col cols="12" lg="5" md="4">
                 <h1 class="text-h3 font-weight-light">{{ user.name }}</h1>
                 <h2 class="text-overline">{{ user.email }}</h2>
-                <v-chip small color="primary" class="text-overline mr-2" v-for="role in roles" :key="role.id"><v-icon small left>mdi-account</v-icon>{{role}}</v-chip>
+                <v-chip small color="primary" class="text-overline mr-2" v-for="role in $store.getters.getUser.roles" :key="role.id"><v-icon small left>mdi-account</v-icon>{{role.name}}</v-chip>
                 <v-chip small outlined class="text-overline"><v-icon small left>mdi-folder</v-icon>
                     <span v-if="user.department">{{user.department.name}}</span>
                     <span v-else>No department</span>
@@ -34,7 +34,7 @@
                <v-switch class="mt-11" @click="switchView" :prepend-icon="switchIcon" inset v-model="switchToggle" :persistent-hint="true" :hint="switchHint"></v-switch>
            </v-col>
        </v-row>
-       <v-divider></v-divider>
+       <v-divider v-if="!loading" ></v-divider>
        <v-row v-if="!loading && invs.length === 0 && roles && roles.length > 0">
            <v-col>
                <v-alert

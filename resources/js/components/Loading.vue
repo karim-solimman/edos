@@ -1,10 +1,10 @@
 <template>
-    <v-row align="center" justify="space-around" v-if="loading">
+    <v-row align="center" justify="center" v-if="loading">
             <v-col cols="1">
                 <v-progress-circular
-                :size="70"
-                :width="7"
-                color="black"
+                :size="100"
+                :width="5"
+                color="primary"
                 indeterminate
                 ></v-progress-circular>
             </v-col>
