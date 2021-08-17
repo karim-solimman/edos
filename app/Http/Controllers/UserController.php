@@ -160,6 +160,7 @@ class UserController extends Controller
     {
         $user = User::where('id', $id)->first();
         $user->password = NULL;
+        $user->email_verified_at = NULL;
         $user->save();
 
         return response(['message' => 'Password for '.$user->name.' reset successfully'],201);
