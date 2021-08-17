@@ -86,7 +86,7 @@
 
        <v-row v-if="!loading && toggleUsers">
            <v-col>
-               <v-data-table :headers="headersUsers" :items="filteredInvs" :search="search" sort-by="date_time">
+               <v-data-table @current-items="exportData" :headers="headersUsers" :items="filteredInvs" :search="search" sort-by="date_time">
                     <template v-slot:[`item.index`]="{index}">
                         {{index+1}}
                     </template> 

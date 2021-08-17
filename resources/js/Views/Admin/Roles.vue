@@ -35,6 +35,9 @@
                                     Email
                                 </th>
                                 <th class="text-left">
+                                    Verified
+                                </th>
+                                <th class="text-left">
                                     actions
                                 </th>
                                 </tr>
@@ -45,7 +48,11 @@
                                     <td>{{user.name}}</td>
                                     <td>{{user.email}}</td>
                                     <td>
-                                        <v-btn style="text-decoration: none" icon small :to="{name: 'userProfile', params:{id: user.id}}"><v-icon small>mdi-account</v-icon></v-btn>
+                                        <v-icon small v-if="user.email_verified_at" color="success">mdi-check-circle</v-icon>
+                                        <v-icon small v-else color="warning">mdi-alert-circle</v-icon>
+                                    </td>
+                                    <td>
+                                        <v-btn style="text-decoration: none" color="info" icon small :to="{name: 'userProfile', params:{id: user.id}}"><v-icon small>mdi-account</v-icon></v-btn>
                                         <v-btn style="text-decoration: none" :to="{name: 'editUser', params:{id: user.id}}" class="ml-2" icon small><v-icon small>mdi-pencil</v-icon></v-btn>
                                     </td>
                                 </tr>
