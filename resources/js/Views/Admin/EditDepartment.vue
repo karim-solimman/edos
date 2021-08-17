@@ -62,11 +62,11 @@
                         </v-chip-group>
                         <v-chip color="error" x-small v-else><v-icon x-small left>mdi-information-outline</v-icon>No invs</v-chip>
                     </template>
-                    <template v-slot:[`item.actions`]="{}">
-                        <v-btn icon small color="error"><v-icon>mdi-close</v-icon></v-btn>
+                    <template v-slot:[`item.actions`]="{item}">
+                        <v-btn @click="confirmDeleteCourse(item)" icon small color="error"><v-icon small>mdi-delete</v-icon></v-btn>
                     </template>
                 </v-data-table>
-            </v-col>
+            </v-col>    
         </v-row>
     </v-container>
 </template>
@@ -211,7 +211,35 @@ export default {
                 this.alertType = 'error'
                 this.alertMessage = error.response.data.message
             })
-        }
+        },
+        confirmDeleteCourse(course){
+            this.dialog = true
+            this.dialogText = 'Are you sure you want to delete ' + course.code + ' - ' + course.name + " ?"
+            this.dialogData = course.id
+            this.dialogFunction = this.deleteCourse
+        },
+        deleteCourse(courseId){
+            axios({
+                method: 'get',
+                url: `/api/courses/${courseId}/remove`,
+                headers:{
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                this.alert = true
+                this.alertType = 'success'
+                this.alertMessage = response.data.message
+                this.department.courses = this.department.courses.filter((item) => {
+                    return item.id != courseId
+                })
+            })
+            .catch((error) => {
+                this.alert = true
+                this.alertType = 'error'
+                this.alertMessage = error.response.data.message
+            })
+        },
     },
      filters:{
             DateFormat(value)

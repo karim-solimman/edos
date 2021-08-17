@@ -4,7 +4,9 @@
                 <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title class="text-h6">
-                            <v-icon small left>mdi-vector-polyline-edit</v-icon> EDOS
+                            <v-badge content="1.0">
+                                <v-icon small left>mdi-vector-polyline-edit</v-icon> EDOS
+                            </v-badge>
                         </v-list-item-title>
                         <v-list-item-subtitle>Exams Distribution Observers System</v-list-item-subtitle>
                     </v-list-item-content>
