@@ -28,6 +28,17 @@ const routes = [
         component: require('./Views/Invs').default,
         name: 'invs'
     },
+    //data entery routes
+    {
+        path: '/de/addinv',
+        component: require('./Views/DataEntery/AddInv').default,
+        name: 'de-add-inv'
+    },
+    {
+        path: '/de/timetable',
+        component: require('./Views/DataEntery/TimeTable').default,
+        name: 'de-timetable'
+    },
    
     //admin routes
     {
