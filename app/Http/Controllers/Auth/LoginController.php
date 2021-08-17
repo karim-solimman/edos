@@ -26,7 +26,7 @@ class LoginController extends Controller
 
         $roles = [];
         foreach ($user->roles as $role)
-            array_push($roles, $role->name);
+            array_push($roles, $role->slug);
 
         $token = $user->createToken($user->email, $roles)->plainTextToken;
         $invs = $user->invs()->get();

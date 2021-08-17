@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -69,6 +68,7 @@ class RegistrationController extends Controller
         ]);
         $user = User::where('id', $request->input('id'))->first();
         $user->password = Hash::make($request->input('password'));
+        $user->email_verified_at = date("Y-m-d H:i:s");
         $user->save();
 
         return response(['message' => 'Password set successfully'], 201);
