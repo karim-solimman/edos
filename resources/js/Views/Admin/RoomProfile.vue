@@ -25,6 +25,7 @@
                     </template>
                     <template v-slot:[`item.actions`]="{item}">
                         <v-btn style="text-decoration: none" icon small color="info" :to="{name: 'invProfile', params:{id: item.id}}"><v-icon small>mdi-door</v-icon></v-btn>
+                        <v-btn style="text-decoration: none" icon small :to="{name: 'edit-inv', params:{id: item.id}}"><v-icon small>mdi-pencil</v-icon></v-btn>
                         <v-btn style="text-decoration: none" icon small color="error" class="ml-2" @click="confirm(item)"><v-icon small>mdi-delete</v-icon></v-btn>
                     </template>
                 </v-data-table>

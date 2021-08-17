@@ -2,7 +2,14 @@
     <v-container>
         <Loading :loading="loading" />
         <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
-        <v-row justify="space-around" v-if="!loading">
+        <v-row v-if="!loading && !isDataEntery">
+           <v-col>
+               <v-alert border="left" color="orange" text type="error" elevation="2">
+                   <strong>Sorry</strong>, Data Entery Role is turned off for you.
+               </v-alert>
+           </v-col>
+       </v-row>
+        <v-row justify="space-around" v-if="!loading && isDataEntery">
             <v-col cols="12" lg="6" md="6">
                 <v-card color="grey lighten-5">
                     <v-card-title>
@@ -167,12 +174,17 @@ export default {
 
             dateMenu: false,
             timeMenu: false,
+
+            isDataEntery: false
         }
     },
     mounted(){
+        let formData = new FormData()
+        formData.append('user_id', this.$store.getters.getUser.id)
         axios({
-            method: 'get',
-            url: '/api/courses',
+            method: 'post',
+            url: '/api/courses/bydepartment',
+            data: formData,
             headers: {
                 Authorization: `Bearer ${window.localStorage.getItem('token')}`
             }
@@ -204,6 +216,36 @@ export default {
             this.alertMessage = error.response.data.message
             this.loading = false
         })
+    },
+    beforeMount(){
+        let formData = new FormData()
+        let roles = []
+            formData.append('user_id', this.$store.getters.getUser.id)
+            axios({
+                method: 'post',
+                url: '/api/profile',
+                data: formData,
+                headers: {
+                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                }
+            })
+            .then((response) => {
+                $.each(response.data.roles, (index, value) => {
+                    roles.push(value.slug)
+                })
+                this.$store.dispatch('updateRoles', roles)
+                this.$store.dispatch('updateSettings', response.data.settings)
+                if (roles.includes('de'))
+                {
+                    this.isDataEntery = true
+                }
+                this.loading = false
+            })
+            .catch((error) => {
+                this.$router.push('/')
+                this.$emit('logged-out', false)
+                localStorage.clear()
+            })
     },
     methods:{
         addInvs() {
