@@ -285,7 +285,6 @@ export default {
                 {
                     this.isDataEntery = true
                 }
-                this.loading = false
             })
             .catch((error) => {
                 this.$router.push('/')

@@ -35,6 +35,9 @@
                                     Email
                                 </th>
                                 <th class="text-left">
+                                    Department
+                                </th>
+                                <th class="text-left">
                                     Verified
                                 </th>
                                 <th class="text-left">
@@ -47,6 +50,7 @@
                                     <td>{{i+1}}</td>
                                     <td>{{user.name}}</td>
                                     <td>{{user.email}}</td>
+                                    <td>{{user.department.name}}</td>
                                     <td>
                                         <v-icon small v-if="user.email_verified_at" color="success">mdi-check-circle</v-icon>
                                         <v-icon small v-else color="warning">mdi-alert-circle</v-icon>
