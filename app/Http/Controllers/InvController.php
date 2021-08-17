@@ -63,13 +63,9 @@ class InvController extends Controller
 
     public function create(Request $request)
     {
-        $check = Inv::where('course_id', $request->input('course_id'))->get()->count();
-        if ($check > 0)
-        {
-            return response(['message' => 'Course already exists in invs.'], 402);
-        }
+
         $request->validate([
-            'course_id' => ['required', 'integer', 'exists:courses,id' ],
+            'course_id' => ['required', 'integer', 'exists:courses,id', 'unique:invs,course_id'],
             'rooms' => ['required'],
             'duration' => ['nullable'],
             'date' => ['required', 'date_format:Y-m-d'],
@@ -144,7 +140,7 @@ class InvController extends Controller
         $inv->date_time = $date_time;
         $inv->save();
 
-        return response(['message' => 'date received '.$date_time],201);
+        return response(['message' => 'date and time updated to '.Carbon::parse($date_time)->toDateString().' at '.Carbon::parse($date_time)->format('H:i A')],201);
     }
 
     public function addUser(Request $request)
