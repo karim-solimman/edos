@@ -198,9 +198,11 @@ import Confirmation from '../components/Confirmation.vue'
                 invs: [],
                 roles: [],
                 user: this.$store.getters.getUser,
+
                 alertType: null,
                 alertMessage: null,
                 alert: false,
+
                 dialog: false,
                 dialogData: null,
                 dialogFunction: null,
@@ -211,7 +213,7 @@ import Confirmation from '../components/Confirmation.vue'
                 switchIcon: 'mdi-table-eye',
                 view: 'grid',
 
-                settings: null,
+                settings: [],
                 export_fields:
                 [
                     {
@@ -269,7 +271,7 @@ import Confirmation from '../components/Confirmation.vue'
                 this.invs = response?.data?.invs
                 this.$store.dispatch('updateInvs', this.invs)
                 $.each(response.data.roles, (index, value) => {
-                    this.roles.push(response.data.roles[index]['slug'])
+                    this.roles.push(value.slug)
                 })
                 this.$store.dispatch('updateRoles', this.roles)
                 this.$store.dispatch('updateSettings', response.data.settings)

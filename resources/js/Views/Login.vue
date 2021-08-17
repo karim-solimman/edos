@@ -271,7 +271,7 @@ import Loading from '../components/Loading.vue'
                            this.$store.dispatch('updateInvs', response?.data?.invs)
                            this.$store.dispatch('updateSettings', response?.data?.settings)
                            $.each(response.data.roles, (index, value) => {
-                               roles.push(value['slug'])
+                               roles.push(value.slug)
                            })
                            this.$store.dispatch('updateRoles', roles)
                            this.$emit('logged-in',true)
