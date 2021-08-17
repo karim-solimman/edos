@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\InvsImport;
 use App\Models\Course;
+use App\Models\Department;
 use App\Models\Inv;
 use App\Models\Role;
 use App\Models\Room;
@@ -18,6 +19,25 @@ class InvController extends Controller
     public function index()
     {
         return Inv::with(['users', 'course.department', 'room'])->orderBy('date_time')->get();
+    }
+
+    public function index_by_department(Request $request)
+    {
+        $request->validate([
+           'user_id' => ['required', 'integer', 'exists:users,id']
+        ]);
+        $user = User::with(['department'])->where('id', $request->input('user_id'))->firstOrFail();
+        if (!$user->department)
+        {
+            return response(['message' => $user->name." - Not attached to department"],402);
+        }
+        if (!auth()->user()->tokenCan('de'))
+        {
+            return response(['message' => $user->name." - Don't have perimission."],402);
+        }
+        $courses = Course::select('id')->where('department_id', $user->department->id)->get();
+        return Inv::with(['course.department', 'room'])->whereIn('course_id', $courses)->get();
+
     }
 
     public function index_groupBy()

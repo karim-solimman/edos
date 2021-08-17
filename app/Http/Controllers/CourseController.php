@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Department;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,24 @@ class CourseController extends Controller
     {
         $courses = Course::with('department')->withCount('invs')->get();
         return response(['courses' => $courses], 201);
+    }
+
+    public function getByDepartment(Request $request)
+    {
+        $request->validate([
+           'user_id' => ['required', 'integer', 'exists:users,id']
+        ]);
+        $user = User::with('department')->where('id',$request->input('user_id'))->firstOrFail();
+        if (!$user->department)
+        {
+            return response(['message' => $user->name.' - Not attached to department.'],402);
+        }
+        if (!auth()->user()->tokenCan('de'))
+        {
+            return response(['message' => $user->name." - Don't have perimission."],402);
+        }
+        $courses = Course::where('department_id', $user->department->id)->get();
+        return response(['courses' => $courses],201);
     }
 
     public function profile($id)
