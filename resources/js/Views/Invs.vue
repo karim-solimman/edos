@@ -1,44 +1,98 @@
 <template>
-        <v-container>
-        <Alert @alert-closed="alert = false" :alert="alert" :alertMessage="alertMessage" :alertType="alertType" />
+    <v-container>
+        <Alert
+            @alert-closed="alert = false"
+            :alert="alert"
+            :alertMessage="alertMessage"
+            :alertType="alertType"
+        />
         <Loading :loading="loading" />
         <Confirmation
-         @dialog-closed="dialog = false"
-         :confirmationText="dialogText"
-         :onDeleteFunction="dialogFunction" 
-         :dialogData="dialogData" 
-         :dialog="dialog" 
-         />
-        <div v-if="!loading && settings[0].value">
+            @dialog-closed="dialog = false"
+            :confirmationText="dialogText"
+            :onDeleteFunction="dialogFunction"
+            :dialogData="dialogData"
+            :dialog="dialog"
+        />
+        <v-row v-if="!loading && roles && roles.length === 0">
+            <v-col>
+                <v-alert
+                    border="left"
+                    color="orange"
+                    text
+                    type="error"
+                    elevation="2"
+                >
+                    <strong>Sorry</strong>, Admin didn't assign your role in the
+                    system, contact admin for this issue
+                </v-alert>
+            </v-col>
+        </v-row>
+        <div v-if="!loading && settings[0].value && roles.includes('user')">
             <v-row>
                 <v-col cols="10" lg="10" md="10">
-                    <v-text-field
-                    label="search"
-                    type="date"
-                    v-model="search"
-                    >
+                    <v-text-field label="search" type="date" v-model="search">
                     </v-text-field>
                 </v-col>
                 <v-col align-self="center" cols="2" lg="2" md="2">
-                    <v-btn text @click="search = ''"><v-icon left>mdi-delete-outline</v-icon>clear search</v-btn>
+                    <v-btn text @click="search = ''"
+                        ><v-icon left>mdi-delete-outline</v-icon>clear
+                        search</v-btn
+                    >
                 </v-col>
             </v-row>
-            <v-row  v-for="(inv, date) in filteredInvs" :key="inv.id">
+            <v-row v-for="(inv, date) in filteredInvs" :key="inv.id">
                 <v-col class="text-center my-auto" cols="12" lg="3" md="3">
-                   <h1 class="text-h3 font-weight-light">{{date | getDay}} {{date | getMonth}}</h1>
-                   <h5 class="text-h5 font-weight-light">{{date | getDayName}}</h5>
-                   <p class="text-overline">{{date | getYear}}</p>
+                    <h1 class="text-h3 font-weight-light">
+                        {{ date | getDay }} {{ date | getMonth }}
+                    </h1>
+                    <h5 class="text-h5 font-weight-light">
+                        {{ date | getDayName }}
+                    </h5>
+                    <p class="text-overline">{{ date | getYear }}</p>
                 </v-col>
-                <v-col cols="12" lg="3" md="3" v-for="(item, time) in inv" :key="item.id">
-                    <v-hover v-slot="{hover}">
-                        <v-card hover :color="isExists(time)? 'green lighten-5' : 'grey lighten-5'"  @click="cardAction(item, time)">
+                <v-col
+                    cols="12"
+                    lg="3"
+                    md="3"
+                    v-for="(item, time) in inv"
+                    :key="item.id"
+                >
+                    <v-hover v-slot="{ hover }">
+                        <v-card
+                            hover
+                            :color="
+                                isExists(time)
+                                    ? 'green lighten-5'
+                                    : 'grey lighten-5'
+                            "
+                            @click="cardAction(item, time)"
+                        >
                             <v-card-title class="d-flex justify-space-between">
-                                <h1 class="text-h4 font-weight-light">{{time | TimeFormat}}</h1>
-                                <v-icon v-if="isExists(time)" color="green">mdi-account</v-icon>
+                                <h1 class="text-h4 font-weight-light">
+                                    {{ time | TimeFormat }}
+                                </h1>
+                                <v-icon v-if="isExists(time)" color="green"
+                                    >mdi-account</v-icon
+                                >
                             </v-card-title>
                             <v-card-text>
-                                <v-chip small dark :color="item.users_count < item.users_limit? 'green darken-2' : 'red darken-2'"><v-icon left>mdi-account-group</v-icon>{{item.users_count}} / {{item.users_limit}}</v-chip>
-                                <v-chip small outlined><v-icon left>mdi-clock-outline</v-icon>{{item.updated_at | ago}}</v-chip>
+                                <v-chip
+                                    small
+                                    dark
+                                    :color="
+                                        item.users_count < item.users_limit
+                                            ? 'green darken-2'
+                                            : 'red darken-2'
+                                    "
+                                    ><v-icon left>mdi-account-group</v-icon
+                                    >{{ item.users_count }} /
+                                    {{ item.users_limit }}</v-chip
+                                >
+                                <v-chip small outlined
+                                    ><v-icon left>mdi-clock-outline</v-icon
+                                    >{{ item.updated_at | ago }}</v-chip
+                                >
                             </v-card-text>
                             <v-expand-transition>
                                 <div
@@ -46,8 +100,24 @@
                                     class="d-flex transition-fast-in-fast-out blue-grey darken-4 v-card--reveal text-h5 font-weight-light white--text"
                                     style="height: 100%;"
                                 >
-                                <span class="text-h4 font-weight-thin text-center" v-if="isExists(time)"><v-icon dark x-large left color="error">mdi-table-large-remove</v-icon><br/>REMOVE</span>
-                                <span class="text-h4 font-weight-thin text-center" v-else><v-icon dark x-large left color="success">mdi-table-large-plus</v-icon><br/>ADD</span>
+                                    <span
+                                        class="text-h4 font-weight-thin text-center"
+                                        v-if="isExists(time)"
+                                        ><v-icon dark x-large left color="error"
+                                            >mdi-table-large-remove</v-icon
+                                        ><br />REMOVE</span
+                                    >
+                                    <span
+                                        class="text-h4 font-weight-thin text-center"
+                                        v-else
+                                        ><v-icon
+                                            dark
+                                            x-large
+                                            left
+                                            color="success"
+                                            >mdi-table-large-plus</v-icon
+                                        ><br />ADD</span
+                                    >
                                 </div>
                             </v-expand-transition>
                         </v-card>
@@ -58,7 +128,8 @@
         <v-row v-if="!loading && !settings[0].value">
             <v-col>
                 <v-alert border="top" colored-border elevation="2" type="error">
-                    Admin turn off manual selection please contact admin to authorize manual selection.
+                    Admin turn off manual selection please contact admin to
+                    authorize manual selection.
                 </v-alert>
             </v-col>
         </v-row>
@@ -67,208 +138,221 @@
 
 <style scoped>
 .v-card--reveal {
-  align-items: center;
-  bottom: 0;
-  justify-content: center;
-  position: absolute;
-  opacity: 0.9;
-  width: 100%;
+    align-items: center;
+    bottom: 0;
+    justify-content: center;
+    position: absolute;
+    opacity: 0.9;
+    width: 100%;
 }
 </style>
 
 <script>
-import Loading from '../components/Loading.vue'
-import Alert from '../components/Alert.vue'
-import Confirmation from '../components/Confirmation.vue'
-    export default {
-        name: 'invs',
-        components: {
-            Loading, Alert, Confirmation
+import Loading from "../components/Loading.vue";
+import Alert from "../components/Alert.vue";
+import Confirmation from "../components/Confirmation.vue";
+export default {
+    name: "invs",
+    components: {
+        Loading,
+        Alert,
+        Confirmation
+    },
+    data() {
+        return {
+            invs: [],
+            user_invs: [],
+            tmp_data: [],
+            loading: true,
+            search: "",
+
+            alert: false,
+            alertType: null,
+            alertMessage: null,
+
+            dialog: false,
+            dialogData: null,
+            dialogFunction: null,
+            dialogText: "",
+
+            settings: this.$store.getters.getSettings,
+            roles: this.$store.getters.getRoles
+        };
+    },
+    methods: {
+        isExists(date_time) {
+            let status = false;
+            this.user_invs.forEach(item => {
+                if (item.date_time === date_time) status = true;
+            });
+            return status;
         },
-        data()
-        {
-            return {
-                invs: [],
-                user_invs: [],
-                tmp_data: [],
-                loading: true,
-                search: '',
-
-                alert: false,
-                alertType: null,
-                alertMessage: null,
-
-                dialog: false,
-                dialogData: null,
-                dialogFunction: null,
-                dialogText: '',
-
-                settings: this.$store.getters.getSettings
+        cardAction(item, date_time) {
+            if (this.isExists(date_time)) {
+                this.dialog = true;
+                this.dialogData = date_time;
+                this.dialogText =
+                    "Are you sure you want to delete inv on " +
+                    this.$options.filters.DateFormat(date_time) +
+                    " ?";
+                this.dialogFunction = this.removeInv;
+            } else {
+                if (item.users_count < item.users_limit) {
+                    this.addInv(date_time);
+                } else {
+                    this.alert = true;
+                    this.alertType = "error";
+                    this.alertMessage =
+                        this.$options.filters.DateFormat(date_time) +
+                        " - " +
+                        this.$options.filters.TimeFormat(date_time) +
+                        ", can't be added due to full capacity";
+                }
             }
         },
-        methods:{
-          isExists(date_time){
-              let status = false
-              this.user_invs.forEach((item) => {
-                  if (item.date_time === date_time)
-                      status = true
-              })
-              return status
-          },
-          cardAction(item, date_time){
-              if(this.isExists(date_time)){
-                  this.dialog = true
-                  this.dialogData = date_time
-                  this.dialogText = 'Are you sure you want to delete inv on ' + this.$options.filters.DateFormat(date_time) + ' ?' 
-                  this.dialogFunction = this.removeInv
-              }
-              else{
-                  if(item.users_count < item.users_limit) {
-                      this.addInv(date_time)
-                  }
-                  else {
-                      this.alert = true
-                      this.alertType = 'error'
-                      this.alertMessage = this.$options.filters.DateFormat(date_time) + " - " + this.$options.filters.TimeFormat(date_time) + ", can't be added due to full capacity" 
-                  }
-              }
-          },
-            updateInvs(){
-                axios({
-                    method: 'get',
-                    url: '/api/invforusers',
-                    headers: {
-                        Authorization: `Bearer ${window.localStorage.getItem('token')}`
-                    }
-                })
-                    .then((response) => {
-                        this.invs = response.data.invs
-                        this.loading = false
-                    })
-                    .catch((error) => {
-                        this.alert = true
-                        this.alertType = 'error'
-                        this.alertMessage = error.response.data.message
-                        this.loading = false
-                    })
-            },
-          addInv(date_time){
-              let formData = new FormData()
-              formData.append('user_id', JSON.parse(localStorage.getItem('user')).id)
-              formData.append('date_time', date_time)
-              axios.get('/sanctum/csrf-cookie')
-              .then(response => {
-                  axios({
-                      method: 'post',
-                      url: '/api/invs/adduser',
-                      data: formData,
-                      headers: {
-                          Authorization: `Bearer ${window.localStorage.getItem('token')}`
-                      }
-                  })
-                  .then((response) => {
-                      this.alert = true
-                      this.alertType = "success"
-                      this.alertMessage = response.data.message
-                      this.$store.dispatch('updateInvs', response.data.invs)
-                      this.user_invs = this.$store.getters.getInvs
-                      this.updateInvs()
-                  })
-                  .catch((error) => {
-                      this.alertType = "error"
-                      this.alert = true
-                      this.alertMessage = error.response.data.message
-                  })
-              })
-          },
-            removeInv(date_time) {
-                this.btnLoading = true
-                let formData = new FormData()
-                formData.append('user_id', JSON.parse(localStorage.getItem('user')).id)
-                formData.append('date_time', date_time)
-                axios.get('/sanctum/csrf-cookie')
-                .then(response => {
-                    axios({
-                        method: 'post',
-                        url: '/api/invs/removeuserbydate',
-                        data: formData,
-                        headers: {
-                            Authorization: `Bearer ${window.localStorage.getItem('token')}`
-                        }
-                    })
-                    .then((response) => {
-                        this.alertType = "success"
-                        this.alertMessage = response.data.message
-                        this.$store.dispatch('updateInvs', response.data.invs)
-                        this.user_invs = this.$store.getters.getInvs
-                        this.alert = true
-                        this.updateInvs()
-                    })
-                    .catch((error) => {
-                        this.alertType = "error"
-                        this.alert = true
-                        this.alertMessage = error.response.data.message
-                    })
-                })
-
-            }
-        },
-        mounted() {
-            this.user_invs = this.$store.getters.getInvs
+        updateInvs() {
             axios({
-                method: 'get',
-                url: '/api/invforusers',
-                headers:{
-                    Authorization: `Bearer ${window.localStorage.getItem('token')}`
+                method: "get",
+                url: "/api/invforusers",
+                headers: {
+                    Authorization: `Bearer ${window.localStorage.getItem(
+                        "token"
+                    )}`
                 }
             })
-            .then((response) => {
-                this.invs = response.data.invs
-                this.$store.dispatch('updateSettings', response?.data?.settings)
-                this.settings = this.$store.getters.getSettings
-                this.loading = false
-            })
-            .catch((error) => {
-                this.loading = false
-                this.alert = true
-                this.alertType = 'error'
-                this.alertMessage = error.response.data.message
-            })
+                .then(response => {
+                    this.invs = response.data.invs;
+                    this.loading = false;
+                })
+                .catch(error => {
+                    this.alert = true;
+                    this.alertType = "error";
+                    this.alertMessage = error.response.data.message;
+                    this.loading = false;
+                });
         },
-        filters:{
-            DateFormat(value)
-            {
-                return moment(value).format("ddd, MMM DD, YYYY") 
-            },
-            TimeFormat(value)
-            {
-                return moment(value).format("hh : mm A")
-            },
-            ago(value)
-            {
-                return moment(value).fromNow()
-            },
-            getDayName(value)
-            {
-                return moment(value).format("dddd")
-            },
-            getDay(value)
-            {
-                return moment(value).format("DD")
-            },
-            getMonth(value)
-            {
-                return moment(value).format("MMMM")
-            },
-            getYear(value)
-            {
-                return moment(value).format("YYYY")
-            }
+        addInv(date_time) {
+            let formData = new FormData();
+            formData.append(
+                "user_id",
+                JSON.parse(localStorage.getItem("user")).id
+            );
+            formData.append("date_time", date_time);
+            axios.get("/sanctum/csrf-cookie").then(response => {
+                axios({
+                    method: "post",
+                    url: "/api/invs/adduser",
+                    data: formData,
+                    headers: {
+                        Authorization: `Bearer ${window.localStorage.getItem(
+                            "token"
+                        )}`
+                    }
+                })
+                    .then(response => {
+                        this.alert = true;
+                        this.alertType = "success";
+                        this.alertMessage = response.data.message;
+                        this.$store.dispatch("updateInvs", response.data.invs);
+                        this.user_invs = this.$store.getters.getInvs;
+                        this.updateInvs();
+                    })
+                    .catch(error => {
+                        this.alertType = "error";
+                        this.alert = true;
+                        this.alertMessage = error.response.data.message;
+                    });
+            });
         },
-        computed:{
-        filteredInvs(){
-                return this.search? {[this.search] : this.invs[this.search]} : this.invs
+        removeInv(date_time) {
+            this.btnLoading = true;
+            let formData = new FormData();
+            formData.append(
+                "user_id",
+                JSON.parse(localStorage.getItem("user")).id
+            );
+            formData.append("date_time", date_time);
+            axios.get("/sanctum/csrf-cookie").then(response => {
+                axios({
+                    method: "post",
+                    url: "/api/invs/removeuserbydate",
+                    data: formData,
+                    headers: {
+                        Authorization: `Bearer ${window.localStorage.getItem(
+                            "token"
+                        )}`
+                    }
+                })
+                    .then(response => {
+                        this.alertType = "success";
+                        this.alertMessage = response.data.message;
+                        this.$store.dispatch("updateInvs", response.data.invs);
+                        this.user_invs = this.$store.getters.getInvs;
+                        this.alert = true;
+                        this.updateInvs();
+                    })
+                    .catch(error => {
+                        this.alertType = "error";
+                        this.alert = true;
+                        this.alertMessage = error.response.data.message;
+                    });
+            });
+        }
+    },
+    mounted() {
+        this.user_invs = this.$store.getters.getInvs;
+        axios({
+            method: "get",
+            url: "/api/invforusers",
+            headers: {
+                Authorization: `Bearer ${window.localStorage.getItem("token")}`
             }
+        })
+            .then(response => {
+                this.invs = response.data.invs;
+                this.$store.dispatch(
+                    "updateSettings",
+                    response?.data?.settings
+                );
+                this.settings = this.$store.getters.getSettings;
+                this.loading = false;
+            })
+            .catch(error => {
+                this.loading = false;
+                this.alert = true;
+                this.alertType = "error";
+                this.alertMessage = error.response.data.message;
+            });
+    },
+    filters: {
+        DateFormat(value) {
+            return moment(value).format("ddd, MMM DD, YYYY");
+        },
+        TimeFormat(value) {
+            return moment(value).format("hh : mm A");
+        },
+        ago(value) {
+            return moment(value).fromNow();
+        },
+        getDayName(value) {
+            return moment(value).format("dddd");
+        },
+        getDay(value) {
+            return moment(value).format("DD");
+        },
+        getMonth(value) {
+            return moment(value).format("MMMM");
+        },
+        getYear(value) {
+            return moment(value).format("YYYY");
+        }
+    },
+    computed: {
+        filteredInvs() {
+            return this.search
+                ? { [this.search]: this.invs[this.search] }
+                : this.invs;
         }
     }
+};
 </script>
