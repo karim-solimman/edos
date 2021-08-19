@@ -92,9 +92,18 @@ class UserController extends Controller
 
     public function addInv(Request $request)
     {
+        $request->validate([
+           'user_id' => ['required', 'integer', 'exists:users,id'],
+           'inv_id' => ['required', 'integer', 'exists:invs,id']
+        ]);
         $user_id = $request->input('user_id');
+        $user = User::with('roles')->where('id', $user_id)->first();
+        $role = Role::where('slug', 'user')->firstOrFail();
+        if (!$user->roles->contains($role->id))
+        {
+            return response(['message' => $user->name." doesn't have user permission to add invs"],402);
+        }
         $inv_id = $request->input('inv_id');
-        $user = User::where('id', $user_id)->first();
         $inv = Inv::where('id', $inv_id)->first();
         if ($user->invs()->count() < $user->invs_limit && $user->invs()->attach($inv_id, ['created_at' => now(), 'updated_at' => now()])) {
             $inv->users_count += 1;
@@ -110,11 +119,15 @@ class UserController extends Controller
         if(!$settings->value && !auth()->user()->tokenCan('admin') ) {
             return response(['message' => 'Manual selection is disabled.'],402);
         }
+        $role = Role::where('slug', 'user')->firstOrFail();
         $user_id = $request->input('user_id');
+        $user = User::with('roles')->where('id', $user_id)->first();
+        if (!$user->roles->contains($role->id))
+        {
+            return response(['message' => $user->name." Doesn't has permission to remove invs"], 402);
+        }
         $inv_id = $request->input('inv_id');
         $inv = Inv::where('id', $inv_id)->first();
-        $user = User::where('id', $user_id)->first();
-
         if($user->invs()->detach($inv_id))
         {
             $inv->users_count -=1;
@@ -173,6 +186,10 @@ class UserController extends Controller
         $role = Role::where('slug', $role_slug)->first();
         $user = User::where('id', $user_id)->first();
         $user->roles()->attach($role->id);
+        if($role->slug == "user")
+        {
+            $this->setUsersLimit();
+        }
         return response(['message' => $user->name.' Become '.$role->name.' Successfully'], 201);
     }
     public function detachRole(Request $request)
@@ -182,6 +199,10 @@ class UserController extends Controller
         $role = Role::where('slug', $role_slug)->first();
         $user = User::where('id', $user_id)->first();
         $user->roles()->detach($role->id);
+        if($role->slug == "user")
+        {
+            $this->setUsersLimit();
+        }
         return response(['message' => $role->name.' Removed from '.$user->name.' Successfully'], 201);
     }
 
