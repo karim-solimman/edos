@@ -100,7 +100,7 @@ class InvController extends Controller
         $course = Course::where('id', $course_id)->first();
         foreach ($rooms as $room_id)
         {
-            $room = Room::where('id', $room_id)->first();
+            $room = Room::where('id', $room_id)->firstOrFail();
             $inv = new Inv();
             $inv->date_time = $date_time;
             $inv->users_count = 0;
@@ -163,7 +163,7 @@ class InvController extends Controller
         return response(['message' => 'date and time updated to '.Carbon::parse($date_time)->toDateString().' at '.Carbon::parse($date_time)->format('H:i A')],201);
     }
 
-    public function addUser(Request $request)
+    public function attachUserByDate(Request $request)
     {
         $settings = DB::table('settings')->where('name', '=', 'manual_selection')->first();
         if (!$settings->value && !auth()->user()->tokenCan('admin'))
@@ -172,7 +172,12 @@ class InvController extends Controller
         }
         if (Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first() != null)
         {
-            $user = User::where('id', $request->input('user_id'))->first();
+            $user = User::with('roles')->where('id', $request->input('user_id'))->first();
+            $role = Role::where('slug','user')->firstOrFail();
+            if (!$user->roles->contains($role->id))
+            {
+                return response(['message' => $user->name." doesn't have user permission to add invs"],402);
+            }
             if($user->invs()->count() >= $user->invs_limit)
             {
                 return response(['message' => $user->name.' reached invs limit'],402);
@@ -198,7 +203,12 @@ class InvController extends Controller
         {
             return response(['message' => 'Manual selection is disabled'],402);
         }
+        $role = Role::where('slug','user')->firstOrFail();
         $user = User::where('id', $request->input('user_id'))->first();
+        if (!$user->roles->contains($role->id))
+        {
+            return response(['message' => $user->name." doesn't have user permission to remove invs"],402);
+        }
         $inv = $user->invs()->where('date_time', $request->input('date_time'))->first();
         $user->invs()->detach($inv->id);
         $inv->users_count -=1;
