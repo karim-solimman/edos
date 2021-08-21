@@ -6,6 +6,8 @@
         v-model="value"
         elevation="3"
         :color="alertType"
+        bottom
+        left
     >
         <v-row>
             <v-col class="my-auto" cols="1">
