@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class CreateRoleUserTable extends Migration
@@ -21,6 +22,13 @@ class CreateRoleUserTable extends Migration
             $table->primary(['user_id', 'role_id']);
             $table->timestamps();
         });
+
+        DB::table('role_user')->insert([
+            'user_id' => 1,
+            'role_id' => 1,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
     }
 
     /**

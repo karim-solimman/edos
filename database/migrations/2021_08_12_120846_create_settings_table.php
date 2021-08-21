@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateSettingsTable extends Migration
 {
@@ -19,6 +20,23 @@ class CreateSettingsTable extends Migration
             $table->boolean('value')->default(false);
             $table->timestamps();
         });
+
+        DB::table('settings')->insert(
+            [
+                [
+                    'name' => 'manual_selection',
+                    'value' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ],
+                [
+                    'name' => 'show_details',
+                    'value' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]
+            ]
+        );
     }
 
     /**
