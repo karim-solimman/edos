@@ -33,7 +33,7 @@ class InvController extends Controller
         }
         if (!auth()->user()->tokenCan('de'))
         {
-            return response(['message' => $user->name." - Don't have perimission."],402);
+            return response(['message' => $user->name." - Don't have permission."],402);
         }
         $courses = Course::select('id')->where('department_id', $user->department->id)->get();
         return Inv::with(['course.department', 'room'])->whereIn('course_id', $courses)->get();
@@ -83,7 +83,6 @@ class InvController extends Controller
 
     public function create(Request $request)
     {
-
         $request->validate([
             'course_id' => ['required', 'integer', 'exists:courses,id', 'unique:invs,course_id'],
             'rooms' => ['required'],
@@ -405,5 +404,49 @@ class InvController extends Controller
             return response(['message' => $import->getRowCount().' Invs imported successfully but with some warnings.', 'type' => 'warning', 'invs_conflicts' => array_unique($invs_conflicts)], 201);
         }
         return response(['message' => $import->getRowCount().' Invs imported successfully', 'type' => 'success'], 201);
+    }
+    public function check_invs_conflicts()
+    {
+        $invs_conflicts = [];
+        $rooms = Room::all();
+        foreach ($rooms as $room)
+        {
+            $room_invs = $room->invs()->get()->groupBy('date_time');
+            foreach ($room_invs as $key => $invs)
+            {
+                if (count($invs) > 1)
+                    array_push($invs_conflicts, $room->number.' has more than inv at same slot '.$key);
+                foreach ($invs as $inv)
+                {
+                    if ($inv->duration > 0)
+                    {
+                        for ($i=1; $i<$inv->duration; $i++)
+                        {
+                            $tmp_date_time = Carbon::parse($inv->date_time)->addHours($i)->toDateTimeString();
+                            if ($room->invs()->get()->where('date_time',$tmp_date_time)->count() > 0)
+                                array_push($invs_conflicts, $room->number.' has overlap invs at slot '.$tmp_date_time);
+                        }
+                    }
+                }
+            }
+        }
+        $courses =  Course::has('invs')->get();
+        foreach ($courses as $course)
+        {
+            $old_date = $course->invs()->first()->date_time;
+            foreach ($course->invs()->get() as $inv)
+            {
+                if ($old_date != $inv->date_time)
+                {
+                    array_push($invs_conflicts, $course->code.' dates and time are not similar');
+                }
+                $old_date = $inv->date_time;
+            }
+        }
+        if (count($invs_conflicts)>0)
+        {
+            return response(['message' => 'Invs have some warnings to check.', 'type' => 'warning', 'invs_conflicts' => array_unique($invs_conflicts)], 201);
+        }
+        return response(['message' => 'All invs are good. No problems fount.', 'type' => 'success'],201);
     }
 }
