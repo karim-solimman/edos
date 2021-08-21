@@ -418,13 +418,6 @@ export default {
                     this.alertMessage = error.response.data.message;
                 });
         },
-        isExists(invId) {
-            let status = false;
-            this.user_invs.forEach(item => {
-                if (item.id === invId) status = true;
-            });
-            return status;
-        },
         updateInvs() {
             axios
                 .get("/api/invs")
