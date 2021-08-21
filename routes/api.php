@@ -70,6 +70,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/invs/{id}',[InvController::class, 'profile']);
     Route::post('/invs/editinfo', [InvController::class, 'editInfo']);
     Route::post('/invs/editdateandtime', [InvController::class, 'editDateAndTime']);
+    Route::post('/invs/checkinvsconflicts', [InvController::class, 'check_invs_conflicts']);
 
     Route::get('/roles',[RoleController::class, 'index']);
     Route::post('/roles/add',[UserController::class, 'attachRole']);
