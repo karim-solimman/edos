@@ -138,6 +138,22 @@
                         <v-list-item-title>Import invs</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+                <v-list-item
+                    link
+                    color="primary"
+                    style="text-decoration:none"
+                    v-if="isAdmin"
+                    :to="{ name: 'invsCheck' }"
+                >
+                    <v-list-item-icon
+                        ><v-icon
+                            >mdi-checkbox-marked-circle-outline</v-icon
+                        ></v-list-item-icon
+                    >
+                    <v-list-item-content>
+                        <v-list-item-title>Invs Check</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list-group>
 
             <v-list-group

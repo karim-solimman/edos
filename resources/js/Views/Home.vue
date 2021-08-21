@@ -113,7 +113,7 @@ export default {
             password_confirm: "",
             password_confirmRules: [
                 v => !!v || "Confirmation password is required",
-                value =>
+                () =>
                     this.password === this.password_confirm ||
                     "Password confirmation not match"
             ],
@@ -200,10 +200,10 @@ export default {
             })
                 .then(response => {})
                 .catch(error => {
+                    this.btn2Loading = false;
                     this.alert = true;
                     this.alertType = "error";
                     this.alertMessage = error.response.data.message;
-                    this.btn2Loading = false;
                 });
             let roles = [];
             formData.append("email", this.email);
@@ -211,18 +211,22 @@ export default {
                 axios
                     .post("/api/login", formData)
                     .then(response => {
-                        localStorage.setItem("token", response.data.token);
+                        localStorage.setItem("token", response?.data?.token);
                         localStorage.setItem(
                             "user",
-                            JSON.stringify(response.data.user)
+                            JSON.stringify(response?.data?.user)
                         );
-                        this.$store.dispatch("updateUser", response.data.user);
+                        this.$store.dispatch(
+                            "updateUser",
+                            response?.data?.user
+                        );
                         this.$store.dispatch(
                             "updateInvs",
                             response?.data?.invs
                         );
-                        $.each(response.data.roles, (index, value) => {
-                            roles.push(response.data.roles[index]["slug"]);
+                        $.each(response?.data?.roles, (index, value) => {
+                            console.log(value);
+                            roles.push(value.slug);
                         });
                         this.$store.dispatch("updateRoles", roles);
                         this.$emit("logged-in", true);
