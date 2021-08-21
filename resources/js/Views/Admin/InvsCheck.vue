@@ -49,7 +49,11 @@
             <v-col cols="12" lg="6" md="6">
                 <v-card dark :color="reportType" v-if="report">
                     <v-card-title>
-                        <v-icon left>mdi-check-circle</v-icon>
+                        <v-icon class="mb-2" left>{{
+                            this.reportType == "success"
+                                ? "mdi-check-circle"
+                                : "mdi-alert-circle"
+                        }}</v-icon>
                         <h5 class="text-h6 font-weight-light">
                             Invs check report
                         </h5>
