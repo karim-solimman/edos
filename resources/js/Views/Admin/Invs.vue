@@ -581,9 +581,13 @@ export default {
             });
         },
         filteredInvsGroups() {
-            return this.date
-                ? { [this.date]: this.invsGroups[this.date] }
-                : this.invsGroups;
+            if (this.date && this.invsGroups[this.date]) {
+                return { [this.date]: this.invsGroups[this.date] };
+            } else if (this.date && !this.invsGroups[this.date]) {
+                return [];
+            } else {
+                return this.invsGroups;
+            }
         }
     }
 };

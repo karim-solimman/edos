@@ -35,12 +35,13 @@
                     </v-text-field>
                 </v-col>
                 <v-col align-self="center" cols="2" lg="2" md="2">
-                    <v-btn text @click="search = ''"
+                    <v-btn text @click="search = null"
                         ><v-icon left>mdi-delete-outline</v-icon>clear
                         search</v-btn
                     >
                 </v-col>
             </v-row>
+            {{ invs }}
             <v-row v-for="(inv, date) in filteredInvs" :key="inv.id">
                 <v-col class="text-center my-auto" cols="12" lg="3" md="3">
                     <h1 class="text-h3 font-weight-light">
@@ -349,9 +350,13 @@ export default {
     },
     computed: {
         filteredInvs() {
-            return this.search
-                ? { [this.search]: this.invs[this.search] }
-                : this.invs;
+            if (this.search && this.invs[this.search]) {
+                return { [this.search]: this.invs[this.search] };
+            } else if (this.search && !this.invs[this.search]) {
+                return [];
+            } else {
+                return this.invs;
+            }
         }
     }
 };
