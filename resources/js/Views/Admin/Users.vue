@@ -137,28 +137,33 @@ export default {
         }
     },
     mounted() {
-        axios({
-            method: "get",
-            url: "/api/users",
-            headers: {
-                Authorization: `Bearer ${window.localStorage.getItem("token")}`
-            }
-        })
-            .then(response => {
-                this.users = response.data;
-                this.loading = false;
-                $.each(this.users, (user, val) => {
-                    this.userRolesSwitchers(val["id"]);
-                });
-            })
-            .catch(error => {
-                this.alertType = "error";
-                this.alertMessage = error.response.data.message;
-                this.$emit("logged-out", flase);
-                this.$router.push({ name: "home" });
-            });
+        this.getUsers();
     },
     methods: {
+        getUsers() {
+            axios({
+                method: "get",
+                url: "/api/users",
+                headers: {
+                    Authorization: `Bearer ${window.localStorage.getItem(
+                        "token"
+                    )}`
+                }
+            })
+                .then(response => {
+                    this.users = response.data;
+                    this.loading = false;
+                    $.each(this.users, (user, val) => {
+                        this.userRolesSwitchers(val["id"]);
+                    });
+                })
+                .catch(error => {
+                    this.alertType = "error";
+                    this.alertMessage = error.response.data.message;
+                    this.$emit("logged-out", flase);
+                    this.$router.push({ name: "home" });
+                });
+        },
         userRolesSwitchers(userId) {
             let userIndex = 0;
             $.each(this.users, index => {
@@ -215,6 +220,7 @@ export default {
                         this.alertMessage = error.response.data.message;
                     });
             }
+            this.getUsers();
         }
     }
 };
