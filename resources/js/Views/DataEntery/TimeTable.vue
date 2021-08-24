@@ -389,13 +389,9 @@ export default {
     },
     computed: {
         filteredInvs() {
-            if (this.search && this.invs[this.search]) {
-                return { [this.search]: this.invs[this.search] };
-            } else if (this.search && !this.invs[this.search]) {
-                return [];
-            } else {
-                return this.invs;
-            }
+            return this.invs.filter(inv => {
+                return inv.date_time.match(this.date);
+            });
         }
     }
 };
