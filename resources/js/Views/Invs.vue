@@ -41,7 +41,6 @@
                     >
                 </v-col>
             </v-row>
-            {{ invs }}
             <v-row v-for="(inv, date) in filteredInvs" :key="inv.id">
                 <v-col class="text-center my-auto" cols="12" lg="3" md="3">
                     <h1 class="text-h3 font-weight-light">
