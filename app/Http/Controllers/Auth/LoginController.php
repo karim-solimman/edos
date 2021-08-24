@@ -30,6 +30,7 @@ class LoginController extends Controller
 
         $token = $user->createToken($user->email, $roles)->plainTextToken;
         $invs = $user->invs()->get();
+        $roles = [];
         $roles = $user->roles()->get();
         $settings = DB::table('settings')->get();
         return response([

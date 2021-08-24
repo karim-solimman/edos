@@ -198,46 +198,53 @@ export default {
                 url: "/api/users/passwordset",
                 data: formData
             })
-                .then(response => {})
+                .then(response => {
+                    let roles = [];
+                    formData.append("email", this.email);
+                    axios.get("/sanctum/csrf-cookie").then(response => {
+                        axios
+                            .post("/api/login", formData)
+                            .then(response => {
+                                localStorage.setItem(
+                                    "token",
+                                    response?.data?.token
+                                );
+                                localStorage.setItem(
+                                    "user",
+                                    JSON.stringify(response?.data?.user)
+                                );
+                                this.$store.dispatch(
+                                    "updateUser",
+                                    response?.data?.user
+                                );
+                                this.$store.dispatch(
+                                    "updateInvs",
+                                    response?.data?.invs
+                                );
+                                $.each(response.data.roles, (index, value) => {
+                                    roles.push(value.slug);
+                                });
+                                this.$store.dispatch("updateRoles", roles);
+                                this.$store.dispatch(
+                                    "updateSettings",
+                                    response.data.settings
+                                );
+                                this.$emit("logged-in", true);
+                            })
+                            .catch(error => {
+                                this.alert = true;
+                                this.alertType = "error";
+                                this.alertMessage = error.response.data.message;
+                                this.btn2Loading = false;
+                            });
+                    });
+                })
                 .catch(error => {
                     this.btn2Loading = false;
                     this.alert = true;
                     this.alertType = "error";
                     this.alertMessage = error.response.data.message;
                 });
-            let roles = [];
-            formData.append("email", this.email);
-            axios.get("/sanctum/csrf-cookie").then(response => {
-                axios
-                    .post("/api/login", formData)
-                    .then(response => {
-                        localStorage.setItem("token", response?.data?.token);
-                        localStorage.setItem(
-                            "user",
-                            JSON.stringify(response?.data?.user)
-                        );
-                        this.$store.dispatch(
-                            "updateUser",
-                            response?.data?.user
-                        );
-                        this.$store.dispatch(
-                            "updateInvs",
-                            response?.data?.invs
-                        );
-                        $.each(response?.data?.roles, (index, value) => {
-                            console.log(value);
-                            roles.push(value.slug);
-                        });
-                        this.$store.dispatch("updateRoles", roles);
-                        this.$emit("logged-in", true);
-                    })
-                    .catch(error => {
-                        this.alert = true;
-                        this.alertType = "error";
-                        this.alertMessage = error.response.data.message;
-                        this.btn2Loading = false;
-                    });
-            });
         },
         nextStep(n) {
             if (n === this.steps) {
