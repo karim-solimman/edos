@@ -84,7 +84,7 @@ class InvController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'course_id' => ['required', 'integer', 'exists:courses,id', 'unique:invs,course_id'],
+            'course_id' => ['required', 'exists:courses,id', 'unique:invs,course_id'],
             'rooms' => ['required'],
             'duration' => ['nullable'],
             'date' => ['required', 'date_format:Y-m-d'],
