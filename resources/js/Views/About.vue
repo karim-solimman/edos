@@ -98,9 +98,12 @@
                     Maritime Transport (AASTMT) in 2018. Currently he is
                     studying PhD at Beijing Institute of Technology (BIT) at
                     Beijing - China. He believes that learning is a non-stop
-                    process and everyone can or may learn more and more. Maybe
-                    i'm not a professional full-stack web developer but i'm
-                    trying to be better and learn more.
+                    process and everyone can or may learn more and more.
+                    <quote class="text-subtitle-2"
+                        >"Maybe i'm not a professional full-stack web developer
+                        but i'm trying to be better and learn more." -- Karim
+                        Soliman
+                    </quote>
                 </p>
             </v-col>
         </v-row>
