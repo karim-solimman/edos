@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Imports\InvsImport;
 use App\Models\Course;
-use App\Models\Department;
 use App\Models\Inv;
 use App\Models\Role;
 use App\Models\Room;
@@ -13,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Controllers\UserController;
 
 class InvController extends Controller
 {
@@ -43,7 +43,7 @@ class InvController extends Controller
     public function index_groupBy()
     {
         $data = array();
-        $invs = Inv::select('id', 'date_time', 'updated_at', 'room_id', 'users_limit',)->with('room')->withCount('users')->orderBy('date_time')->get()->groupBy(function ($item) {
+        $invs = Inv::select('id', 'date_time', 'updated_at', 'room_id', 'users_limit')->with('room')->withCount('users')->orderBy('date_time')->get()->groupBy(function ($item) {
             return Carbon::createFromFormat('Y-m-d H:i:s',$item->date_time)->toDateString();
         });
         foreach ($invs as $key => $inv)
@@ -109,6 +109,8 @@ class InvController extends Controller
             $inv->course_id = $course_id;
             $inv->save();
         }
+        $user_controller = new UserController();
+        $user_controller->setUsersLimit();
         return response(['message' => $course->code.' - '.$course->name.', invs created successfully.'],201);
     }
 
@@ -123,6 +125,8 @@ class InvController extends Controller
         $course = Course::where('id', $inv->course_id)->first();
         $inv->delete();
         $invs = $this->index();
+        $user_controller = new UserController();
+        $user_controller->setUsersLimit();
         return response([
             'message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', Course: '.$course->code.' - '.$course->name.' Deleted successfully.',
             'invs' => $invs ], 201);
@@ -328,7 +332,6 @@ class InvController extends Controller
         return response(['message' => 'All invs detached successfully'], 201);
     }
 
-
     public function flushInvs()
     {
         $invs = Inv::all();
@@ -399,10 +402,13 @@ class InvController extends Controller
                 $old_date = $inv->date_time;
             }
         }
+        $user_controller = new UserController();
+        $user_controller->setUsersLimit();
         if (count($invs_conflicts)>0)
         {
             return response(['message' => $import->getRowCount().' Invs imported successfully but with some warnings.', 'type' => 'warning', 'invs_conflicts' => array_unique($invs_conflicts)], 201);
         }
+
         return response(['message' => $import->getRowCount().' Invs imported successfully', 'type' => 'success'], 201);
     }
     public function check_invs_conflicts()
