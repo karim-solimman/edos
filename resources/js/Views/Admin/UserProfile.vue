@@ -34,6 +34,20 @@
                     }}</span>
                     <span v-else>No department</span>
                 </v-chip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                        <vue-excel-xlsx
+                            :filename="`${user.name} TimeTable`"
+                            :data="export_data"
+                            :columns="export_fields"
+                        >
+                            <v-btn v-on="on" v-bind="attrs" color="success" icon
+                                ><v-icon>mdi-microsoft-excel</v-icon></v-btn
+                            >
+                        </vue-excel-xlsx>
+                    </template>
+                    <span>Excel Download</span>
+                </v-tooltip>
             </v-col>
             <v-col>
                 <h1 class="text-h1 font-weight-light">
@@ -133,7 +147,47 @@ export default {
             dialog: false,
             dialogData: null,
             dialogFunction: null,
-            dialogText: null
+            dialogText: null,
+
+            export_fields: [
+                {
+                    label: "#",
+                    field: "index"
+                },
+                {
+                    label: "date",
+                    field: "date"
+                },
+                {
+                    label: "time",
+                    field: "time"
+                },
+                {
+                    label: "duration",
+                    field: "duration"
+                },
+                {
+                    label: "code",
+                    field: "code"
+                },
+                {
+                    label: "course",
+                    field: "course"
+                },
+                {
+                    label: "room",
+                    field: "roomnumber"
+                },
+                {
+                    label: "department",
+                    field: "department"
+                },
+                {
+                    label: "inv name",
+                    field: "inv_name"
+                }
+            ],
+            export_data: []
         };
     },
     mounted() {
@@ -149,7 +203,7 @@ export default {
             .then(response => {
                 this.loading = false;
                 this.user = response.data.user;
-                $.each(this.user.roles);
+                this.setExportData();
             })
             .catch(error => {
                 this.loading = false;
@@ -190,6 +244,22 @@ export default {
                     this.alertMessage = error.response.data.message;
                     this.alertType = "error";
                 });
+        },
+        setExportData() {
+            this.export_data = [];
+            $.each(this.user.invs, (index, value) => {
+                this.export_data.push({
+                    index: index + 1,
+                    date: this.$options.filters.DateFormat(value.date_time),
+                    time: this.$options.filters.TimeFormat(value.date_time),
+                    duration: value.duration ? value.duration : "no duration",
+                    code: value.course.code,
+                    course: value.course.name,
+                    roomnumber: value.room.number,
+                    department: value.course.department.name,
+                    inv_name: this.user.name
+                });
+            });
         }
     },
     filters: {
