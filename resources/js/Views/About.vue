@@ -47,12 +47,18 @@
                     At (PUA) TAs and staff members have other duties and
                     responsibilties to do dialy other than teaching and
                     instructing students, these tasks and duties are time
-                    consuming tasks. I developed EDOS voluntarily to Faculty of
-                    Engineering to be example of what current technology can do
-                    to make tasks and duties much easier.
+                    consuming tasks. EDOS was developed voluntarily by
+                    <strong>Karim Soliman</strong> to Faculty of Engineering to
+                    be example of what current techonlogies can do to make tasks
+                    and duties much easier.
                 </p>
             </v-col>
-            <v-col class="my-auto d-flex justify-center">
+            <v-col
+                cols="12"
+                lg="6"
+                md="6"
+                class="my-auto d-flex justify-center"
+            >
                 <v-img
                     max-height="200"
                     max-width="200"
@@ -62,6 +68,9 @@
         </v-row>
         <v-row>
             <v-col
+                cols="12"
+                lg="6"
+                md="6"
                 class="my-auto d-flex align-center justify-center flex-column"
             >
                 <v-img

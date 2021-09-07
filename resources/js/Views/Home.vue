@@ -8,7 +8,7 @@
         />
         <v-row style="margin-top: 10%" align="center" justify="space-around">
             <v-col cols="12" lg="5">
-                <v-stepper v-model="e1">
+                <v-stepper v-model="step">
                     <v-stepper-items>
                         <v-stepper-content step="1">
                             <h1 class="text-h5 font-weight-light">
@@ -79,6 +79,9 @@
                         </v-stepper-content>
                     </v-stepper-items>
                 </v-stepper>
+                <p v-if="step == 2" class="text-body-2 mt-3">
+                    *Passwords are encrypted and can't be reveresed.
+                </p>
             </v-col>
         </v-row>
     </v-container>
@@ -118,13 +121,13 @@ export default {
                     "Password confirmation not match"
             ],
             user: Object,
-            e1: 1
+            step: 1
         };
     },
     watch: {
         steps(val) {
-            if (this.e1 > val) {
-                this.e1 = val;
+            if (this.step > val) {
+                this.step = val;
             }
         }
     },
@@ -248,9 +251,9 @@ export default {
         },
         nextStep(n) {
             if (n === this.steps) {
-                this.e1 = 1;
+                this.step = 1;
             } else {
-                this.e1 = n + 1;
+                this.step = n + 1;
             }
         }
     }
