@@ -243,6 +243,7 @@
                                 prepend-inner-icon="mdi-email"
                                 label="Email"
                                 required
+                                autocomplete="current-email"
                             ></v-text-field>
                             <v-text-field
                                 v-model="password"
@@ -251,6 +252,7 @@
                                 :rules="passwordRules"
                                 prepend-inner-icon="mdi-lock"
                                 required
+                                autocomplete="current-password"
                             ></v-text-field>
                             <v-btn
                                 :disabled="!valid"
@@ -318,7 +320,7 @@ export default {
             alertType: null,
             alertMessage: null,
             loading: true,
-            date_time: "2021-07-29 09:00:00",
+            date_time: new Date(),
 
             switchToggle: false,
             switchHint: "Table view",
@@ -334,20 +336,32 @@ export default {
             data: [
                 {
                     index: 1,
-                    date: this.$options.filters.DateFormat("2021-9-14"),
-                    time: this.$options.filters.TimeFormat("2021-9-14 09:00"),
+                    date: this.$options.filters.DateFormat(
+                        moment(new Date(2021, 6, 10, 15, 0))
+                    ),
+                    time: this.$options.filters.TimeFormat(
+                        moment(new Date(2021, 6, 10, 15, 0))
+                    ),
                     room: "E318"
                 },
                 {
                     index: 2,
-                    date: this.$options.filters.DateFormat("2021-9-16"),
-                    time: this.$options.filters.TimeFormat("2021-9-16 12:00"),
+                    time: this.$options.filters.TimeFormat(
+                        moment(new Date(2021, 6, 12, 9, 0))
+                    ),
+                    date: this.$options.filters.DateFormat(
+                        moment(new Date(2021, 6, 12, 9, 0))
+                    ),
                     room: "E018"
                 },
                 {
                     index: 3,
-                    date: this.$options.filters.DateFormat("2021-9-17"),
-                    time: this.$options.filters.TimeFormat("2021-9-14 15:00"),
+                    date: this.$options.filters.DateFormat(
+                        moment(new Date(2021, 6, 13, 9, 0))
+                    ),
+                    time: this.$options.filters.TimeFormat(
+                        moment(new Date(2021, 6, 13, 12, 0))
+                    ),
                     room: "E127"
                 }
             ]

@@ -25,6 +25,7 @@
                                     v-model="email"
                                     prepend-inner-icon="mdi-email"
                                     required
+                                    autocomplete="current-email"
                                 >
                                 </v-text-field>
                                 <v-btn
@@ -54,6 +55,7 @@
                                     :rules="passwordRules"
                                     required
                                     prepend-inner-icon="mdi-lock"
+                                    autocomplete="new-password"
                                 ></v-text-field>
                                 <v-text-field
                                     label="Confirm Password"
@@ -62,6 +64,7 @@
                                     :rules="password_confirmRules"
                                     prepend-inner-icon="mdi-lock-check"
                                     required
+                                    autocomplete="confirm-password"
                                 ></v-text-field>
                                 <v-btn
                                     color="primary"
