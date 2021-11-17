@@ -240,6 +240,24 @@
                                 </p>
                             </v-col>
                         </v-row>
+                        <v-row>
+                            <v-col cols="6" lg="3" md="3" class="mt-6">
+                                <v-btn @click="setUsersInvsLimit()"
+                                    >Set Users Limit</v-btn
+                                >
+                            </v-col>
+                            <v-col>
+                                <p class="text-body-1 mt-6">
+                                    Set the limit of the users invs, by clicking
+                                    on this button
+                                    <strong>
+                                        Admin are removing the old invs limit
+                                        and set new limits for invs
+                                        Count.</strong
+                                    >
+                                </p>
+                            </v-col>
+                        </v-row>
                     </v-card-text>
                 </v-card>
             </v-col>
@@ -390,12 +408,6 @@ export default {
                         response?.data?.settings
                     );
                     this.settings = response?.data?.settings;
-
-                    if (this.settings[0].value) {
-                        setTimeout(() => {
-                            this.setUsersInvsLimit();
-                        }, 1000);
-                    }
                 })
                 .catch(error => {
                     this.alert = true;

@@ -91,6 +91,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::post('/rooms/deleteallinvs', [RoomController::class, 'removeInvs']);
 
     Route::get('/courses',[CourseController::class,'index']);
+    Route::post('/courses/import',[CourseController::class,'courses_import']);
     Route::post('/courses/bydepartment', [CourseController::class, 'getByDepartment']);
     Route::post('/courses/create',[CourseController::class, 'create']);
     Route::get('/courses/{id}',[CourseController::class, 'profile']);
