@@ -186,10 +186,10 @@ class UserController extends Controller
         $role = Role::where('slug', $role_slug)->first();
         $user = User::where('id', $user_id)->first();
         $user->roles()->attach($role->id);
-        if($role->slug == "user")
+      /*  if($role->slug == "user")
         {
             $this->setUsersLimit();
-        }
+        }*/
         return response(['message' => $user->name.' Become '.$role->name.' Successfully'], 201);
     }
     public function detachRole(Request $request)
@@ -199,10 +199,10 @@ class UserController extends Controller
         $role = Role::where('slug', $role_slug)->first();
         $user = User::where('id', $user_id)->first();
         $user->roles()->detach($role->id);
-        if($role->slug == "user")
+        /*if($role->slug == "user")
         {
             $this->setUsersLimit();
-        }
+        }*/
         return response(['message' => $role->name.' Removed from '.$user->name.' Successfully'], 201);
     }
 

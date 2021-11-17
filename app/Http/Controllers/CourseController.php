@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\CoursesImport;
 use App\Models\Course;
 use App\Models\Department;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CourseController extends Controller
 {
@@ -56,6 +58,19 @@ class CourseController extends Controller
         $course->department_id = $request->input('department_id');
         $course->save();
         return response(['message' => $course->code.' - '.$course->name.' Added successfully']);
+    }
+
+    public function courses_import(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xls,xlsx']
+        ]);
+        $import = new CoursesImport();
+        if(Excel::import($import , $request->file('file')))
+        {
+            return response(['message' => $import->getRowCount().' Courses imported successfully', 'type' => 'success'], 201);
+        }
+        return response(['message' => 'Error in uploading file'],402);
     }
 
     public function editInformation(Request $request)
