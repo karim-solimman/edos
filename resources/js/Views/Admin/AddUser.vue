@@ -128,12 +128,7 @@ export default {
             axios({
                 method: "post",
                 url: "/api/users/create",
-                data: formData,
-                headers: {
-                    Authorization: `Bearer ${window.localStorage.getItem(
-                        "token"
-                    )}`
-                }
+                data: formData
             })
                 .then(response => {
                     this.alert = true;

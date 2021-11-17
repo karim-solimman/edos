@@ -279,6 +279,20 @@
                         <v-list-item-title>Add new course</v-list-item-title>
                     </v-list-item-content>
                 </v-list-item>
+
+                <v-list-item
+                    link
+                    color="primary"
+                    style="text-decoration:none"
+                    :to="{ name: 'ImportCourses' }"
+                >
+                    <v-list-item-icon
+                        ><v-icon>mdi-upload</v-icon></v-list-item-icon
+                    >
+                    <v-list-item-content>
+                        <v-list-item-title>Import Courses</v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list-group>
 
             <v-list-item
