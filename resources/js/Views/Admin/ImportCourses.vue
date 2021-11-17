@@ -80,7 +80,12 @@ export default {
             axios({
                 method: "post",
                 url: "/api/courses/import",
-                data: formData
+                data: formData,
+                headers: {
+                    Authorization: `Bearer ${window.localStorage.getItem(
+                        "token"
+                    )}`
+                }
             })
                 .then(response => {
                     this.alert = true;

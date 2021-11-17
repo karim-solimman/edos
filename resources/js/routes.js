@@ -152,6 +152,11 @@ const routes = [
         name: "courses"
     },
     {
+        path: "/admin/courses/import",
+        component: require("./Views/Admin/ImportCourses").default,
+        name: 'ImportCourses'
+    },
+    {
         path: "/admin/addcourse",
         component: require("./Views/Admin/AddCourse").default,
         name: "addCourse"
