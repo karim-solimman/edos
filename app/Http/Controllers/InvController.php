@@ -191,6 +191,7 @@ class InvController extends Controller
             $inv->save();
             $invs = $user->invs()->get();
             return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', added successfully', 'invs' => $invs], 201);
+
         }
         else
         {
