@@ -235,38 +235,52 @@
                         </h5>
                         <p class="text-overline">{{ date | getYear }}</p>
                     </v-col>
-                    <v-col
-                        cols="12"
-                        lg="3"
-                        md="3"
-                        v-for="(item, time) in inv"
-                        :key="item.id"
-                    >
-                        <v-card hover color="grey lighten-5">
-                            <v-card-title class="d-flex justify-space-between">
-                                <h1 class="text-h4 font-weight-light">
-                                    {{ time | TimeFormat }}
-                                </h1>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-chip
-                                    small
-                                    dark
-                                    :color="
-                                        item.users_count < item.users_limit
-                                            ? 'green darken-2'
-                                            : 'red darken-2'
-                                    "
-                                    ><v-icon left>mdi-account-group</v-icon
-                                    >{{ item.users_count }} /
-                                    {{ item.users_limit }}</v-chip
+                    <v-col cols="12" lg="9" md="9">
+                        <v-row>
+                            <v-col
+                                cols="12"
+                                lg="3"
+                                md="3"
+                                v-for="(item, time) in inv"
+                                :key="item.id"
+                            >
+                                <v-card
+                                    hover
+                                    height="100%"
+                                    color="grey lighten-5"
                                 >
-                                <v-chip small outlined
-                                    ><v-icon left>mdi-clock-outline</v-icon
-                                    >{{ item.updated_at | ago }}</v-chip
-                                >
-                            </v-card-text>
-                        </v-card>
+                                    <v-card-title
+                                        class="d-flex justify-space-between"
+                                    >
+                                        <h1 class="text-h5 font-weight-light">
+                                            {{ time | TimeFormat }}
+                                        </h1>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-chip
+                                            class="ma-1"
+                                            small
+                                            dark
+                                            :color="
+                                                item.users_count <
+                                                item.users_limit
+                                                    ? 'green darken-2'
+                                                    : 'red darken-2'
+                                            "
+                                            ><v-icon left
+                                                >mdi-account-group</v-icon
+                                            >{{ item.users_count }} /
+                                            {{ item.users_limit }}</v-chip
+                                        >
+                                        <v-chip class="ma-1" small outlined
+                                            ><v-icon left
+                                                >mdi-clock-outline</v-icon
+                                            >{{ item.updated_at | ago }}</v-chip
+                                        >
+                                    </v-card-text>
+                                </v-card>
+                            </v-col>
+                        </v-row>
                     </v-col>
                 </v-row>
             </v-col>

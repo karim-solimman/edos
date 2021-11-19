@@ -51,77 +51,94 @@
                     </h5>
                     <p class="text-overline">{{ date | getYear }}</p>
                 </v-col>
-                <v-col
-                    cols="12"
-                    lg="3"
-                    md="3"
-                    v-for="(item, time) in inv"
-                    :key="item.id"
-                >
-                    <v-hover v-slot="{ hover }">
-                        <v-card
-                            hover
-                            :color="
-                                isExists(time)
-                                    ? 'green lighten-5'
-                                    : 'grey lighten-5'
-                            "
-                            @click="cardAction(item, time)"
+                <v-col cols="12" lg="9" md="9">
+                    <v-row>
+                        <v-col
+                            cols="12"
+                            lg="3"
+                            md="3"
+                            v-for="(item, time) in inv"
+                            :key="item.id"
                         >
-                            <v-card-title class="d-flex justify-space-between">
-                                <h1 class="text-h4 font-weight-light">
-                                    {{ time | TimeFormat }}
-                                </h1>
-                                <v-icon v-if="isExists(time)" color="green"
-                                    >mdi-account</v-icon
-                                >
-                            </v-card-title>
-                            <v-card-text>
-                                <v-chip
-                                    small
-                                    dark
+                            <v-hover v-slot="{ hover }">
+                                <v-card
+                                    height="100%"
+                                    hover
                                     :color="
-                                        item.users_count < item.users_limit
-                                            ? 'green darken-2'
-                                            : 'red darken-2'
+                                        isExists(time)
+                                            ? 'green lighten-5'
+                                            : 'grey lighten-5'
                                     "
-                                    ><v-icon left>mdi-account-group</v-icon
-                                    >{{ item.users_count }} /
-                                    {{ item.users_limit }}</v-chip
+                                    @click="cardAction(item, time)"
                                 >
-                                <v-chip small outlined
-                                    ><v-icon left>mdi-clock-outline</v-icon
-                                    >{{ item.updated_at | ago }}</v-chip
-                                >
-                            </v-card-text>
-                            <v-expand-transition>
-                                <div
-                                    v-if="hover"
-                                    class="d-flex transition-fast-in-fast-out blue-grey darken-4 v-card--reveal text-h5 font-weight-light white--text"
-                                    style="height: 100%;"
-                                >
-                                    <span
-                                        class="text-h4 font-weight-thin text-center"
-                                        v-if="isExists(time)"
-                                        ><v-icon dark x-large left color="error"
-                                            >mdi-table-large-remove</v-icon
-                                        ><br />REMOVE</span
+                                    <v-card-title
+                                        class="d-flex justify-space-between"
                                     >
-                                    <span
-                                        class="text-h4 font-weight-thin text-center"
-                                        v-else
-                                        ><v-icon
+                                        <h1 class="text-h5 font-weight-light">
+                                            {{ time | TimeFormat }}
+                                        </h1>
+                                        <v-icon
+                                            v-if="isExists(time)"
+                                            color="green"
+                                            >mdi-account</v-icon
+                                        >
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-chip
+                                            small
                                             dark
-                                            x-large
-                                            left
-                                            color="success"
-                                            >mdi-table-large-plus</v-icon
-                                        ><br />ADD</span
-                                    >
-                                </div>
-                            </v-expand-transition>
-                        </v-card>
-                    </v-hover>
+                                            class="ma-1"
+                                            :color="
+                                                item.users_count <
+                                                item.users_limit
+                                                    ? 'green darken-2'
+                                                    : 'red darken-2'
+                                            "
+                                            ><v-icon left
+                                                >mdi-account-group</v-icon
+                                            >{{ item.users_count }} /
+                                            {{ item.users_limit }}</v-chip
+                                        >
+                                        <v-chip class="ma-1" small outlined
+                                            ><v-icon left
+                                                >mdi-clock-outline</v-icon
+                                            >{{ item.updated_at | ago }}</v-chip
+                                        >
+                                    </v-card-text>
+                                    <v-expand-transition>
+                                        <div
+                                            v-if="hover"
+                                            class="d-flex transition-fast-in-fast-out blue-grey darken-4 v-card--reveal text-h5 font-weight-light white--text"
+                                            style="height: 100%;"
+                                        >
+                                            <span
+                                                class="text-h4 font-weight-thin text-center"
+                                                v-if="isExists(time)"
+                                                ><v-icon
+                                                    dark
+                                                    x-large
+                                                    left
+                                                    color="error"
+                                                    >mdi-table-large-remove</v-icon
+                                                ><br />REMOVE</span
+                                            >
+                                            <span
+                                                class="text-h4 font-weight-thin text-center"
+                                                v-else
+                                                ><v-icon
+                                                    dark
+                                                    x-large
+                                                    left
+                                                    color="success"
+                                                    >mdi-table-large-plus</v-icon
+                                                ><br />ADD</span
+                                            >
+                                        </div>
+                                    </v-expand-transition>
+                                </v-card>
+                            </v-hover>
+                        </v-col>
+                    </v-row>
                 </v-col>
             </v-row>
         </div>

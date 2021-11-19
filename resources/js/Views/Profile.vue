@@ -116,9 +116,14 @@
                     view == 'grid'
             "
         >
-            <v-col lg="4" md="4" cols="6" v-for="inv in invs" :key="inv.id">
+            <v-col lg="4" md="4" cols="12" v-for="inv in invs" :key="inv.id">
                 <v-hover v-slot="{ hover }">
-                    <v-card color="grey lighten-5" hover @click="confirm(inv)">
+                    <v-card
+                        height="100%"
+                        color="grey lighten-5"
+                        hover
+                        @click="confirm(inv)"
+                    >
                         <v-card-title>
                             <h1 class="text-h5 font-weight-light">
                                 {{ inv.date_time | DateFormat }}
@@ -143,9 +148,9 @@
                                     >{{ inv.users_count }} /
                                     {{ inv.room.users_limit }}
                                 </v-chip>
-                                <v-chip small color="info" outlined>
-                                    <v-icon small left>mdi-clock-outline</v-icon
-                                    >{{ inv.pivot.created_at | ago }}
+                                <v-chip small outlined color="info">
+                                    <v-icon small left>mdi-folder</v-icon
+                                    >{{ inv.course.department.name }}
                                 </v-chip>
                                 <v-chip
                                     v-if="settings[1].value"
@@ -167,15 +172,6 @@
                                     v-if="settings[1].value"
                                     small
                                     outlined
-                                    color="info"
-                                >
-                                    <v-icon small left>mdi-folder</v-icon
-                                    >{{ inv.course.department.name }}
-                                </v-chip>
-                                <v-chip
-                                    v-if="settings[1].value"
-                                    small
-                                    outlined
                                     color="teal lighten-3"
                                 >
                                     <v-icon small left>mdi-alarm</v-icon
@@ -184,6 +180,10 @@
                                             ? inv.duration + " hours"
                                             : "no duration"
                                     }}
+                                </v-chip>
+                                <v-chip small color="info" outlined>
+                                    <v-icon small left>mdi-clock-outline</v-icon
+                                    >{{ inv.pivot.created_at | ago }}
                                 </v-chip>
                             </v-chip-group>
                         </v-card-text>
