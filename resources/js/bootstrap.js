@@ -19,8 +19,14 @@ try {
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
+// window.axios = require('axios');
+// axios.defaults.baseURL = 'http://127.0.0.1:8000';
+// axios.defaults.withCredentials = true;
+
+// window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
 window.axios = require('axios');
-axios.defaults.baseURL = 'http://127.0.0.1:8000';
+axios.defaults.baseURL = 'http://18.194.248.215:8000/';
 axios.defaults.withCredentials = true;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
