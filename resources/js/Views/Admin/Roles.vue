@@ -29,7 +29,10 @@
                         </v-badge>
                     </v-card-title>
                     <v-card-text>
-                        <v-simple-table dense>
+                        <v-simple-table
+                            dense
+                            v-if="role.users && role.users.length > 0"
+                        >
                             <template v-slot:default>
                                 <thead>
                                     <tr>
@@ -53,9 +56,7 @@
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody
-                                    v-if="role.users && role.users.length > 0"
-                                >
+                                <tbody>
                                     <tr
                                         v-for="(user, i) in role.users"
                                         :key="i"

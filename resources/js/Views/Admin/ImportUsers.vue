@@ -52,7 +52,7 @@
                 </p>
             </v-col>
             <v-col cols="12" lg="6" md="6">
-                <v-img src="/img/excel_users.png"></v-img>
+                <v-img src="/img/excel_users.PNG"></v-img>
             </v-col>
         </v-row>
     </v-container>

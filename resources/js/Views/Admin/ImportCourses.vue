@@ -49,7 +49,7 @@
                 </p>
             </v-col>
             <v-col cols="12" lg="6" md="6">
-                <v-img class="mt-5" src="/img/courses.png"></v-img>
+                <v-img class="mt-5" src="/img/courses.PNG"></v-img>
             </v-col>
         </v-row>
     </div>
