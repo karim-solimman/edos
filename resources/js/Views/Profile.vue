@@ -295,7 +295,7 @@
                             <th>Time</th>
                             <th v-if="settings[1].value">Room</th>
                             <th v-if="settings[1].value">Course</th>
-                            <th v-if="settings[1].value">Dep</th>
+                            <th>Dep</th>
                             <th v-if="settings[1].value">Dur</th>
                             <th>Users</th>
                             <th>Enrolled</th>
@@ -313,7 +313,7 @@
                             <td v-if="settings[1].value">
                                 {{ inv.course.code }}
                             </td>
-                            <td v-if="settings[1].value">
+                            <td>
                                 {{ inv.course.department.name }}
                             </td>
                             <td v-if="settings[1].value">
@@ -550,6 +550,7 @@ export default {
                         index: index + 1,
                         date: this.$options.filters.DateFormat(value.date_time),
                         time: this.$options.filters.TimeFormat(value.date_time),
+                        department: value.course.department.name,
                         inv_name: this.user.name
                     });
                 });

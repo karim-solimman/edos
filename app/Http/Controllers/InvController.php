@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Room;
 use App\Models\User;
 use Carbon\Carbon;
+use HttpException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -168,6 +169,7 @@ class InvController extends Controller
 
     public function attachUserByDate(Request $request)
     {
+        //TODO validation for request
         $settings = DB::table('settings')->where('name', '=', 'manual_selection')->first();
         if (!$settings->value && !auth()->user()->tokenCan('admin'))
         {
@@ -185,13 +187,24 @@ class InvController extends Controller
             {
                 return response(['message' => $user->name.' reached invs limit'],402);
             }
-            $inv = Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first();
-            $user->invs()->attach($inv->id, ['created_at' => now(), 'updated_at' => now()]);
-            $inv->users_count += 1;
-            $inv->save();
+
+            DB::beginTransaction();
+            try {
+                DB::raw('LOCK TABLES invs WRITE');
+                DB::raw('LOCK TABLES invs READ');
+                DB::raw('LOCK TABLES user_inv WRITE');
+                $inv = Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first();
+                $user->invs()->attach($inv->id, ['created_at' => now(), 'updated_at' => now()]);
+                $inv->users_count += 1;
+                $inv->save();
+            } catch (\Throwable $th) {
+                DB::rollback();
+                throw new HttpException(400, ['message' => $th->getMessage()]);
+            }
+            DB::commit();
+            DB::raw('unlock tables');
             $invs = $user->invs()->get();
             return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', added successfully', 'invs' => $invs], 201);
-
         }
         else
         {
