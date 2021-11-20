@@ -98,6 +98,7 @@ export default {
                     this.btnLoading = false;
                 })
                 .catch(error => {
+                    this.btnLoading = false;
                     this.alert = true;
                     this.alertType = "error";
                     this.alertMessage =
@@ -106,7 +107,6 @@ export default {
                             ? " - " + error.response.data.errors
                             : "");
                     this.errorMsg = error.response.data.errors["file"];
-                    this.btnLoading = false;
                 });
             this.$refs.form.reset();
         }
