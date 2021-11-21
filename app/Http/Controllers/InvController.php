@@ -187,9 +187,8 @@ class InvController extends Controller
             {
                 return response(['message' => $user->name.' reached invs limit'],402);
             }
-
-            DB::beginTransaction();
             try {
+                DB::beginTransaction();
                 DB::raw('LOCK TABLES invs WRITE');
                 DB::raw('LOCK TABLES invs READ');
                 DB::raw('LOCK TABLES user_inv WRITE');
@@ -197,12 +196,13 @@ class InvController extends Controller
                 $user->invs()->attach($inv->id, ['created_at' => now(), 'updated_at' => now()]);
                 $inv->users_count += 1;
                 $inv->save();
+                DB::raw('UNLOCK TABLES');
+                DB::commit();
             } catch (\Throwable $th) {
                 DB::rollback();
                 throw new HttpException(400, ['message' => $th->getMessage()]);
             }
-            DB::commit();
-            DB::raw('unlock tables');
+
             $invs = $user->invs()->get();
             return response(['message' => 'Inv on '.Carbon::createFromFormat('Y-m-d H:i:s', $inv->date_time)->toDateString().', added successfully', 'invs' => $invs], 201);
         }
