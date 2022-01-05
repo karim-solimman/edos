@@ -175,6 +175,9 @@ class InvController extends Controller
         {
             return response(['message' => 'Manual selection is disabled'],402);
         }
+        DB::raw('LOCK TABLES invs WRITE');
+        DB::raw('LOCK TABLES invs READ');
+        DB::raw('LOCK TABLES user_inv WRITE');
         if (Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first() != null)
         {
             $user = User::with('roles')->where('id', $request->input('user_id'))->first();
@@ -189,9 +192,6 @@ class InvController extends Controller
             }
             try {
                 DB::beginTransaction();
-                DB::raw('LOCK TABLES invs WRITE');
-                DB::raw('LOCK TABLES invs READ');
-                DB::raw('LOCK TABLES user_inv WRITE');
                 $inv = Inv::where('date_time', $request->input('date_time'))->whereColumn('users_count', '<', 'users_limit')->first();
                 $user->invs()->attach($inv->id, ['created_at' => now(), 'updated_at' => now()]);
                 $inv->users_count += 1;
@@ -331,6 +331,11 @@ class InvController extends Controller
         $original_queue = array_reverse($original_queue);
         $reverse_queue = array_pop($conflict_queue);
         $users = Role::where('name', 'user')->first()->users()->with(['department'])->withCount('invs')->get();
+        foreach ($users as $user)
+        {
+            $user->invs_limit = $user->invs_count;
+            $user->save();
+        }
         return response(['invs' => $all_invs, 'users' => $users, 'conflict_queue' => $original_queue, 'reverse_queue' => $reverse_queue],201);
     }
 
@@ -425,6 +430,7 @@ class InvController extends Controller
 
         return response(['message' => $import->getRowCount().' Invs imported successfully', 'type' => 'success'], 201);
     }
+
     public function check_invs_conflicts()
     {
         $invs_conflicts = [];
