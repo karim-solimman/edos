@@ -276,14 +276,15 @@ class InvController extends Controller
 
     public function randomDistribution()
     {
+        set_time_limit(30);
         $conflict_queue = array();
+        DB::table('invs')->update(['users_count' => 0]);
         $all_invs = Inv::all()->groupBy('date_time');
-        $users = Role::where('name', 'user')->first()->users()->get()->shuffle();
+        $users = Role::where('name', 'user')->first()->users()->with(['invs'])->get()->shuffle();
         foreach ($users as $user)
             $user->invs()->detach();
-        DB::table('invs')->update(['users_count' => 0]);
         $i = 0;
-        foreach ($all_invs as $date_time => $period_invs)
+       /* foreach ($all_invs as $date_time => $period_invs)
         {
             while($inv = Inv::where('date_time', $date_time)->whereColumn('users_count', '<', 'users_limit')->first())
             {
@@ -303,7 +304,7 @@ class InvController extends Controller
                 $i++;
                 if($i === count($users))
                 {
-                    while(Inv::where('date_time', $date_time)->whereColumn('users_count', '<', 'users_limit')->first() && count($conflict_queue))
+                    while(count($conflict_queue) && Inv::where('date_time', $date_time)->whereColumn('users_count', '<', 'users_limit')->first())
                     {
                         $inv = Inv::where('date_time', $date_time)->whereColumn('users_count', '<', 'users_limit')->first();
                         $user = array_shift($conflict_queue);
@@ -326,11 +327,35 @@ class InvController extends Controller
                 }
 
             }
-        }
+        }*/
         $original_queue = $conflict_queue;
         $original_queue = array_reverse($original_queue);
         $reverse_queue = array_pop($conflict_queue);
-        $users = Role::where('name', 'user')->first()->users()->with(['department'])->withCount('invs')->get();
+        foreach ($all_invs as $date_time =>  $period_invs)
+        {
+            foreach ($period_invs as $inv)
+            {
+                while ($inv->users_count < $inv->users_limit) {
+                    /*$check = $users[$i]->invs()->get()->contains(function ($item, $key) use ($date_time) {
+                        return $item->date_time == $date_time ?? null;
+                    });
+                    if ($check)
+                        echo "True";
+                    else
+                        echo "False";*/
+                    if ($i == count($users))
+                    {
+//                        $users = $users->shuffle();
+                        $i=0;
+                    }
+                    $inv->users()->attach($users[$i]['id']);
+                    $inv->users_count += 1;
+                    $inv->save();
+                    $i = $i+1;
+                }
+            }
+        }
+       $users = Role::where('name', 'user')->first()->users()->with(['department'])->withCount('invs')->get();
         foreach ($users as $user)
         {
             $user->invs_limit = $user->invs_count;
