@@ -1,16 +1,15 @@
-require('./bootstrap');
+require("./bootstrap");
 import Vue from "vue";
 import VueRouter from "vue-router";
-import router from './routes';
-import Vuex from 'vuex';
-import dataStore from './store/index'
+import router from "./routes";
+import Vuex from "vuex";
+import dataStore from "./store/index";
 import vuetify from "./vuetify";
 import moment from "moment";
 import excel from "vue-excel-export";
 import VueExcelXlsx from "vue-excel-xlsx";
- 
 
-window.Vue = require('vue').default;
+window.Vue = require("vue").default;
 window.Vue = Vue;
 window.moment = moment;
 
@@ -19,15 +18,19 @@ Vue.use(Vuex);
 Vue.use(excel);
 Vue.use(VueExcelXlsx);
 
-const store = new Vuex.Store(
-    dataStore
-)
+const store = new Vuex.Store(dataStore);
 
-Vue.component('nav-bar', require('./components/Navbar').default)
-Vue.component('navigation-drawer', require('./components/NavigationDrawer').default)
-Vue.component('app-footer', require('./components/Footer').default)
-Vue.component('app-vue', require('./Views/App').default)
+Vue.component("nav-bar", require("./components/Navbar").default);
+Vue.component(
+    "navigation-drawer",
+    require("./components/NavigationDrawer").default
+);
+Vue.component("app-footer", require("./components/Footer").default);
+Vue.component("app-vue", require("./Views/App").default);
 const app = new Vue({
-    el: '#app',
-    router, store, vuetify, moment
+    el: "#app",
+    router,
+    store,
+    vuetify,
+    moment
 });
